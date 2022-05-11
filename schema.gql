@@ -1,0 +1,67 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UsersInfoModel {
+  user: UserModel!
+  name: String!
+  lastname: String!
+  position: String
+  hiringDate: DateTime
+  badge: Int
+  costCenter: Int
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserModel {
+  username: String!
+  email: String!
+  role: String!
+  resetPasswordToken: String
+  confirmationToken: String
+  confirmed: Boolean!
+  blocked: Boolean!
+  deletedAt: DateTime!
+  info: UsersInfoModel!
+}
+
+type Query {
+  user(id: Int!): UserModel!
+  users: [UserModel!]!
+  usersInfo(id: Int!): UsersInfoModel!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): UserModel!
+  removeUser(id: Int!): UserModel!
+  createUsersInfo(createUsersInfoInput: CreateUsersInfoInput!): UsersInfoModel!
+  updateUsersInfo(id: Float!, updateUsersInfoInput: UpdateUsersInfoInput!): UsersInfoModel!
+  removeUsersInfo(id: Int!): UsersInfoModel!
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  role: String = "User"
+}
+
+input CreateUsersInfoInput {
+  position: String
+  hiringDate: DateTime
+  badge: Int
+  costCenter: Int
+  idUser: Float!
+  name: String!
+  lastname: String!
+}
+
+input UpdateUsersInfoInput {
+  position: String
+  hiringDate: DateTime
+  badge: Int
+  costCenter: Int
+}
