@@ -58,14 +58,18 @@ export class UsersService {
     return await this.repo.save(userFound)
   }
 
-  async block(id: number): Promise<void> {
+  async block(id: number): Promise<UserModel> {
     const userFound = await this.get(id)
     this.repo.merge(userFound, { blocked: true })
-    await this.repo.save(userFound)
+    return await this.repo.save(userFound)
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<UserModel> {
     const userFound = await this.get(id)
     await this.repo.softDelete({ id: userFound.id })
+    return await this.repo.findOne({
+      where: { id: userFound.id },
+      withDeleted: true
+    })
   }
 }

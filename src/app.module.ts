@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common'
-import { UsersModule } from './resources/users/users.module'
+import { UsersModule } from '@users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import { UsersInfoModule } from './resources/users-info/users-info.module'
+import { UsersInfoModule } from '@users-info/users-info.module'
 import { LdapModule } from '@ldap/ldap.module'
+import { DepartmentsModule } from '@departments/departments.module'
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { LdapModule } from '@ldap/ldap.module'
     }),
     LdapModule,
     UsersModule,
-    UsersInfoModule
+    UsersInfoModule,
+    DepartmentsModule
   ]
 })
 export class AppModule {}

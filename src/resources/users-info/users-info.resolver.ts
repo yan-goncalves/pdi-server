@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
-import { UsersInfoService } from './users-info.service'
-import { UsersInfoModel } from './entities/users-info.entity'
+import { UsersInfoService } from '@users-info/users-info.service'
+import { UsersInfoModel } from '@users-info/entities/users-info.entity'
 import { CreateUsersInfoInput } from './dto/create-users-info.input'
 import { UpdateUsersInfoInput } from './dto/update-users-info.input'
 import { Inject } from '@nestjs/common'

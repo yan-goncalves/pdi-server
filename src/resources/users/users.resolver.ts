@@ -1,35 +1,46 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
-import { UsersService } from './users.service'
-import { UserModel } from './entities/user.entity'
-import { CreateUserInput } from './dto/create-user.input'
+import { UsersService } from '@users/users.service'
+import { UserModel } from '@users/entities/user.entity'
+import { CreateUserInput } from '@users/dto/create-user.input'
 import { Inject } from '@nestjs/common'
 
-@Resolver(() => UserModel)
+export const UserModelReturnType = (): typeof UserModel => UserModel
+export const UserModelReturnTypeArray = (): [typeof UserModel] => [UserModel]
+export const UserModelReturnTypeArgs = (): typeof Int => Int
+
+@Resolver(UserModelReturnType)
 export class UsersResolver {
   constructor(@Inject(UsersService) private readonly service: UsersService) {}
 
-  @Query(() => UserModel, { name: 'user' })
-  async findOne(@Args('id', { type: () => Int }) id: number): Promise<UserModel> {
+  @Query(UserModelReturnType, { name: 'user' })
+  async get(@Args('id', { type: UserModelReturnTypeArgs }) id: number): Promise<UserModel> {
     return this.service.get(id)
   }
 
-  @Query(() => [UserModel], { name: 'users' })
-  async findAll(): Promise<UserModel[]> {
+  @Query(UserModelReturnTypeArray, { name: 'users' })
+  async list(): Promise<UserModel[]> {
     return this.service.list()
   }
 
-  @Mutation(() => UserModel)
+  @Mutation(UserModelReturnType)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<UserModel> {
     return await this.service.create(createUserInput)
   }
 
-  @Mutation(() => UserModel)
-  async setUserConfirmed(@Args('id') id: number): Promise<UserModel> {
+  @Mutation(UserModelReturnType)
+  async setUserConfirmed(
+    @Args('id', { type: UserModelReturnTypeArgs }) id: number
+  ): Promise<UserModel> {
     return await this.service.setConfirmed(id)
   }
 
-  @Mutation(() => UserModel)
-  async removeUser(@Args('id', { type: () => Int }) id: number): Promise<void> {
+  @Mutation(UserModelReturnType)
+  async blockUser(@Args('id', { type: UserModelReturnTypeArgs }) id: number): Promise<UserModel> {
+    return await this.service.block(id)
+  }
+
+  @Mutation(UserModelReturnType)
+  async removeUser(@Args('id', { type: UserModelReturnTypeArgs }) id: number): Promise<UserModel> {
     return await this.service.delete(id)
   }
 }

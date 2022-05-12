@@ -44,6 +44,7 @@
     "typeorm": "^0.3.6"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.3.1",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -79,9 +80,16 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(resolver|service).(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@constants/(.*)$": "<rootDir>/constants/$1",
+      "^@ldap/(.*)$": "<rootDir>/resources/ldap/$1",
+      "^@users/(.*)$": "<rootDir>/resources/users/$1",
+      "^@users-info/(.*)$": "<rootDir>/resources/users-info/$1",
+      "^@departments/(.*)$": "<rootDir>/resources/departments/$1"
+    }
   }
 }

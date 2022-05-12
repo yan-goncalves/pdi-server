@@ -1,7 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql'
 import { hashSync } from 'bcrypt'
-import { ROLES } from 'src/constants/roles'
-import { UsersInfoModel } from 'src/resources/users-info/entities/users-info.entity'
+import { UsersInfoModel } from '@users-info/entities/users-info.entity'
 import {
   BeforeInsert,
   Column,
@@ -13,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { ROLES } from '@constants/roles'
 
 @ObjectType()
 @Entity('users')
@@ -53,6 +53,14 @@ export class UserModel {
   blocked: boolean
 
   @Field()
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date
+
+  @Field()
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date
+
+  @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
 
@@ -62,14 +70,6 @@ export class UserModel {
     const salt = +process.env.SALT_GEN || 10
     this.password = hashSync(password, salt)
   }
-
-  @Field()
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
-
-  @Field()
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date
 
   @Field(() => UsersInfoModel)
   @OneToOne(() => UsersInfoModel, (info) => info.user, { eager: true })

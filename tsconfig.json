@@ -22,10 +22,11 @@
       "@decorators/*": ["src/decorators/*"],
       "@auth/*": ["src/resources/auth/*"],
       "@ldap/*": ["src/resources/ldap/*"],
-      "@constants": ["src/constants"],
+      "@constants/*": ["src/constants/*"],
       "@common/*": ["src/common/*"],
       "@users/*": ["src/resources/users/*"],
-      "@users-info/*": ["src/resources/users-info/*"]
+      "@users-info/*": ["src/resources/users-info/*"],
+      "@departments/*": ["src/resources/departments/*"]
     }
   }
 }
