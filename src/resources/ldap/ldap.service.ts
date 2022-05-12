@@ -37,11 +37,26 @@ export class LdapService {
 
     const users = await this._CLIENT_.search(this._BASE_DN_, {
       scope: 'one',
-      filter: `(&(objectClass=person)${this.excludeServiceUsers}`
-      // attributes: ['displayName', 'department', 'title'],
+      filter: `(&(objectClass=person)${this.excludeServiceUsers}`,
+      attributes: ['sAMAccountName', 'mail', 'displayName', 'department', 'title']
     })
 
-    return users
+    const { readFileSync } = await import('fs')
+    const { join, resolve } = await import('path')
+
+    const mockDir = resolve(process.cwd(), 'src', 'resources', 'ldap', 'mock')
+    const rawdata = readFileSync(join(mockDir, 'ldap.json'), 'utf-8')
+    const entries = JSON.parse(rawdata).searchEntries
+
+    return entries.map((entry) => ({
+      sAMAccountName: entry.sAMAccountName,
+      mail: entry.mail,
+      displayName: entry.displayName,
+      department: entry.department,
+      title: entry.title
+    }))
+
+    // return users
   }
 
   async auth(user: LDAPUser): Promise<Entry> {

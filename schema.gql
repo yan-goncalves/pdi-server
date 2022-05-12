@@ -50,7 +50,7 @@ type Query {
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): UserModel!
-  setUserConfirmed(id: Float!): UserModel!
+  setUserConfirmed(id: Int!): UserModel!
   blockUser(id: Int!): UserModel!
   removeUser(id: Int!): UserModel!
   createUsersInfo(id: Float!, createUsersInfoInput: CreateUsersInfoInput!): UsersInfoModel!
