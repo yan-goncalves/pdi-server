@@ -1,7 +1,8 @@
-import { ConflictException } from '@nestjs/common'
+import { ConflictException, forwardRef, Inject } from '@nestjs/common'
 import { NotFoundException } from '@nestjs/common'
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { UserModel } from '@users/entities/user.entity'
 import { UsersService } from '@users/users.service'
 import { Repository } from 'typeorm'
 import { CreateUsersInfoInput } from './dto/create-users-info.input'
@@ -12,7 +13,7 @@ import { UsersInfoModel } from './entities/users-info.entity'
 export class UsersInfoService {
   constructor(
     @InjectRepository(UsersInfoModel) private readonly repo: Repository<UsersInfoModel>,
-    @Inject(UsersService) private readonly usersService: UsersService
+    @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService
   ) {}
 
   async get(id: number): Promise<UsersInfoModel> {
@@ -23,15 +24,18 @@ export class UsersInfoService {
     }
   }
 
-  async create({ idUser, ...props }: CreateUsersInfoInput): Promise<UsersInfoModel> {
-    const user = await this.usersService.get(idUser)
-    const info = await this.repo.findOneBy({ user: { id: user.id } })
+  async create(
+    user: UserModel | number,
+    createUsersInfo: CreateUsersInfoInput
+  ): Promise<UsersInfoModel> {
+    const userFound = user instanceof UserModel ? user : await this.usersService.get(user)
+    const info = await this.repo.findOneBy({ user: { id: userFound.id } })
 
     if (info) {
-      throw new ConflictException(`User's info with id '${idUser}' already exists`)
+      throw new ConflictException(`User's info with id '${userFound.id}' already exists`)
     }
 
-    return await this.repo.save(this.repo.create({ user, ...props }))
+    return await this.repo.save(this.repo.create({ user: userFound, ...createUsersInfo }))
   }
 
   async update(id: number, updateUsersInfoInput: UpdateUsersInfoInput): Promise<UsersInfoModel> {

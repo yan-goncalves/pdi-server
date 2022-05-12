@@ -1,11 +1,22 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql'
-import { BaseEntity } from 'src/resources/common/Base/entities/base.entity'
 import { UserModel } from 'src/resources/users/entities/user.entity'
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 
 @ObjectType()
 @Entity('users_info')
-export class UsersInfoModel extends BaseEntity {
+export class UsersInfoModel {
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  readonly id: number
+
   @Field(() => UserModel)
   @OneToOne(() => UserModel, (user) => user.info)
   @JoinColumn({ name: 'id_user' })
@@ -34,4 +45,12 @@ export class UsersInfoModel extends BaseEntity {
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true, name: 'cost_center' })
   costCenter?: number
+
+  @Field()
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date
+
+  @Field()
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date
 }

@@ -89,7 +89,7 @@ export class LdapService {
       name,
       lastname,
       department,
-      role
+      position: role
     }
   }
 }

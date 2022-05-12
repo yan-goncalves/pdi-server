@@ -18,7 +18,7 @@ import { LdapModule } from '@ldap/ldap.module'
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mssql',
-        host: configService.get('TYPEORM_HOST', 'SLBR064'),
+        host: configService.get('TYPEORM_HOST', 'localhost'),
         database: configService.get('TYPEORM_DATABASE', 'PDI'),
         username: configService.get('TYPEORM_USERNAME', 'pdi'),
         password: configService.get('TYPEORM_PASSWORD', '1@asdfgPDI'),

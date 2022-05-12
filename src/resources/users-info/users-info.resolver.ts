@@ -16,9 +16,10 @@ export class UsersInfoResolver {
 
   @Mutation(() => UsersInfoModel)
   async createUsersInfo(
+    @Args('id') idUser: number,
     @Args('createUsersInfoInput') createUsersInfoInput: CreateUsersInfoInput
   ): Promise<UsersInfoModel> {
-    return await this.service.create(createUsersInfoInput)
+    return await this.service.create(idUser, createUsersInfoInput)
   }
 
   @Mutation(() => UsersInfoModel)

@@ -1,13 +1,26 @@
-import { ObjectType, Field } from '@nestjs/graphql'
+import { ObjectType, Field, Int } from '@nestjs/graphql'
 import { hashSync } from 'bcrypt'
 import { ROLES } from 'src/constants/roles'
-import { BaseEntity } from 'src/resources/common/Base/entities/base.entity'
 import { UsersInfoModel } from 'src/resources/users-info/entities/users-info.entity'
-import { BeforeInsert, Column, DeleteDateColumn, Entity, JoinColumn, OneToOne } from 'typeorm'
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 
 @ObjectType()
 @Entity('users')
-export class UserModel extends BaseEntity {
+export class UserModel {
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  readonly id: number
+
   @Field()
   @Column({ unique: true })
   readonly username: string
@@ -50,8 +63,16 @@ export class UserModel extends BaseEntity {
     this.password = hashSync(password, salt)
   }
 
+  @Field()
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date
+
+  @Field()
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date
+
   @Field(() => UsersInfoModel)
-  @OneToOne(() => UsersInfoModel, (info) => info.user)
+  @OneToOne(() => UsersInfoModel, (info) => info.user, { eager: true })
   @JoinColumn({ name: 'id_info' })
   info: UsersInfoModel
 }

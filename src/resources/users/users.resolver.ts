@@ -24,6 +24,11 @@ export class UsersResolver {
   }
 
   @Mutation(() => UserModel)
+  async setUserConfirmed(@Args('id') id: number): Promise<UserModel> {
+    return await this.service.setConfirmed(id)
+  }
+
+  @Mutation(() => UserModel)
   async removeUser(@Args('id', { type: () => Int }) id: number): Promise<void> {
     return await this.service.delete(id)
   }
