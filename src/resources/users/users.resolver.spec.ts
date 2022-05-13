@@ -83,7 +83,7 @@ describe('UsersResolver', () => {
 
     expect(user.confirmed).toBe(false)
 
-    const confirmedUser = await resolver.setUserConfirmed(user.id)
+    const confirmedUser = await resolver.updateUser(user.id, { confirmed: true })
     expect(confirmedUser.confirmed).toBe(true)
   })
 
@@ -91,7 +91,7 @@ describe('UsersResolver', () => {
     const user = await resolver.get(1)
     expect(user.blocked).toBe(false)
 
-    const blockedUser = await resolver.blockUser(user.id)
+    const blockedUser = await resolver.updateUser(user.id, { blocked: true })
     expect(blockedUser.blocked).toBe(true)
   })
 

@@ -4,6 +4,7 @@ import { CreateUserInput } from '@users/dto/create-user.input'
 import { UserModel } from '@users/entities/user.entity'
 import { hashSync } from 'bcrypt'
 import { ROLES } from '@constants/roles'
+import departmentMock from '@departments/mock'
 
 const userMock: (input?: CreateUserInput) => UserModel = (input?: CreateUserInput) => {
   return {
@@ -17,7 +18,8 @@ const userMock: (input?: CreateUserInput) => UserModel = (input?: CreateUserInpu
     createdAt: faker.date.past(1),
     updatedAt: faker.date.recent(1),
     setDefaultPassword: () => ({}),
-    info: userInfoMock
+    info: userInfoMock,
+    department: departmentMock
   }
 }
 

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { UsersModule } from '@users/users.module'
-import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
@@ -8,6 +7,7 @@ import { UsersInfoModule } from '@users-info/users-info.module'
 import { LdapModule } from '@ldap/ldap.module'
 import { DepartmentsModule } from '@departments/departments.module'
 import { AuthModule } from '@auth/auth.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 @Module({
   imports: [

@@ -26,7 +26,8 @@
       "@common/*": ["src/common/*"],
       "@users/*": ["src/resources/users/*"],
       "@users-info/*": ["src/resources/users-info/*"],
-      "@departments/*": ["src/resources/departments/*"]
+      "@departments/*": ["src/resources/departments/*"],
+      "@departments-i18n/*": ["src/resources/departments-i18n/*"]
     }
   }
 }

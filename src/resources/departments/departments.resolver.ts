@@ -1,35 +1,43 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { DepartmentsService } from './departments.service';
-import { Department } from './entities/department.entity';
-import { CreateDepartmentInput } from './dto/create-department.input';
-import { UpdateDepartmentInput } from './dto/update-department.input';
+import { LOCALES } from '@constants/locales'
+import { Inject } from '@nestjs/common'
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import { FindOptionsRelations, FindOptionsUtils } from 'typeorm'
+import { DepartmentsService } from './departments.service'
+import { CreateDepartmentInput } from './dto/create-department.input'
+import { UpdateDepartmentInput } from './dto/update-department.input'
+import { DepartmentModel } from './entities/department.entity'
 
-@Resolver(() => Department)
+@Resolver(() => DepartmentModel)
 export class DepartmentsResolver {
-  constructor(private readonly departmentsService: DepartmentsService) {}
+  constructor(@Inject(DepartmentsService) private readonly service: DepartmentsService) {}
 
-  @Mutation(() => Department)
-  createDepartment(@Args('createDepartmentInput') createDepartmentInput: CreateDepartmentInput) {
-    return this.departmentsService.create(createDepartmentInput);
+  @Query(() => DepartmentModel, { name: 'department' })
+  async get(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+  ): Promise<DepartmentModel> {
+    return this.service.get(id, locale)
   }
 
-  @Query(() => [Department], { name: 'departments' })
-  findAll() {
-    return this.departmentsService.findAll();
+  @Query(() => [DepartmentModel], { name: 'departments' })
+  async list(
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES,
+    @Args('relations', { nullable: true, defaultValue: [], type: () => [String] })
+    relations?: FindOptionsRelations<DepartmentModel>
+  ): Promise<DepartmentModel[]> {
+    return await this.service.list({ locale, relations })
   }
 
-  @Query(() => Department, { name: 'department' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.departmentsService.findOne(id);
+  @Mutation(() => DepartmentModel)
+  createDepartment(@Args('input') input: CreateDepartmentInput): Promise<DepartmentModel> {
+    return this.service.create(input)
   }
 
-  @Mutation(() => Department)
-  updateDepartment(@Args('updateDepartmentInput') updateDepartmentInput: UpdateDepartmentInput) {
-    return this.departmentsService.update(updateDepartmentInput.id, updateDepartmentInput);
-  }
-
-  @Mutation(() => Department)
-  removeDepartment(@Args('id', { type: () => Int }) id: number) {
-    return this.departmentsService.remove(id);
+  @Mutation(() => DepartmentModel)
+  async updateDepartment(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: UpdateDepartmentInput
+  ): Promise<DepartmentModel> {
+    return this.service.update(id, input)
   }
 }

@@ -8,11 +8,13 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { ROLES } from '@constants/roles'
+import { DepartmentModel } from '@departments/entities/department.entity'
 
 @ObjectType()
 @Entity('users')
@@ -20,6 +22,21 @@ export class UserModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   readonly id: number
+
+  @Field(() => UsersInfoModel)
+  @OneToOne(() => UsersInfoModel, (info) => info.user, { eager: true })
+  @JoinColumn({ name: 'id_info' })
+  info: UsersInfoModel
+
+  @Field(() => UserModel, { nullable: true })
+  @ManyToOne(() => UserModel, (user) => user.id, { nullable: true })
+  @JoinColumn({ name: 'id_manager' })
+  manager?: UserModel
+
+  @Field(() => DepartmentModel, { nullable: true })
+  @ManyToOne(() => DepartmentModel, (department) => department.id, { nullable: true, eager: true })
+  @JoinColumn({ name: 'id_department' })
+  department?: DepartmentModel
 
   @Field()
   @Column({ unique: true })
@@ -70,9 +87,4 @@ export class UserModel {
     const salt = +process.env.SALT_GEN || 10
     this.password = hashSync(password, salt)
   }
-
-  @Field(() => UsersInfoModel)
-  @OneToOne(() => UsersInfoModel, (info) => info.user, { eager: true })
-  @JoinColumn({ name: 'id_info' })
-  info: UsersInfoModel
 }

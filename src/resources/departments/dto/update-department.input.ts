@@ -1,8 +1,16 @@
-import { CreateDepartmentInput } from './create-department.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { LOCALES } from '@constants/locales'
+import { InputType, Field } from '@nestjs/graphql'
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
-export class UpdateDepartmentInput extends PartialType(CreateDepartmentInput) {
-  @Field(() => Int)
-  id: number;
+export class UpdateDepartmentInput {
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  name: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsEnum(LOCALES)
+  locale: LOCALES
 }
