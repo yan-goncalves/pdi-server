@@ -7,6 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { LdapModule } from '@ldap/ldap.module'
 import { DepartmentsModule } from '@departments/departments.module'
+import { AuthModule } from '@auth/auth.module'
 
 @Module({
   imports: [
@@ -39,9 +40,11 @@ import { DepartmentsModule } from '@departments/departments.module'
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       playground: process.env.NODE_ENV !== 'production',
-      installSubscriptionHandlers: true
+      installSubscriptionHandlers: true,
+      context: ({ req }) => ({ req })
     }),
     LdapModule,
+    AuthModule,
     UsersModule,
     UsersInfoModule,
     DepartmentsModule

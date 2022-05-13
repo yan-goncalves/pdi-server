@@ -40,6 +40,10 @@ type Department {
   exampleField: Int!
 }
 
+type JWT {
+  jwt: String!
+}
+
 type Query {
   user(id: Int!): UserModel!
   users: [UserModel!]!
@@ -49,6 +53,7 @@ type Query {
 }
 
 type Mutation {
+  signin(input: SignInInput!): JWT!
   createUser(createUserInput: CreateUserInput!): UserModel!
   setUserConfirmed(id: Int!): UserModel!
   blockUser(id: Int!): UserModel!
@@ -59,6 +64,11 @@ type Mutation {
   createDepartment(createDepartmentInput: CreateDepartmentInput!): Department!
   updateDepartment(updateDepartmentInput: UpdateDepartmentInput!): Department!
   removeDepartment(id: Int!): Department!
+}
+
+input SignInInput {
+  identifier: String!
+  password: String!
 }
 
 input CreateUserInput {

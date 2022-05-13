@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   forwardRef,
   Inject,
@@ -6,11 +7,12 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { FindOptionsWhere, Repository } from 'typeorm'
 import { CreateUserInput } from '@users/dto/create-user.input'
 import { UserModel } from '@users/entities/user.entity'
 import { UsersInfoService } from '@users-info/users-info.service'
 import { LdapService } from '@ldap/ldap.service'
+import { compare } from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -19,6 +21,21 @@ export class UsersService {
     @Inject(forwardRef(() => UsersInfoService)) private readonly usersInfoService: UsersInfoService,
     @Inject(LdapService) private readonly ldapService: LdapService
   ) {}
+
+  async validate(identifier: string, password: string): Promise<UserModel> {
+    const user = await this.repo.findOneBy([{ username: identifier }, { email: identifier }])
+    if (!user) {
+      throw new BadRequestException('Username/email or password incorrect')
+    }
+
+    const valid = await compare(password, user.password)
+
+    if (!valid) {
+      throw new BadRequestException('Username/email or password incorrect')
+    }
+
+    return user
+  }
 
   async create({ email, username, role }: CreateUserInput): Promise<UserModel> {
     const userFound = await this.repo.findOneBy({ email, username })
@@ -49,6 +66,16 @@ export class UsersService {
       return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException(`User with id '${id}' not found`)
+    }
+  }
+
+  async getBy(
+    options: FindOptionsWhere<UserModel> | FindOptionsWhere<UserModel>[]
+  ): Promise<UserModel> {
+    try {
+      return await this.repo.findOneByOrFail(options)
+    } catch {
+      throw new NotFoundException(`User with not found`)
     }
   }
 
