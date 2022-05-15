@@ -20,15 +20,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type DepartmentModel {
-  id: Int!
-  key: String!
-  name: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  users: [UserModel!]
-}
-
 type UserModel {
   id: Int!
   info: UsersInfoModel!
@@ -46,16 +37,54 @@ type UserModel {
   deletedAt: DateTime
 }
 
+type DepartmentModel {
+  id: Int!
+  key: String!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [UserModel!]
+}
+
 type JWT {
   jwt: String!
 }
 
+type QuestionModel {
+  id: Int!
+  ask: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type VisibilityModel {
+  User: Boolean!
+  Manager: Boolean!
+  Coordinator: Boolean!
+  Director: Boolean!
+}
+
+type SectionModel {
+  id: Int!
+  title: String
+  visibility: VisibilityModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type Query {
+  me(locale: String = "br"): UserModel!
   user(id: Int!, locale: String = "br"): UserModel!
   users(locale: String = "br"): [UserModel!]!
   usersInfo(id: Int!): UsersInfoModel!
   department(id: Int!, locale: String = "br"): DepartmentModel!
   departments(locale: String = "br", relations: [String!] = []): [DepartmentModel!]!
+  section(id: Int!, locale: String = "br"): SectionModel!
+  sections(locale: String = "br", relations: [String!] = []): [SectionModel!]!
+  question(id: Int!, locale: String = "br"): QuestionModel!
+  questions(locale: String = "br", relations: [String!] = []): [QuestionModel!]!
 }
 
 type Mutation {
@@ -63,11 +92,15 @@ type Mutation {
   createUser(input: CreateUserInput!): UserModel!
   updateUser(id: Int!, input: UpdateUserInput!): UserModel!
   removeUser(id: Int!): UserModel!
-  createUsersInfo(id: Float!, createUsersInfoInput: CreateUsersInfoInput!): UsersInfoModel!
-  updateUsersInfo(id: Float!, updateUsersInfoInput: UpdateUsersInfoInput!): UsersInfoModel!
+  createUsersInfo(id: Float!, input: CreateUserInfoInput!): UsersInfoModel!
+  updateUsersInfo(id: Float!, input: UpdateUserInfoInput!): UsersInfoModel!
   removeUsersInfo(id: Int!): UsersInfoModel!
   createDepartment(input: CreateDepartmentInput!): DepartmentModel!
   updateDepartment(id: Int!, input: UpdateDepartmentInput!): DepartmentModel!
+  createSection(input: CreateSectionInput!): SectionModel!
+  updateSection(id: Int!, input: UpdateSectionInput!): SectionModel!
+  createQuestion(input: CreateQuestionInput!): QuestionModel!
+  updateQuestion(id: Int!, input: UpdateQuestionInput!): QuestionModel!
 }
 
 input SignInInput {
@@ -90,7 +123,7 @@ input UpdateUserInput {
   deleted: Boolean
 }
 
-input CreateUsersInfoInput {
+input CreateUserInfoInput {
   position: String
   hiringDate: DateTime
   badge: Int
@@ -99,7 +132,7 @@ input CreateUsersInfoInput {
   lastname: String!
 }
 
-input UpdateUsersInfoInput {
+input UpdateUserInfoInput {
   position: String
   hiringDate: DateTime
   badge: Int
@@ -113,5 +146,32 @@ input CreateDepartmentInput {
 
 input UpdateDepartmentInput {
   name: String!
+  locale: String!
+}
+
+input CreateSectionInput {
+  title: String!
+  visibility: VisibilitySectionInput!
+}
+
+input VisibilitySectionInput {
+  User: Boolean!
+  Manager: Boolean!
+  Coordinator: Boolean!
+  Director: Boolean!
+}
+
+input UpdateSectionInput {
+  title: String!
+  visibility: VisibilitySectionInput
+  locale: String!
+}
+
+input CreateQuestionInput {
+  ask: String!
+}
+
+input UpdateQuestionInput {
+  ask: String!
   locale: String!
 }

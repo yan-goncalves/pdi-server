@@ -1,11 +1,11 @@
 import { LOCALES } from '@constants/locales'
+import { DepartmentsService } from '@departments/departments.service'
+import { CreateDepartmentInput } from '@departments/dto/create-department.input'
+import { UpdateDepartmentInput } from '@departments/dto/update-department.input'
+import { DepartmentModel } from '@departments/entities/department.entity'
 import { Inject } from '@nestjs/common'
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
-import { FindOptionsRelations, FindOptionsUtils } from 'typeorm'
-import { DepartmentsService } from './departments.service'
-import { CreateDepartmentInput } from './dto/create-department.input'
-import { UpdateDepartmentInput } from './dto/update-department.input'
-import { DepartmentModel } from './entities/department.entity'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { FindOptionsRelations } from 'typeorm'
 
 @Resolver(() => DepartmentModel)
 export class DepartmentsResolver {

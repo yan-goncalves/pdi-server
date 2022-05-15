@@ -1,6 +1,6 @@
-import { InputType, Field, Int } from '@nestjs/graphql'
-import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator'
 import { ROLES } from '@constants/roles'
+import { Field, InputType, Int } from '@nestjs/graphql'
+import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator'
 
 @InputType()
 export class UpdateUserInput {

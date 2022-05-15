@@ -1,13 +1,15 @@
+import { AuthModule } from '@auth/auth.module'
+import { DepartmentsModule } from '@departments/departments.module'
+import { LdapModule } from '@ldap/ldap.module'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
-import { UsersModule } from '@users/users.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import { UsersInfoModule } from '@users-info/users-info.module'
-import { LdapModule } from '@ldap/ldap.module'
-import { DepartmentsModule } from '@departments/departments.module'
-import { AuthModule } from '@auth/auth.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { QuestionsModule } from '@questions/questions.module'
+import { SectionsModule } from '@sections/sections.module'
+import { UsersInfoModule } from '@users-info/users-info.module'
+import { UsersModule } from '@users/users.module'
 
 @Module({
   imports: [
@@ -40,14 +42,16 @@ import { TypeOrmModule } from '@nestjs/typeorm'
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       playground: process.env.NODE_ENV !== 'production',
-      installSubscriptionHandlers: true,
-      context: ({ req }) => ({ req })
+      installSubscriptionHandlers: true
+      // context: ({ req }) => ({ req })
     }),
     LdapModule,
     AuthModule,
     UsersModule,
     UsersInfoModule,
-    DepartmentsModule
+    DepartmentsModule,
+    SectionsModule,
+    QuestionsModule
   ]
 })
 export class AppModule {}

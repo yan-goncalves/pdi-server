@@ -1,6 +1,6 @@
+import { AppModule } from '@appModule'
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from '@appModule'
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger()

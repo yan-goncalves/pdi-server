@@ -20,6 +20,8 @@
     "paths": {
       "@appModule": ["src/app.module"],
       "@decorators/*": ["src/decorators/*"],
+      "@guards/*": ["src/guards/*"],
+      "@strategies/*": ["src/strategies/*"],
       "@auth/*": ["src/resources/auth/*"],
       "@ldap/*": ["src/resources/ldap/*"],
       "@constants/*": ["src/constants/*"],
@@ -27,7 +29,13 @@
       "@users/*": ["src/resources/users/*"],
       "@users-info/*": ["src/resources/users-info/*"],
       "@departments/*": ["src/resources/departments/*"],
-      "@departments-i18n/*": ["src/resources/departments-i18n/*"]
+      "@departments-i18n/*": ["src/resources/departments-i18n/*"],
+      "@sections/*": ["src/resources/sections/*"],
+      "@sections-i18n/*": ["src/resources/sections-i18n/*"],
+      "@questions/*": ["src/resources/questions/*"],
+      "@questions-i18n/*": ["src/resources/questions-i18n/*"],
+      "@skills/*": ["src/resources/skills/*"],
+      "@skills-i18n/*": ["src/resources/skills-i18n/*"]
     }
   }
 }

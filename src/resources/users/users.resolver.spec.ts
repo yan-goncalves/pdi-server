@@ -1,16 +1,17 @@
+import { LOCALES } from '@constants/locales'
+import { ROLES } from '@constants/roles'
+import { Int } from '@nestjs/graphql'
 import { Test, TestingModule } from '@nestjs/testing'
 import { CreateUserInput } from '@users/dto/create-user.input'
 import { UserModel } from '@users/entities/user.entity'
+import userMock from '@users/mock'
 import {
-  UsersResolver,
   UserModelReturnType,
+  UserModelReturnTypeArgs,
   UserModelReturnTypeArray,
-  UserModelReturnTypeArgs
+  UsersResolver
 } from '@users/users.resolver'
 import { UsersService } from '@users/users.service'
-import userMock from '@users/mock'
-import { ROLES } from '@constants/roles'
-import { Int } from '@nestjs/graphql'
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver
@@ -68,7 +69,7 @@ describe('UsersResolver', () => {
   })
 
   it('should list all users', async () => {
-    const users = await resolver.list()
+    const users = await resolver.list(LOCALES.BR)
 
     expect(users).toStrictEqual(expect.arrayContaining(users))
     expect(users).toHaveLength(1)

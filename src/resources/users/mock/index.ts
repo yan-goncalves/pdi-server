@@ -1,10 +1,10 @@
+import { ROLES } from '@constants/roles'
+import departmentMock from '@departments/mock'
 import faker from '@faker-js/faker'
 import userInfoMock from '@users-info/mock'
 import { CreateUserInput } from '@users/dto/create-user.input'
 import { UserModel } from '@users/entities/user.entity'
 import { hashSync } from 'bcrypt'
-import { ROLES } from '@constants/roles'
-import departmentMock from '@departments/mock'
 
 const userMock: (input?: CreateUserInput) => UserModel = (input?: CreateUserInput) => {
   return {

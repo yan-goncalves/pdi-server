@@ -1,5 +1,5 @@
 import { LOCALES } from '@constants/locales'
-import { InputType, Field } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()

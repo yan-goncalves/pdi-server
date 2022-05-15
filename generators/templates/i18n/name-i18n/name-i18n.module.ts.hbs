@@ -1,0 +1,11 @@
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { {{pascalCase (slice name)}}LocaleModel } from '@{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-i18n.entity'
+import { {{pascalCase name}}I18nService } from '@{{kebabCase name}}-i18n/{{kebabCase name}}-i18n.service'
+
+@Module({
+  imports: [TypeOrmModule.forFeature([{{pascalCase (slice name)}}LocaleModel])],
+  providers: [{{pascalCase name}}I18nService],
+  exports: [{{pascalCase name}}I18nService]
+})
+export class {{pascalCase name}}I18nModule {}

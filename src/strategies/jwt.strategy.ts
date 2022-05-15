@@ -1,13 +1,14 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'
-import { PassportStrategy } from '@nestjs/passport'
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { ROLES } from '@constants/roles'
-import { UserModel } from '@users/entities/user.entity'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { Field, ObjectType } from '@nestjs/graphql'
+import { PassportStrategy } from '@nestjs/passport'
+import { UserModel } from '@users/entities/user.entity'
 import { UsersService } from '@users/users.service'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
 export type JwtPayload = {
   sub: number
+  username: string
   email: string
   role: ROLES
 }

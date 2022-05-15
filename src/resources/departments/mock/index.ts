@@ -1,6 +1,6 @@
+import departmentLocaleMock from '@departments-i18n/mock'
 import { DepartmentModel } from '@departments/entities/department.entity'
 import faker from '@faker-js/faker'
-import departmentLocaleMock from 'src/resources/departments-i18n/mock'
 
 const departmentMock: DepartmentModel = {
   id: 1,

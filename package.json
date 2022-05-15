@@ -21,7 +21,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "plop": "plop --plopfile generators/plopfile.js"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.11",
@@ -43,6 +44,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "plop": "^3.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -92,12 +94,21 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "^@appModule": "<rootDir>/app.module.ts",
       "^@constants/(.*)$": "<rootDir>/constants/$1",
+      "^@guards/(.*)$": "<rootDir>/guards/$1",
+      "^@strategies/(.*)$": "<rootDir>/strategies/$1",
       "^@ldap/(.*)$": "<rootDir>/resources/ldap/$1",
       "^@users/(.*)$": "<rootDir>/resources/users/$1",
       "^@users-info/(.*)$": "<rootDir>/resources/users-info/$1",
       "^@departments/(.*)$": "<rootDir>/resources/departments/$1",
-      "^@departments-i18n/(.*)$": "<rootDir>/resources/departments-i18n/$1"
+      "^@departments-i18n/(.*)$": "<rootDir>/resources/departments-i18n/$1",
+      "^@sections/(.*)$": "<rootDir>/resources/sections/$1",
+      "^@sections-i18n/(.*)$": "<rootDir>/resources/sections-i18n/$1",
+      "^@questions/(.*)$": "<rootDir>/resources/questions/$1",
+      "^@questions-i18n/(.*)$": "<rootDir>/resources/questions-i18n/$1",
+      "^@skills/(.*)$": "<rootDir>/resources/skills/$1",
+      "^@skills-i18n/(.*)$": "<rootDir>/resources/skills-i18n/$1"
     }
   }
 }

@@ -1,16 +1,15 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql'
+import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { UserModel } from '@users/entities/user.entity'
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { UserModel } from '@users/entities/user.entity'
-import { DepartmentLocaleModel } from 'src/resources/departments-i18n/entities/departments-i18n.entity'
 
 @ObjectType()
 @Entity('departments')

@@ -1,6 +1,5 @@
-import { LOCALES } from '@constants/locales'
-import { InputType, Field } from '@nestjs/graphql'
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { Field, InputType } from '@nestjs/graphql'
+import { IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
 export class CreateDepartmentInput {

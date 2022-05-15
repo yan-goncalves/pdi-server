@@ -1,3 +1,7 @@
+import { LOCALES } from '@constants/locales'
+import { ROLES } from '@constants/roles'
+import { DepartmentsService } from '@departments/departments.service'
+import { LdapService } from '@ldap/ldap.service'
 import {
   BadRequestException,
   ConflictException,
@@ -8,16 +12,12 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsWhere, Repository } from 'typeorm'
-import { CreateUserInput } from '@users/dto/create-user.input'
-import { UserModel } from '@users/entities/user.entity'
 import { UsersInfoService } from '@users-info/users-info.service'
-import { LdapService } from '@ldap/ldap.service'
+import { CreateUserInput } from '@users/dto/create-user.input'
+import { UpdateUserInput } from '@users/dto/update-user.input'
+import { UserModel } from '@users/entities/user.entity'
 import { compare } from 'bcrypt'
-import { ROLES } from '@constants/roles'
-import { UpdateUserInput } from './dto/update-user.input'
-import { DepartmentsService } from '@departments/departments.service'
-import { LOCALES } from '@constants/locales'
+import { FindOptionsWhere, Repository } from 'typeorm'
 
 export type UserOptions = {
   locale?: LOCALES
@@ -35,6 +35,7 @@ export class UsersService {
 
   async validate(identifier: string, password: string): Promise<UserModel> {
     const user = await this.repo.findOneBy([{ username: identifier }, { email: identifier }])
+
     if (!user) {
       throw new BadRequestException('Username/email or password incorrect')
     }
@@ -92,19 +93,15 @@ export class UsersService {
 
   async list(locale = LOCALES.BR): Promise<UserModel[]> {
     const users = await this.repo.find()
-    const mappedUsers = users.map(async (user) => ({
-      ...user,
-      department: !user?.department
+    const mappedUsers = users.map(async (user) => {
+      const department = !user?.department
         ? null
-        : {
-            ...user.department,
-            name: await this.departmentsService
-              .get(user.department?.id, locale)
-              .then((department) => department.name)
-          }
-    }))
+        : await this.departmentsService.get(user.department?.id, locale)
 
-    return Promise.all(mappedUsers)
+      return { ...user, department }
+    })
+
+    return await Promise.all(mappedUsers)
   }
 
   async update(id: number, input: UpdateUserInput): Promise<UserModel> {
@@ -176,7 +173,7 @@ export class UsersService {
     const user = await this.repo.findOne({ where: { id }, withDeleted: true })
 
     if (!user) {
-      throw new NotFoundException('User not foun')
+      throw new NotFoundException('User not found')
     }
 
     if (deleted === false) {
@@ -188,5 +185,27 @@ export class UsersService {
       where: { id: user.id },
       withDeleted: true
     })
+  }
+
+  async populate(): Promise<UserModel[]> {
+    const users = await this.ldapService.getAll()
+    const departments = await this.departmentsService.list()
+
+    for (const i in users) {
+      const user = users[i]
+
+      if (!(await this.repo.findOneBy({ username: user.username }))) {
+        const created = await this.create({
+          username: user.username,
+          email: `${user.username}@slworld.com`,
+          role: ROLES.USER
+        })
+
+        const department = departments.find((d) => d.name === user.department)
+        await this.update(created.id, { department: department.id })
+      }
+    }
+
+    return await this.list()
   }
 }

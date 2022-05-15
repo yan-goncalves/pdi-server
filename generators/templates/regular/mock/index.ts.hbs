@@ -1,0 +1,10 @@
+import faker from '@faker-js/faker'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+
+const {{name}}Mock: {{pascalCase (slice name)}}Model = {
+  id: 1,
+  createdAt: faker.date.past(1),
+  updatedAt: faker.date.recent(1)
+}
+
+export default {{name}}Mock

@@ -1,0 +1,49 @@
+import { LOCALES } from '@constants/locales'
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { {{pascalCase (slice name)}}I18nInput } from '@{{kebabCase name}}-i18n/dto/{{kebabCase (slice name)}}-i18n.input'
+import { {{pascalCase (slice name)}}LocaleModel } from '@{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-i18n.entity'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+import { FindOptionsWhere, Repository } from 'typeorm'
+
+@Injectable()
+export class {{pascalCase name}}I18nService {
+  constructor(
+    @InjectRepository({{pascalCase (slice name)}}LocaleModel)
+    private readonly repo: Repository<{{pascalCase (slice name)}}LocaleModel>
+  ) {}
+
+  async get(id: number): Promise<{{pascalCase (slice name)}}LocaleModel> {
+    try {
+      return await this.repo.findOneByOrFail({ id })
+    } catch {
+      throw new NotFoundException('{{sentenceCase (slice name)}} not found')
+    }
+  }
+
+  async getBy(
+    options: FindOptionsWhere<{{pascalCase (slice name)}}LocaleModel> | FindOptionsWhere<{{pascalCase (slice name)}}LocaleModel>[]
+  ): Promise<{{pascalCase (slice name)}}LocaleModel> {
+    try {
+      return await this.repo.findOneByOrFail(options)
+    } catch {
+      return null
+    }
+  }
+
+  async create(
+    {{camelCase name}}: {{pascalCase (slice name)}}Model,
+    { changeMe, locale = LOCALES.BR }: {{pascalCase (slice name)}}I18nInput
+  ): Promise<{{pascalCase (slice name)}}LocaleModel> {
+    return await this.repo.save(this.repo.create({ {{camelCase name}}, changeMe, locale }))
+  }
+
+  async update(
+    {{camelCase name}}: {{pascalCase (slice name)}}Model,
+    { changeMe, locale = LOCALES.BR }: {{pascalCase (slice name)}}I18nInput
+  ): Promise<{{pascalCase (slice name)}}LocaleModel> {
+    const {{camelCase name}}Locale = await this.getBy({ {{camelCase name}}: { id: {{camelCase name}}.id }, locale })
+    this.repo.merge({{camelCase name}}Locale, { changeMe })
+    return await this.repo.save({{camelCase name}}Locale)
+  }
+}

@@ -1,7 +1,7 @@
 import { LDAPUser } from '@ldap/dto/user.dto'
 import { UserModelLDAP } from '@ldap/model/user.ldap.interface'
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
-import { Client, DN, SearchResult } from 'ldapts'
+import { Client, DN } from 'ldapts'
 import { Entry } from 'ldapts/messages'
 
 @Injectable()
@@ -32,7 +32,7 @@ export class LdapService {
     this._DN_ = `${this._ADM_USER_}@${this._DOMAIN_}`
   }
 
-  async getAll(): Promise<SearchResult> {
+  async getAll(): Promise<UserModelLDAP[]> {
     await this._CLIENT_.bind(this._DN_, this._ADM_PWD_)
 
     const users = await this._CLIENT_.search(this._BASE_DN_, {
@@ -41,22 +41,22 @@ export class LdapService {
       attributes: ['sAMAccountName', 'mail', 'displayName', 'department', 'title']
     })
 
-    const { readFileSync } = await import('fs')
-    const { join, resolve } = await import('path')
+    // const { readFileSync } = await import('fs')
+    // const { join, resolve } = await import('path')
 
-    const mockDir = resolve(process.cwd(), 'src', 'resources', 'ldap', 'mock')
-    const rawdata = readFileSync(join(mockDir, 'ldap.json'), 'utf-8')
-    const entries = JSON.parse(rawdata).searchEntries
+    // const mockDir = resolve(process.cwd(), 'src', 'resources', 'ldap', 'mock')
+    // const rawdata = readFileSync(join(mockDir, 'ldap.json'), 'utf-8')
+    // const entries = JSON.parse(rawdata).searchEntries
 
-    return entries.map((entry) => ({
-      sAMAccountName: entry.sAMAccountName,
-      mail: entry.mail,
-      displayName: entry.displayName,
-      department: entry.department,
-      title: entry.title
-    }))
+    // return entries.map((entry) => ({
+    //   sAMAccountName: entry.sAMAccountName,
+    //   mail: entry.mail,
+    //   displayName: entry.displayName,
+    //   department: entry.department,
+    //   title: entry.title
+    // }))
 
-    // return users
+    return users.searchEntries.map((user) => this.sanitize(user))
   }
 
   async auth(user: LDAPUser): Promise<Entry> {
@@ -88,7 +88,7 @@ export class LdapService {
     const result = await this._CLIENT_.search(this._BASE_DN_, {
       scope: 'one',
       sizeLimit: 1,
-      attributes: ['displayName', 'department', 'title'],
+      attributes: ['sAMAccountName', 'mail', 'displayName', 'department', 'title'],
       filter: `(&(sAMAccountName=${username})${this.excludeServiceUsers})`
     })
 
@@ -96,15 +96,21 @@ export class LdapService {
       throw new NotFoundException(`Usuário '${username}' não encontrado`)
     }
 
-    const [name, lastname] = result.searchEntries[0].displayName.toString().split(this.whitespace)
-    const department = result.searchEntries[0].department.toString()
-    const role = result.searchEntries[0].title.toString()
+    return this.sanitize(result.searchEntries[0])
+  }
+
+  private sanitize(entry: Entry): UserModelLDAP {
+    const username = entry.sAMAccountName.toString().trim()
+    const [name, ...lastname] = entry.displayName.toString().split(this.whitespace)
+    const department = entry.department.toString().trim()
+    const position = entry.title.toString().trim()
 
     return {
+      username,
       name,
-      lastname,
+      lastname: lastname.join(' '),
       department,
-      position: role
+      position
     }
   }
 }

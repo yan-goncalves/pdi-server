@@ -1,9 +1,10 @@
+import { SignInInput } from '@auth/dto/signin.auth.input'
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { JWT, JwtPayload } from 'src/strategies/jwt.strategy'
+import { JWT, JwtPayload } from '@strategies/jwt.strategy'
 import { UserModel } from '@users/entities/user.entity'
 import { UsersService } from '@users/users.service'
-import { SignInInput } from './dto/signin.auth.input'
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,6 +23,7 @@ export class AuthService {
     try {
       const payload: JwtPayload = {
         sub: user.id,
+        username: user.username,
         email: user.email,
         role: user.role
       }

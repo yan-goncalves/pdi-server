@@ -1,7 +1,7 @@
 import { LOCALES } from '@constants/locales'
+import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
 import departmentMock from '@departments/mock'
 import faker from '@faker-js/faker'
-import { DepartmentLocaleModel } from '../entities/departments-i18n.entity'
 
 const departmentLocaleMock: DepartmentLocaleModel = {
   id: 1,

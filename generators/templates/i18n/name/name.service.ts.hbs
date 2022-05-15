@@ -1,0 +1,74 @@
+import { EntityFindOptions } from '@constants/common'
+import { LOCALES } from '@constants/locales'
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { {{pascalCase name}}I18nService } from '@{{kebabCase name}}-i18n/{{kebabCase name}}-i18n.service'
+import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
+import { Update{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/update-{{kebabCase (slice name)}}.input'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+import { Repository } from 'typeorm'
+
+@Injectable()
+export class {{pascalCase name}}Service {
+  constructor(
+    @InjectRepository({{pascalCase (slice name)}}Model) private readonly repo: Repository<{{pascalCase (slice name)}}Model>,
+    @Inject({{pascalCase name}}I18nService) private readonly i18nService: {{pascalCase name}}I18nService
+  ) {}
+
+  async get(id: number, locale = LOCALES.BR): Promise<{{pascalCase (slice name)}}Model> {
+    const {{camelCase name}} = await this.repo.findOneBy({ id })
+    if (!{{camelCase name}}) {
+      throw new NotFoundException(`{{pascalCase (slice name)}} with id '${id} not found`)
+    }
+
+    const {{camelCase name}}Locale = await this.i18nService.getBy({
+      {{camelCase name}}: { id: {{camelCase name}}.id },
+      locale
+    })
+    return { ...{{camelCase name}}, changeMe: {{camelCase name}}Locale?.changeMe || null }
+  }
+
+  async list(options?: EntityFindOptions<{{pascalCase (slice name)}}Model>): Promise<{{pascalCase (slice name)}}Model[]> {
+    const { locale = LOCALES.BR, relations = [] } = options || {}
+
+    const {{camelCase name}}s = await this.repo.find({ relations })
+    const mapped{{camelCase name}}s = {{camelCase name}}s.map(async ({{camelCase name}}) => ({
+      ...{{camelCase name}},
+      title: await this.i18nService
+        .getBy({
+          {{camelCase name}}: { id: {{camelCase name}}.id },
+          locale
+        })
+        .then(({{camelCase name}}Locale) => {{camelCase name}}Locale?.changeMe || null)
+    }))
+
+    return await Promise.all(mapped{{camelCase name}}s)
+  }
+
+  async create({ changeMe }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
+    if (await this.i18nService.getBy({ changeMe })) {
+      throw new ConflictException('{{camelCase (slice name)}} already exists')
+    }
+
+    const {{camelCase name}} = await this.repo.save(this.repo.create())
+    const {{camelCase name}}Locale = await this.i18nService.create({{camelCase name}}, { changeMe })
+
+    return { ...{{camelCase name}}, changeMe: {{camelCase name}}Locale.changeMe }
+  }
+
+  async update(
+    id: number,
+    { changeMe, locale = LOCALES.BR }: Update{{pascalCase (slice name)}}Input
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    const {{camelCase name}} = await this.get(id, locale)
+    if ({{camelCase name}}?.changeMe && {{camelCase name}}.changeMe === changeMe) {
+      return {{camelCase name}}
+    }
+
+    const {{camelCase name}}Locale = !{{camelCase name}}?.changeMe
+      ? await this.i18nService.create({{camelCase name}}, { changeMe, locale })
+      : await this.i18nService.update({{camelCase name}}, { changeMe, locale })
+
+    return { ...{{camelCase name}}, changeMe: {{camelCase name}}Locale.changeMe }
+  }
+}

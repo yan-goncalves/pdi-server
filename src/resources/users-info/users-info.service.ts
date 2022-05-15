@@ -1,13 +1,17 @@
-import { ConflictException, forwardRef, Inject } from '@nestjs/common'
-import { NotFoundException } from '@nestjs/common'
-import { Injectable } from '@nestjs/common'
+import {
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CreateUserInfoInput } from '@users-info/dto/create-user-info.input'
+import { UpdateUserInfoInput } from '@users-info/dto/update-user-info.input'
+import { UsersInfoModel } from '@users-info/entities/users-info.entity'
 import { UserModel } from '@users/entities/user.entity'
 import { UsersService } from '@users/users.service'
 import { Repository } from 'typeorm'
-import { CreateUsersInfoInput } from './dto/create-users-info.input'
-import { UpdateUsersInfoInput } from './dto/update-users-info.input'
-import { UsersInfoModel } from './entities/users-info.entity'
 
 @Injectable()
 export class UsersInfoService {
@@ -24,10 +28,7 @@ export class UsersInfoService {
     }
   }
 
-  async create(
-    user: UserModel | number,
-    createUsersInfo: CreateUsersInfoInput
-  ): Promise<UsersInfoModel> {
+  async create(user: UserModel | number, input: CreateUserInfoInput): Promise<UsersInfoModel> {
     const userFound = user instanceof UserModel ? user : await this.usersService.get(user)
     const info = await this.repo.findOneBy({ user: { id: userFound.id } })
 
@@ -35,12 +36,12 @@ export class UsersInfoService {
       throw new ConflictException(`User's info with id '${userFound.id}' already exists`)
     }
 
-    return await this.repo.save(this.repo.create({ user: userFound, ...createUsersInfo }))
+    return await this.repo.save(this.repo.create({ user: userFound, ...input }))
   }
 
-  async update(id: number, updateUsersInfoInput: UpdateUsersInfoInput): Promise<UsersInfoModel> {
+  async update(id: number, input: UpdateUserInfoInput): Promise<UsersInfoModel> {
     const info = await this.get(id)
-    this.repo.merge(info, { ...updateUsersInfoInput })
+    this.repo.merge(info, { ...input })
     return await this.repo.save(info)
   }
 

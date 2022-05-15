@@ -1,0 +1,43 @@
+import { LOCALES } from '@constants/locales'
+import { Inject } from '@nestjs/common'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
+import { Update{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/update-{{kebabCase (slice name)}}.input'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+import { {{pascalCase name}}Service } from '@{{kebabCase name}}/{{kebabCase name}}.service'
+import { FindOptionsRelations } from 'typeorm'
+
+@Resolver(() => {{pascalCase (slice name)}}Model)
+export class {{pascalCase name}}Resolver {
+  constructor(@Inject({{pascalCase name}}Service) private readonly service: {{pascalCase name}}Service) {}
+
+  @Query(() => {{pascalCase (slice name)}}Model, { name: '{{camelCase (slice name)}}' })
+  async get(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    return this.service.get(id, locale)
+  }
+
+  @Query(() => [{{pascalCase (slice name)}}Model], { name: '{{camelCase name}}' })
+  async list(
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES,
+    @Args('relations', { nullable: true, defaultValue: [], type: () => [String] })
+    relations?: FindOptionsRelations<{{pascalCase (slice name)}}Model>
+  ): Promise<{{pascalCase (slice name)}}Model[]> {
+    return await this.service.list({ locale, relations })
+  }
+
+  @Mutation(() => {{pascalCase (slice name)}}Model)
+  async createQuestion(@Args('input') input: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
+    return await this.service.create(input)
+  }
+
+  @Mutation(() => {{pascalCase (slice name)}}Model)
+  async update{{pascalCase (slice name)}}(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: Update{{pascalCase (slice name)}}Input
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    return this.service.update(id, input)
+  }
+}

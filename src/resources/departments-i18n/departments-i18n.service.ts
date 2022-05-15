@@ -1,11 +1,10 @@
 import { LOCALES } from '@constants/locales'
+import { DepartmentI18nInput } from '@departments-i18n/dto/department-i18n.input'
+import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
 import { DepartmentModel } from '@departments/entities/department.entity'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { CreateDepartmentsI18nInput } from './dto/create-departments-i18n.input'
-import { UpdateDepartmentsI18nInput } from './dto/update-departments-i18n.input'
-import { DepartmentLocaleModel } from './entities/departments-i18n.entity'
 
 @Injectable()
 export class DepartmentsI18nService {
@@ -34,14 +33,14 @@ export class DepartmentsI18nService {
 
   async create(
     department: DepartmentModel,
-    { name, locale = LOCALES.BR }: CreateDepartmentsI18nInput
+    { name, locale = LOCALES.BR }: DepartmentI18nInput
   ): Promise<DepartmentLocaleModel> {
     return await this.repo.save(this.repo.create({ department, name, locale }))
   }
 
   async update(
     department: DepartmentModel,
-    { name, locale = LOCALES.BR }: UpdateDepartmentsI18nInput
+    { name, locale = LOCALES.BR }: DepartmentI18nInput
   ): Promise<DepartmentLocaleModel> {
     const departmentLocale = await this.getBy({ department: { id: department.id }, locale })
     this.repo.merge(departmentLocale, { name })

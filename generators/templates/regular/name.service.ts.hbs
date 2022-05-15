@@ -1,0 +1,63 @@
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+
+@Injectable()
+export class {{pascalCase name}}Service {
+  constructor(
+    @InjectRepository({{pascalCase (slice name)}}Model) 
+    private readonly repo: Repository<{{pascalCase (slice name)}}Model>
+  ) {}
+
+  async get(id: number): Promise<{{pascalCase (slice name)}}Model> {
+    try {
+      return await this.repo.findOneByOrFail({ id })
+    } catch {
+      throw new NotFoundException('{{pascalCase (slice name)}} not found')
+    }
+  }
+
+  async getBy(
+    options: FindOptionsWhere<{{pascalCase (slice name)}}Model> | FindOptionsWhere<{{pascalCase (slice name)}}Model>[]
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    try {
+      return await this.repo.findOneByOrFail(options)
+    } catch {
+      throw new NotFoundException('{{pascalCase (slice name)}} not found')
+    }
+  }
+
+  async list(): Promise<{{pascalCase (slice name)}}Model[]> {
+    return await this.repo.find()
+  }
+
+  async create(input: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
+    const {{camelCase (slice name)}}Found = await this.getBy({ ...input })
+    if ({{camelCase (slice name)}}Found) {
+      throw new ConflictException('{{pascalCase (slice name)}} already exists')
+    }
+
+    return await this.repo.save(this.repo.create({ ...input }))
+  }
+
+  async setDeleted(id: number, deleted = true): Promise<{{pascalCase (slice name)}}Model> {
+    const {{camelCase (slice name)}}Found = await this.repo.findOne({ where: { id }, withDeleted: true })
+
+    if (!{{camelCase (slice name)}}Found) {
+      throw new NotFoundException('{{pascalCase (slice name)}} not found')
+    }
+
+    if (deleted === false) {
+      return await this.repo.save(this.repo.merge({{camelCase (slice name)}}Found, { deletedAt: null }))
+    }
+
+    await this.repo.softDelete({ id: {{camelCase (slice name)}}Found.id })
+
+    return await this.repo.findOne({
+      where: { id: {{camelCase (slice name)}}Found.id },
+      withDeleted: true
+    })
+  }
+}

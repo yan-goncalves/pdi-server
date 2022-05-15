@@ -1,0 +1,12 @@
+import { LOCALES } from '@constants/locales'
+import { Field, InputType } from '@nestjs/graphql'
+import { IsEnum, IsNotEmpty } from 'class-validator'
+import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
+
+@InputType()
+export class Update{{pascalCase (slice name)}}Input extends Create{{pascalCase (slice name)}}Input {
+  @Field()
+  @IsNotEmpty()
+  @IsEnum(LOCALES)
+  locale: LOCALES
+}

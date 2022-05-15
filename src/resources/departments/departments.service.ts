@@ -1,17 +1,12 @@
+import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
+import { DepartmentsI18nService } from '@departments-i18n/departments-i18n.service'
+import { CreateDepartmentInput } from '@departments/dto/create-department.input'
+import { UpdateDepartmentInput } from '@departments/dto/update-department.input'
+import { DepartmentModel } from '@departments/entities/department.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsRelations, Repository } from 'typeorm'
-import { DepartmentsI18nService } from '../departments-i18n/departments-i18n.service'
-import { DepartmentLocaleModel } from '../departments-i18n/entities/departments-i18n.entity'
-import { CreateDepartmentInput } from './dto/create-department.input'
-import { UpdateDepartmentInput } from './dto/update-department.input'
-import { DepartmentModel } from './entities/department.entity'
-
-type DepartmentOptions = {
-  locale?: LOCALES
-  relations?: FindOptionsRelations<DepartmentModel>
-}
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class DepartmentsService {
@@ -19,20 +14,6 @@ export class DepartmentsService {
     @InjectRepository(DepartmentModel) private readonly repo: Repository<DepartmentModel>,
     @Inject(DepartmentsI18nService) private readonly i18nService: DepartmentsI18nService
   ) {}
-
-  async create({ key, name }: CreateDepartmentInput): Promise<DepartmentModel> {
-    if (await this.repo.findOneBy({ key })) {
-      throw new ConflictException('Department key already exists')
-    }
-
-    const department = await this.repo.save(this.repo.create({ key }))
-    const departmentLocale = await this.i18nService.create(department, { name })
-
-    return {
-      ...department,
-      name: departmentLocale.name
-    }
-  }
 
   async get(id: number, locale = LOCALES.BR): Promise<DepartmentModel> {
     const department = await this.repo.findOneBy({ id })
@@ -44,13 +25,19 @@ export class DepartmentsService {
       department: { id: department.id },
       locale
     })
-    return {
-      ...department,
-      name: departmentLocale?.name || null
+    return { ...department, name: departmentLocale?.name || null }
+  }
+
+  async getByName(name: string): Promise<DepartmentModel> {
+    try {
+      const departments = await this.list()
+      return departments.find((department) => department.name === name)
+    } catch {
+      throw new NotFoundException('Department not found')
     }
   }
 
-  async list(options?: DepartmentOptions): Promise<DepartmentModel[]> {
+  async list(options?: EntityFindOptions<DepartmentModel>): Promise<DepartmentModel[]> {
     const { locale = LOCALES.BR, relations = [] } = options || {}
 
     const departments = await this.repo.find({ relations })
@@ -67,6 +54,17 @@ export class DepartmentsService {
     return await Promise.all(mappedDepartments)
   }
 
+  async create({ key, name }: CreateDepartmentInput): Promise<DepartmentModel> {
+    if (await this.repo.findOneBy({ key })) {
+      throw new ConflictException('Department key already exists')
+    }
+
+    const department = await this.repo.save(this.repo.create({ key }))
+    const departmentLocale = await this.i18nService.create(department, { name })
+
+    return { ...department, name: departmentLocale.name }
+  }
+
   async update(
     id: number,
     { name, locale = LOCALES.BR }: UpdateDepartmentInput
@@ -80,9 +78,6 @@ export class DepartmentsService {
       ? await this.i18nService.create(department, { name, locale })
       : await this.i18nService.update(department, { name, locale })
 
-    return {
-      ...department,
-      name: departmentLocale.name
-    }
+    return { ...department, name: departmentLocale.name }
   }
 }

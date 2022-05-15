@@ -1,6 +1,8 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql'
-import { hashSync } from 'bcrypt'
+import { ROLES } from '@constants/roles'
+import { DepartmentModel } from '@departments/entities/department.entity'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UsersInfoModel } from '@users-info/entities/users-info.entity'
+import { hashSync } from 'bcrypt'
 import {
   BeforeInsert,
   Column,
@@ -13,8 +15,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { ROLES } from '@constants/roles'
-import { DepartmentModel } from '@departments/entities/department.entity'
 
 @ObjectType()
 @Entity('users')
@@ -83,7 +83,7 @@ export class UserModel {
 
   @BeforeInsert()
   setDefaultPassword = (): void => {
-    const password = process.env.DEFAULT_PASSWORD || 'sl123456!'
+    const password = process.env.DEFAULT_PASSWORD || '1@asdfg'
     const salt = +process.env.SALT_GEN || 10
     this.password = hashSync(password, salt)
   }

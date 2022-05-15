@@ -1,9 +1,9 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
-import { UsersInfoService } from '@users-info/users-info.service'
-import { UsersInfoModel } from '@users-info/entities/users-info.entity'
-import { CreateUsersInfoInput } from './dto/create-users-info.input'
-import { UpdateUsersInfoInput } from './dto/update-users-info.input'
 import { Inject } from '@nestjs/common'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { CreateUserInfoInput } from '@users-info/dto/create-user-info.input'
+import { UpdateUserInfoInput } from '@users-info/dto/update-user-info.input'
+import { UsersInfoModel } from '@users-info/entities/users-info.entity'
+import { UsersInfoService } from '@users-info/users-info.service'
 
 @Resolver(() => UsersInfoModel)
 export class UsersInfoResolver {
@@ -17,17 +17,17 @@ export class UsersInfoResolver {
   @Mutation(() => UsersInfoModel)
   async createUsersInfo(
     @Args('id') idUser: number,
-    @Args('createUsersInfoInput') createUsersInfoInput: CreateUsersInfoInput
+    @Args('input') input: CreateUserInfoInput
   ): Promise<UsersInfoModel> {
-    return await this.service.create(idUser, createUsersInfoInput)
+    return await this.service.create(idUser, input)
   }
 
   @Mutation(() => UsersInfoModel)
   async updateUsersInfo(
     @Args('id') id: number,
-    @Args('updateUsersInfoInput') updateUsersInfoInput: UpdateUsersInfoInput
+    @Args('input') input: UpdateUserInfoInput
   ): Promise<UsersInfoModel> {
-    return await this.service.update(id, updateUsersInfoInput)
+    return await this.service.update(id, input)
   }
 
   @Mutation(() => UsersInfoModel)

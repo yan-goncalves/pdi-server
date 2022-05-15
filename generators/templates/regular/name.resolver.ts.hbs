@@ -1,0 +1,34 @@
+import { Inject } from '@nestjs/common'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
+import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+import { {{pascalCase name}}Service } from '@{{kebabCase name}}/{{kebabCase name}}.service'
+
+@Resolver(() => {{pascalCase (slice name)}}Model)
+export class {{pascalCase name}}Resolver {
+  constructor(@Inject({{pascalCase name}}Service) private readonly service: {{pascalCase name}}Service) {}
+
+  @Query(() => {{pascalCase (slice name)}}Model, { name: '{{camelCase (slice name)}}' })
+  async get(@Args('id', { type: () => Int }) id: number): Promise<{{pascalCase (slice name)}}Model> {
+    return this.service.get(id)
+  }
+
+  @Query(() => [{{pascalCase (slice name)}}Model], { name: '{{camelCase name}}' })
+  async list(): Promise<{{pascalCase (slice name)}}Model[]> {
+    return this.service.list()
+  }
+
+  @Mutation(() => {{pascalCase (slice name)}}Model)
+  async create{{pascalCase (slice name)}}(
+    @Args('input') input: Create{{pascalCase (slice name)}}Input
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    return await this.service.create(input)
+  }
+
+  @Mutation(() => {{pascalCase (slice name)}}Model)
+  async remove{{pascalCase (slice name)}}(
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<{{pascalCase (slice name)}}Model> {
+    return await this.service.setDeleted(id)
+  }
+}

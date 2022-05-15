@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common'
 import { DepartmentsI18nService } from '@departments-i18n/departments-i18n.service'
+import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
+import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { DepartmentLocaleModel } from './entities/departments-i18n.entity'
 
 @Module({
   imports: [TypeOrmModule.forFeature([DepartmentLocaleModel])],
