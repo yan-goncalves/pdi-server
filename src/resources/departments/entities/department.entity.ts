@@ -1,5 +1,5 @@
 import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, FieldMiddleware, Int, ObjectType } from '@nestjs/graphql'
 import { UserModel } from '@users/entities/user.entity'
 import {
   Column,
@@ -10,6 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+
+const translation: FieldMiddleware = async (ctx: MiddlewareContext, next: NextFn) => ({})
 
 @ObjectType()
 @Entity('departments')
@@ -22,7 +24,7 @@ export class DepartmentModel {
   @Column({ unique: true })
   readonly key: string
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, middleware: [translation] })
   name?: string
 
   @Field()

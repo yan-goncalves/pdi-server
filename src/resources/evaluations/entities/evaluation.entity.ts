@@ -75,7 +75,7 @@ export class EvaluationModel {
   finished: boolean
 
   @Field(() => [SectionModel], { nullable: true })
-  @ManyToMany(() => SectionModel, (skill) => skill.id, { eager: true })
+  @ManyToMany(() => SectionModel, (section) => section.id, { eager: true })
   @JoinTable({
     name: 'evaluations_sections',
     joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },

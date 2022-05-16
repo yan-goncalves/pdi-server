@@ -37,7 +37,9 @@
       "@skills/*": ["src/resources/skills/*"],
       "@skills-i18n/*": ["src/resources/skills-i18n/*"],
       "@evaluations/*": ["src/resources/evaluations/*"],
-      "@evaluations-i18n/*": ["src/resources/evaluations-i18n/*"]
+      "@evaluations-i18n/*": ["src/resources/evaluations-i18n/*"],
+      "@goals/*": ["src/resources/goals/*"],
+      "@kpis/*": ["src/resources/kpis/*"]
     }
   }
 }

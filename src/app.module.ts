@@ -1,6 +1,8 @@
 import { AuthModule } from '@auth/auth.module'
 import { DepartmentsModule } from '@departments/departments.module'
 import { EvaluationsModule } from '@evaluations/evaluations.module'
+import { GoalsModule } from '@goals/goals.module'
+import { KpisModule } from '@kpis/kpis.module'
 import { LdapModule } from '@ldap/ldap.module'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
@@ -55,7 +57,9 @@ import { UsersModule } from '@users/users.module'
     SectionsModule,
     QuestionsModule,
     SkillsModule,
-    EvaluationsModule
+    EvaluationsModule,
+    GoalsModule,
+    KpisModule
   ]
 })
 export class AppModule {}

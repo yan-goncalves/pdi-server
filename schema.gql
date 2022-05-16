@@ -103,6 +103,24 @@ type EvaluationModel {
   deletedAt: DateTime
 }
 
+type GoalModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type KpiModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type Query {
   me(locale: String = "br"): UserModel!
   user(id: Int!, locale: String = "br"): UserModel!
@@ -116,9 +134,13 @@ type Query {
   questions(locale: String = "br", relations: [String!] = []): [QuestionModel!]!
   skill(id: Int!, locale: String = "br"): SkillModel!
   skills(locale: String = "br", relations: [String!] = []): [SkillModel!]!
-  evaluation(id: Int!): EvaluationModel!
-  evaluationByYear(year: Int!): EvaluationModel!
-  evaluations: [EvaluationModel!]!
+  evaluation(id: Int!, locale: String = "br"): EvaluationModel!
+  evaluationByYear(year: Int!, locale: String = "br"): EvaluationModel!
+  evaluations(locale: String = "br"): [EvaluationModel!]!
+  goal(id: Int!, loadRelations: Boolean = false): GoalModel!
+  goals: [GoalModel!]!
+  kpi(id: Int!): KpiModel!
+  kpis: [KpiModel!]!
 }
 
 type Mutation {
@@ -141,8 +163,15 @@ type Mutation {
   createSkill(input: CreateSkillInput!): SkillModel!
   updateSkill(id: Int!, input: UpdateSkillInput!): SkillModel!
   createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
+  addEvaluationSection(id: Int!, idSection: Int!): Boolean!
   updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
   removeEvaluation(id: Int!): EvaluationModel!
+  createGoal(input: GoalInput!): GoalModel!
+  updateGoal(id: Int!, input: GoalInput!): GoalModel!
+  removeGoal(id: Int!): GoalModel!
+  createKpi(input: KpiInput!): KpiModel!
+  updateKpi(id: Int!, input: KpiInput!): KpiModel!
+  removeKpi(id: Int!): KpiModel!
 }
 
 input SignInInput {
@@ -157,7 +186,7 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  manager: Int
+  idManager: Int
   department: Int
   role: String
   confirmed: Boolean
@@ -247,4 +276,12 @@ input UpdateEvaluationInput {
   end: CreateEvaluationDateInput
   period: String
   finished: Boolean
+}
+
+input GoalInput {
+  name: String!
+}
+
+input KpiInput {
+  name: String!
 }

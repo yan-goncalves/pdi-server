@@ -7,7 +7,7 @@ export class UpdateUserInput {
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsInt()
-  manager?: number
+  idManager?: number
 
   @Field(() => Int, { nullable: true })
   @IsOptional()

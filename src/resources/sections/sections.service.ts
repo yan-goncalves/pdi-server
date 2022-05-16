@@ -37,7 +37,27 @@ export class SectionsService {
       section: { id: section.id },
       locale
     })
-    return { ...section, title: sectionLocale?.title || null }
+
+    const questionsLocale = await Promise.all(
+      section?.questions.map(async (question) => ({
+        ...question,
+        ...(await this.questionsService.get(question.id, locale))
+      }))
+    )
+
+    const skillsLocale = await Promise.all(
+      section?.skills.map(async (skill) => ({
+        ...skill,
+        ...(await this.skillsService.get(skill.id, locale))
+      }))
+    )
+
+    return {
+      ...section,
+      title: sectionLocale?.title || null,
+      questions: questionsLocale,
+      skills: skillsLocale
+    }
   }
 
   private isInSection<T extends { id: number }>(

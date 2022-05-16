@@ -31,7 +31,7 @@ export class {{pascalCase name}}Service {
   }
 
   async create(input: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
-    const {{camelCase (slice name)}}Found = await this.getBy({ ...input })
+    const {{camelCase (slice name)}}Found = await this.repo.findOneBy({ ...input })
     if ({{camelCase (slice name)}}Found) {
       throw new ConflictException('{{pascalCase (slice name)}} already exists')
     }

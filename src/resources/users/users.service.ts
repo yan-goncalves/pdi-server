@@ -53,7 +53,7 @@ export class UsersService {
     const userFound = await this.repo.findOneBy({ email, username })
 
     if (userFound) {
-      if (!userFound.deletedAt) {
+      if (!userFound?.deletedAt) {
         throw new ConflictException('Entered username or email already exists')
       }
 
@@ -106,8 +106,8 @@ export class UsersService {
 
   async update(id: number, input: UpdateUserInput): Promise<UserModel> {
     try {
-      if (input?.manager) {
-        await this.setManager(id, input.manager)
+      if (input?.idManager) {
+        await this.setManager(id, input.idManager)
       }
 
       if (input?.department) {

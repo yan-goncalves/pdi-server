@@ -111,7 +111,9 @@
       "^@skills/(.*)$": "<rootDir>/resources/skills/$1",
       "^@skills-i18n/(.*)$": "<rootDir>/resources/skills-i18n/$1",
       "^@evaluations/(.*)$": "<rootDir>/resources/evaluations/$1",
-      "^@evaluations-i18n/(.*)$": "<rootDir>/resources/evaluations-i18n/$1"
+      "^@evaluations-i18n/(.*)$": "<rootDir>/resources/evaluations-i18n/$1",
+      "^@goals/(.*)$": "<rootDir>/resources/goals/$1",
+      "^@kpis/(.*)$": "<rootDir>/resources/kpis/$1"
     }
   }
 }

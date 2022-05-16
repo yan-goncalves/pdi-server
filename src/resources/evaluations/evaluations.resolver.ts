@@ -1,3 +1,4 @@
+import { LOCALES } from '@constants/locales'
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { EvaluationsService } from '@evaluations/evaluations.service'
@@ -10,25 +11,39 @@ export class EvaluationsResolver {
   constructor(@Inject(EvaluationsService) private readonly service: EvaluationsService) {}
 
   @Query(() => EvaluationModel, { name: 'evaluation' })
-  async get(@Args('id', { type: () => Int }) id: number): Promise<EvaluationModel> {
-    return await this.service.get(id)
+  async get(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+  ): Promise<EvaluationModel> {
+    return await this.service.get(id, locale)
   }
 
   @Query(() => EvaluationModel)
   async evaluationByYear(
-    @Args('year', { type: () => Int }) year: number
+    @Args('year', { type: () => Int }) year: number,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<EvaluationModel> {
-    return await this.service.getBy({ year })
+    return await this.service.getBy({ year }, locale)
   }
 
   @Query(() => [EvaluationModel], { name: 'evaluations' })
-  async list(): Promise<EvaluationModel[]> {
-    return await this.service.list()
+  async list(
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+  ): Promise<EvaluationModel[]> {
+    return await this.service.list(locale)
   }
 
   @Mutation(() => EvaluationModel)
   async createEvaluation(@Args('input') input: CreateEvaluationInput): Promise<EvaluationModel> {
     return await this.service.create(input)
+  }
+
+  @Mutation(() => Boolean)
+  async addEvaluationSection(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('idSection', { type: () => Int }) idSection: number
+  ): Promise<boolean> {
+    return await this.service.addSection(id, idSection)
   }
 
   @Mutation(() => EvaluationModel)

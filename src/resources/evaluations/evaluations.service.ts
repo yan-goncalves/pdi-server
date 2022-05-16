@@ -1,3 +1,4 @@
+import { LOCALES } from '@constants/locales'
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import {
@@ -5,12 +6,13 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  MethodNotAllowedException,
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { SectionModel } from '@sections/entities/section.entity'
 import { SectionsService } from '@sections/sections.service'
 import { compareAsc } from 'date-fns'
-import { EntityFindOptions } from 'src/types/common'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { UpdateEvaluationInput } from './dto/update-evaluation.input'
 
@@ -21,26 +23,57 @@ export class EvaluationsService {
     @Inject(SectionsService) private readonly sectionsService: SectionsService
   ) {}
 
-  async get(id: number): Promise<EvaluationModel> {
+  async get(id: number, locale = LOCALES.BR): Promise<EvaluationModel> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      const evaluation = await this.repo.findOneByOrFail({ id })
+      return await this.mapEvaluation(evaluation, locale)
     } catch {
       throw new NotFoundException('Evaluation not found')
     }
   }
 
   async getBy(
-    options: FindOptionsWhere<EvaluationModel> | FindOptionsWhere<EvaluationModel>[]
+    options: FindOptionsWhere<EvaluationModel> | FindOptionsWhere<EvaluationModel>[],
+    locale = LOCALES.BR
   ): Promise<EvaluationModel> {
     try {
-      return await this.repo.findOneByOrFail(options)
+      const evaluation = await this.repo.findOneByOrFail(options)
+      return await this.mapEvaluation(evaluation, locale)
     } catch {
       throw new NotFoundException('Evaluation not found')
     }
   }
 
-  async list(options?: EntityFindOptions<EvaluationModel>): Promise<EvaluationModel[]> {
-    return await this.repo.find(options)
+  private async mapEvaluation(
+    evaluation: EvaluationModel,
+    locale = LOCALES.BR
+  ): Promise<EvaluationModel> {
+    const mappedSections = await Promise.all(
+      evaluation?.sections.map(async (section) => ({
+        ...section,
+        ...(await this.sectionsService.get(section.id, locale))
+      }))
+    )
+    const mappedEvaluation = { ...evaluation, sections: [...mappedSections] }
+
+    return mappedEvaluation
+  }
+
+  private isInEvaluation(array: SectionModel[], evaluation: EvaluationModel): SectionModel[] {
+    return array.filter((item) =>
+      evaluation?.sections.some((evaluationItem) => evaluationItem.id === item.id)
+    )
+  }
+  async list(locale = LOCALES.BR): Promise<EvaluationModel[]> {
+    const sections = await this.sectionsService.list({ locale })
+    const evaluations = await this.repo.find()
+
+    const mappedEvaluations = evaluations.map(async (evaluation) => ({
+      ...evaluation,
+      sections: this.isInEvaluation(sections, evaluation)
+    }))
+
+    return await Promise.all(mappedEvaluations)
   }
 
   async create({ year, mid, end, period }: CreateEvaluationInput): Promise<EvaluationModel> {
@@ -66,6 +99,23 @@ export class EvaluationsService {
         period
       })
     )
+  }
+
+  async addSection(id: number, idSection: number): Promise<boolean> {
+    const evaluation = await this.get(id)
+    const section = await this.sectionsService.get(idSection)
+
+    if (evaluation?.sections.some((s) => s.id === section.id)) {
+      throw new MethodNotAllowedException('Section already exists on this Evaluation')
+    }
+
+    const merge = {
+      ...evaluation,
+      sections: [{ ...section, title: section.title }]
+    }
+    this.repo.merge(evaluation, merge)
+
+    return !!(await this.repo.save(evaluation))
   }
 
   async update(id: number, input: UpdateEvaluationInput): Promise<EvaluationModel> {
