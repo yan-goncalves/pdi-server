@@ -1,4 +1,3 @@
-import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
 import { DepartmentsI18nService } from '@departments-i18n/departments-i18n.service'
 import { CreateDepartmentInput } from '@departments/dto/create-department.input'
@@ -6,6 +5,7 @@ import { UpdateDepartmentInput } from '@departments/dto/update-department.input'
 import { DepartmentModel } from '@departments/entities/department.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { EntityFindOptions } from 'src/types/common'
 import { Repository } from 'typeorm'
 
 @Injectable()

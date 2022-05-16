@@ -1,10 +1,13 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { SectionModel } from '@sections/entities/section.entity'
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -70,6 +73,15 @@ export class EvaluationModel {
   @Field(() => Boolean, { defaultValue: false })
   @Column({ default: false })
   finished: boolean
+
+  @Field(() => [SectionModel], { nullable: true })
+  @ManyToMany(() => SectionModel, (skill) => skill.id, { eager: true })
+  @JoinTable({
+    name: 'evaluations_sections',
+    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'id_section', referencedColumnName: 'id' }
+  })
+  sections?: SectionModel[]
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

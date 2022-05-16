@@ -1,4 +1,3 @@
-import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
 import {
   ConflictException,
@@ -16,6 +15,7 @@ import { UpdateSectionInput } from '@sections/dto/update-section.input'
 import { SectionModel } from '@sections/entities/section.entity'
 import { SkillModel } from '@skills/entities/skill.entity'
 import { SkillsService } from '@skills/skills.service'
+import { EntityFindOptions } from 'src/types/common'
 import { Repository } from 'typeorm'
 
 @Injectable()

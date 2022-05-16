@@ -1,4 +1,3 @@
-import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -6,6 +5,7 @@ import { QuestionsI18nService } from '@questions-i18n/questions-i18n.service'
 import { CreateQuestionInput } from '@questions/dto/create-question.input'
 import { UpdateQuestionInput } from '@questions/dto/update-question.input'
 import { QuestionModel } from '@questions/entities/question.entity'
+import { EntityFindOptions } from 'src/types/common'
 import { Repository } from 'typeorm'
 
 @Injectable()

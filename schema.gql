@@ -50,23 +50,6 @@ type JWT {
   jwt: String!
 }
 
-type EvaluationDateModel {
-  start: DateTime!
-  deadline: DateTime!
-}
-
-type EvaluationModel {
-  id: Int!
-  year: Int!
-  period: String!
-  midDate: EvaluationDateModel!
-  endDate: EvaluationDateModel!
-  finished: Boolean!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type QuestionModel {
   id: Int!
   ask: String
@@ -97,6 +80,24 @@ type SectionModel {
   visibility: VisibilityModel!
   questions: [QuestionModel!]
   skills: [SkillModel!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type EvaluationDateModel {
+  start: DateTime!
+  deadline: DateTime!
+}
+
+type EvaluationModel {
+  id: Int!
+  year: Int!
+  period: String!
+  midDate: EvaluationDateModel!
+  endDate: EvaluationDateModel!
+  finished: Boolean!
+  sections: [SectionModel!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime

@@ -1,4 +1,3 @@
-import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -6,6 +5,7 @@ import { SkillsI18nService } from '@skills-i18n/skills-i18n.service'
 import { CreateSkillInput } from '@skills/dto/create-skill.input'
 import { UpdateSkillInput } from '@skills/dto/update-skill.input'
 import { SkillModel } from '@skills/entities/skill.entity'
+import { EntityFindOptions } from 'src/types/common'
 import { Repository } from 'typeorm'
 
 @Injectable()

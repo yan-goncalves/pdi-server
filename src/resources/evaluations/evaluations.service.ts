@@ -3,18 +3,22 @@ import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import {
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { SectionsService } from '@sections/sections.service'
 import { compareAsc } from 'date-fns'
+import { EntityFindOptions } from 'src/types/common'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { UpdateEvaluationInput } from './dto/update-evaluation.input'
 
 @Injectable()
 export class EvaluationsService {
   constructor(
-    @InjectRepository(EvaluationModel) private readonly repo: Repository<EvaluationModel>
+    @InjectRepository(EvaluationModel) private readonly repo: Repository<EvaluationModel>,
+    @Inject(SectionsService) private readonly sectionsService: SectionsService
   ) {}
 
   async get(id: number): Promise<EvaluationModel> {
@@ -35,8 +39,8 @@ export class EvaluationsService {
     }
   }
 
-  async list(): Promise<EvaluationModel[]> {
-    return await this.repo.find()
+  async list(options?: EntityFindOptions<EvaluationModel>): Promise<EvaluationModel[]> {
+    return await this.repo.find(options)
   }
 
   async create({ year, mid, end, period }: CreateEvaluationInput): Promise<EvaluationModel> {
