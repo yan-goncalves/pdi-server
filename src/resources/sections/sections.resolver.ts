@@ -16,7 +16,7 @@ export class SectionsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<SectionModel> {
-    return this.service.get(id, locale)
+    return await this.service.get(id, locale)
   }
 
   @Query(() => [SectionModel], { name: 'sections' })
@@ -38,6 +38,22 @@ export class SectionsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateSectionInput
   ): Promise<SectionModel> {
-    return this.service.update(id, input)
+    return await this.service.update(id, input)
+  }
+
+  @Mutation(() => Boolean)
+  async addSectionQuestion(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('idQuestion', { type: () => Int }) idQuestion: number
+  ): Promise<boolean> {
+    return await this.service.addQuestion(id, idQuestion)
+  }
+
+  @Mutation(() => Boolean)
+  async addSectionSkill(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('idSkill', { type: () => Int }) idSkill: number
+  ): Promise<boolean> {
+    return await this.service.addSkill(id, idSkill)
   }
 }

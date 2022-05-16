@@ -70,13 +70,13 @@ export class LdapService {
     })
 
     if (result.searchEntries.length < 1) {
-      throw new UnauthorizedException(`Usuário '${user.username}' não encontrado no domínio`)
+      throw new UnauthorizedException(`Domain user '${user.username}' not found`)
     }
 
     const foundUser = result.searchEntries[0]
 
     await this._CLIENT_.bind(foundUser.dn, user.password).catch((Exception) => {
-      throw new Exception(`Senha incorreta`)
+      throw new Exception('Incorrect password')
     })
 
     return foundUser
@@ -93,7 +93,7 @@ export class LdapService {
     })
 
     if (result.searchEntries.length < 1) {
-      throw new NotFoundException(`Usuário '${username}' não encontrado`)
+      throw new NotFoundException(`User '${username}' not found`)
     }
 
     return this.sanitize(result.searchEntries[0])

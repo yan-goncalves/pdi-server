@@ -11,7 +11,7 @@ export class UsersInfoResolver {
 
   @Query(() => UsersInfoModel, { name: 'usersInfo' })
   async get(@Args('id', { type: () => Int }) id: number): Promise<UsersInfoModel> {
-    return this.service.get(id)
+    return await this.service.get(id)
   }
 
   @Mutation(() => UsersInfoModel)

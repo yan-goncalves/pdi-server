@@ -16,7 +16,7 @@ export class QuestionsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<QuestionModel> {
-    return this.service.get(id, locale)
+    return await this.service.get(id, locale)
   }
 
   @Query(() => [QuestionModel], { name: 'questions' })
@@ -38,6 +38,6 @@ export class QuestionsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateQuestionInput
   ): Promise<QuestionModel> {
-    return this.service.update(id, input)
+    return await this.service.update(id, input)
   }
 }

@@ -10,12 +10,12 @@ export class {{pascalCase name}}Resolver {
 
   @Query(() => {{pascalCase (slice name)}}Model, { name: '{{camelCase (slice name)}}' })
   async get(@Args('id', { type: () => Int }) id: number): Promise<{{pascalCase (slice name)}}Model> {
-    return this.service.get(id)
+    return await this.service.get(id)
   }
 
   @Query(() => [{{pascalCase (slice name)}}Model], { name: '{{camelCase name}}' })
   async list(): Promise<{{pascalCase (slice name)}}Model[]> {
-    return this.service.list()
+    return await this.service.list()
   }
 
   @Mutation(() => {{pascalCase (slice name)}}Model)

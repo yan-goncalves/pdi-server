@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { SkillLocaleModel } from '@skills-i18n/entities/skill-i18n.entity'
+import { SkillLocaleModel } from '@skills-i18n/entities/skill-18n.entity'
 import { SkillsI18nService } from '@skills-i18n/skills-i18n.service'
 
 @Module({

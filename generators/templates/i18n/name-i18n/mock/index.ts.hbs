@@ -1,15 +1,15 @@
 import { LOCALES } from '@constants/locales'
 import faker from '@faker-js/faker'
 import { {{pascalCase (slice name)}}LocaleModel } from '@{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-i18n.entity'
-import {{camelCase name}}Mock from '@{{kebabCase name}}/mock'
+import {{camelCase (slice name)}}Mock from '@{{kebabCase name}}/mock'
 
-const {{camelCase name}}LocaleMock: {{pascalCase (slice name)}}LocaleModel = {
+const {{camelCase (slice name)}}LocaleMock: {{pascalCase (slice name)}}LocaleModel = {
   id: 1,
-  {{pascalCase (slice name)}}: {{camelCase name}}Mock,
+  {{camelCase (slice name)}}: {{camelCase (slice name)}}Mock,
   locale: LOCALES.BR,
   changeMe: 'change me',
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1)
 }
 
-export default {{camelCase name}}LocaleMock
+export default {{camelCase (slice name)}}LocaleMock

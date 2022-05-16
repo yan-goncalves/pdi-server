@@ -19,11 +19,14 @@ export class SkillLocaleModel {
   locale: LOCALES
 
   @ManyToOne(() => SkillModel, (question) => question.id)
-  @JoinColumn({ name: 'id_change_me' })
-  Skill: SkillModel
+  @JoinColumn({ name: 'id_skill' })
+  skill: SkillModel
 
-  @Column({ unique: true })
-  changeMe: string
+  @Column({ length: 500 })
+  title: string
+
+  @Column({ unique: true, length: 1500 })
+  description: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date

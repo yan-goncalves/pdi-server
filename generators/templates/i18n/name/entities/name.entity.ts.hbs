@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { {{pascalCase (slice name)}}LocaleModel } from '@{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-i18n.entity'
 
 @ObjectType()
 @Entity('{{ snakeCase name }}')
@@ -28,4 +30,7 @@ export class {{pascalCase (slice name)}}Model {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
+
+  @OneToMany(() => {{pascalCase (slice name)}}LocaleModel, ({{camelCase (slice name)}}Locale) => {{camelCase (slice name)}}Locale.{{camelCase (slice name)}})
+  locale: {{pascalCase (slice name)}}LocaleModel
 }

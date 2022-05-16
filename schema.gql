@@ -50,6 +50,23 @@ type JWT {
   jwt: String!
 }
 
+type EvaluationDateModel {
+  start: DateTime!
+  deadline: DateTime!
+}
+
+type EvaluationModel {
+  id: Int!
+  year: Int!
+  period: String!
+  midDate: EvaluationDateModel!
+  endDate: EvaluationDateModel!
+  finished: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type QuestionModel {
   id: Int!
   ask: String
@@ -58,17 +75,28 @@ type QuestionModel {
   deletedAt: DateTime
 }
 
+type SkillModel {
+  id: Int!
+  title: String
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type VisibilityModel {
-  User: Boolean!
-  Manager: Boolean!
-  Coordinator: Boolean!
-  Director: Boolean!
+  user: Boolean!
+  manager: Boolean!
+  coordinator: Boolean!
+  director: Boolean!
 }
 
 type SectionModel {
   id: Int!
   title: String
   visibility: VisibilityModel!
+  questions: [QuestionModel!]
+  skills: [SkillModel!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -85,6 +113,11 @@ type Query {
   sections(locale: String = "br", relations: [String!] = []): [SectionModel!]!
   question(id: Int!, locale: String = "br"): QuestionModel!
   questions(locale: String = "br", relations: [String!] = []): [QuestionModel!]!
+  skill(id: Int!, locale: String = "br"): SkillModel!
+  skills(locale: String = "br", relations: [String!] = []): [SkillModel!]!
+  evaluation(id: Int!): EvaluationModel!
+  evaluationByYear(year: Int!): EvaluationModel!
+  evaluations: [EvaluationModel!]!
 }
 
 type Mutation {
@@ -92,6 +125,7 @@ type Mutation {
   createUser(input: CreateUserInput!): UserModel!
   updateUser(id: Int!, input: UpdateUserInput!): UserModel!
   removeUser(id: Int!): UserModel!
+  populate: [UserModel!]!
   createUsersInfo(id: Float!, input: CreateUserInfoInput!): UsersInfoModel!
   updateUsersInfo(id: Float!, input: UpdateUserInfoInput!): UsersInfoModel!
   removeUsersInfo(id: Int!): UsersInfoModel!
@@ -99,8 +133,15 @@ type Mutation {
   updateDepartment(id: Int!, input: UpdateDepartmentInput!): DepartmentModel!
   createSection(input: CreateSectionInput!): SectionModel!
   updateSection(id: Int!, input: UpdateSectionInput!): SectionModel!
+  addSectionQuestion(id: Int!, idQuestion: Int!): Boolean!
+  addSectionSkill(id: Int!, idSkill: Int!): Boolean!
   createQuestion(input: CreateQuestionInput!): QuestionModel!
   updateQuestion(id: Int!, input: UpdateQuestionInput!): QuestionModel!
+  createSkill(input: CreateSkillInput!): SkillModel!
+  updateSkill(id: Int!, input: UpdateSkillInput!): SkillModel!
+  createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
+  updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
+  removeEvaluation(id: Int!): EvaluationModel!
 }
 
 input SignInInput {
@@ -111,7 +152,7 @@ input SignInInput {
 input CreateUserInput {
   username: String!
   email: String!
-  role: String = "User"
+  role: String = "user"
 }
 
 input UpdateUserInput {
@@ -155,16 +196,16 @@ input CreateSectionInput {
 }
 
 input VisibilitySectionInput {
-  User: Boolean!
-  Manager: Boolean!
-  Coordinator: Boolean!
-  Director: Boolean!
+  user: Boolean!
+  manager: Boolean!
+  coordinator: Boolean!
+  director: Boolean!
 }
 
 input UpdateSectionInput {
-  title: String!
+  title: String
   visibility: VisibilitySectionInput
-  locale: String!
+  locale: String = "br"
 }
 
 input CreateQuestionInput {
@@ -174,4 +215,35 @@ input CreateQuestionInput {
 input UpdateQuestionInput {
   ask: String!
   locale: String!
+}
+
+input CreateSkillInput {
+  title: String!
+  description: String!
+}
+
+input UpdateSkillInput {
+  title: String
+  description: String
+  locale: String!
+}
+
+input CreateEvaluationInput {
+  year: Int!
+  mid: CreateEvaluationDateInput!
+  end: CreateEvaluationDateInput!
+  period: String = "out"
+}
+
+input CreateEvaluationDateInput {
+  start: DateTime!
+  deadline: DateTime!
+}
+
+input UpdateEvaluationInput {
+  year: Int
+  mid: CreateEvaluationDateInput
+  end: CreateEvaluationDateInput
+  period: String
+  finished: Boolean
 }

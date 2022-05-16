@@ -34,7 +34,7 @@ export class QuestionsService {
     const questions = await this.repo.find({ relations })
     const mappedQuestions = questions.map(async (question) => ({
       ...question,
-      title: await this.i18nService
+      ask: await this.i18nService
         .getBy({
           question: { id: question.id },
           locale

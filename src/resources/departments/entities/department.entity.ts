@@ -23,7 +23,7 @@ export class DepartmentModel {
   readonly key: string
 
   @Field({ nullable: true })
-  name: string
+  name?: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

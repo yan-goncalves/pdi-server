@@ -1,8 +1,10 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { SkillLocaleModel } from '@skills-i18n/entities/skill-18n.entity'
 import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -15,7 +17,10 @@ export class SkillModel {
   readonly id: number
 
   @Field({ nullable: true })
-  changeMe: string
+  title?: string
+
+  @Field({ nullable: true })
+  description?: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
@@ -28,4 +33,7 @@ export class SkillModel {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
+
+  @OneToMany(() => SkillLocaleModel, (skillLocale) => skillLocale.skill)
+  locale: SkillLocaleModel
 }

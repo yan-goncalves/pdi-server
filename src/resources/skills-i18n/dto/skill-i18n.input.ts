@@ -7,7 +7,12 @@ export class SkillI18nInput {
   @Field()
   @IsNotEmpty()
   @IsString()
-  changeMe: string
+  title: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  description: string
 
   @Field({ nullable: true, defaultValue: LOCALES.BR })
   @IsOptional()

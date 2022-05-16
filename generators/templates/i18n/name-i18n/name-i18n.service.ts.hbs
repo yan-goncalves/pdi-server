@@ -32,18 +32,18 @@ export class {{pascalCase name}}I18nService {
   }
 
   async create(
-    {{camelCase name}}: {{pascalCase (slice name)}}Model,
-    { changeMe, locale = LOCALES.BR }: {{pascalCase (slice name)}}I18nInput
+    {{camelCase (slice name)}}: {{pascalCase (slice name)}}Model,
+    { locale = LOCALES.BR, ...input }: {{pascalCase (slice name)}}I18nInput
   ): Promise<{{pascalCase (slice name)}}LocaleModel> {
-    return await this.repo.save(this.repo.create({ {{camelCase name}}, changeMe, locale }))
+    return await this.repo.save(this.repo.create({ {{camelCase (slice name)}}, locale, ...input }))
   }
 
   async update(
-    {{camelCase name}}: {{pascalCase (slice name)}}Model,
-    { changeMe, locale = LOCALES.BR }: {{pascalCase (slice name)}}I18nInput
+    {{camelCase (slice name)}}: {{pascalCase (slice name)}}Model,
+    { locale = LOCALES.BR, ...input }: {{pascalCase (slice name)}}I18nInput
   ): Promise<{{pascalCase (slice name)}}LocaleModel> {
-    const {{camelCase name}}Locale = await this.getBy({ {{camelCase name}}: { id: {{camelCase name}}.id }, locale })
-    this.repo.merge({{camelCase name}}Locale, { changeMe })
-    return await this.repo.save({{camelCase name}}Locale)
+    const {{camelCase (slice name)}}Locale = await this.getBy({ {{camelCase (slice name)}}: { id: {{camelCase (slice name)}}.id }, locale })
+    this.repo.merge({{camelCase (slice name)}}Locale, { ...input })
+    return await this.repo.save({{camelCase (slice name)}}Locale)
   }
 }

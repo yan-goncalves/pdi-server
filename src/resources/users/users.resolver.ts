@@ -30,14 +30,14 @@ export class UsersResolver {
     @Args('id', { type: UserModelReturnTypeArgs }) id: number,
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<UserModel> {
-    return this.service.get(id, { locale })
+    return await this.service.get(id, { locale })
   }
 
   @Query(UserModelReturnTypeArray, { name: 'users' })
   async list(
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale: LOCALES
   ): Promise<UserModel[]> {
-    return this.service.list(locale)
+    return await this.service.list(locale)
   }
 
   @Mutation(UserModelReturnType)
@@ -56,5 +56,10 @@ export class UsersResolver {
   @Mutation(UserModelReturnType)
   async removeUser(@Args('id', { type: UserModelReturnTypeArgs }) id: number): Promise<UserModel> {
     return await this.service.setDeleted(id)
+  }
+
+  @Mutation(UserModelReturnTypeArray)
+  async populate(): Promise<UserModel[]> {
+    return await this.service.populate()
   }
 }

@@ -1,5 +1,6 @@
 import { AuthModule } from '@auth/auth.module'
 import { DepartmentsModule } from '@departments/departments.module'
+import { EvaluationsModule } from '@evaluations/evaluations.module'
 import { LdapModule } from '@ldap/ldap.module'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
@@ -8,6 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { QuestionsModule } from '@questions/questions.module'
 import { SectionsModule } from '@sections/sections.module'
+import { SkillsModule } from '@skills/skills.module'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
 
@@ -51,7 +53,9 @@ import { UsersModule } from '@users/users.module'
     UsersInfoModule,
     DepartmentsModule,
     SectionsModule,
-    QuestionsModule
+    QuestionsModule,
+    SkillsModule,
+    EvaluationsModule
   ]
 })
 export class AppModule {}

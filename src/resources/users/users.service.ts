@@ -202,7 +202,7 @@ export class UsersService {
         })
 
         const department = departments.find((d) => d.name === user.department)
-        await this.update(created.id, { department: department.id })
+        if (department) await this.update(created.id, { department: department.id })
       }
     }
 

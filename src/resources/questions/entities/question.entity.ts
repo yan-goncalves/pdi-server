@@ -1,8 +1,10 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { QuestionLocaleModel } from '@questions-i18n/entities/questions-i18n.entity'
 import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -15,7 +17,7 @@ export class QuestionModel {
   readonly id: number
 
   @Field({ nullable: true })
-  ask: string
+  ask?: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
@@ -28,4 +30,7 @@ export class QuestionModel {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
+
+  @OneToMany(() => QuestionLocaleModel, (questionLocale) => questionLocale.question)
+  locale: QuestionLocaleModel
 }

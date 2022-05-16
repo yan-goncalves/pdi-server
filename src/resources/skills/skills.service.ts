@@ -16,59 +16,73 @@ export class SkillsService {
   ) {}
 
   async get(id: number, locale = LOCALES.BR): Promise<SkillModel> {
-    const skills = await this.repo.findOneBy({ id })
-    if (!skills) {
+    const skill = await this.repo.findOneBy({ id })
+    if (!skill) {
       throw new NotFoundException(`Skill with id '${id} not found`)
     }
 
-    const skillsLocale = await this.i18nService.getBy({
-      skills: { id: skills.id },
+    const skillLocale = await this.i18nService.getBy({
+      skill: { id: skill.id },
       locale
     })
-    return { ...skills, changeMe: skillsLocale?.changeMe || null }
+    return {
+      ...skill,
+      title: skillLocale?.title || null,
+      description: skillLocale?.description || null
+    }
   }
 
   async list(options?: EntityFindOptions<SkillModel>): Promise<SkillModel[]> {
     const { locale = LOCALES.BR, relations = [] } = options || {}
 
-    const skillss = await this.repo.find({ relations })
-    const mappedskillss = skillss.map(async (skills) => ({
-      ...skills,
-      title: await this.i18nService
-        .getBy({
-          skills: { id: skills.id },
-          locale
-        })
-        .then((skillsLocale) => skillsLocale?.changeMe || null)
-    }))
+    const getSkillLocale = async (
+      skill: SkillModel
+    ): Promise<Pick<SkillModel, 'title' | 'description'>> => {
+      const skillLocale = await this.i18nService.getBy({
+        skill: { id: skill.id },
+        locale
+      })
 
-    return await Promise.all(mappedskillss)
-  }
-
-  async create({ changeMe }: CreateSkillInput): Promise<SkillModel> {
-    if (await this.i18nService.getBy({ changeMe })) {
-      throw new ConflictException('skill already exists')
+      return { title: skillLocale?.title || null, description: skillLocale?.description || null }
     }
 
-    const skills = await this.repo.save(this.repo.create())
-    const skillsLocale = await this.i18nService.create(skills, { changeMe })
+    const skills = await this.repo.find({ relations })
+    const mappedSkills = skills.map(async (skill) => ({
+      ...skill,
+      ...(await getSkillLocale(skill))
+    }))
 
-    return { ...skills, changeMe: skillsLocale.changeMe }
+    return await Promise.all(mappedSkills)
+  }
+
+  async create({ title, description }: CreateSkillInput): Promise<SkillModel> {
+    if (await this.i18nService.getBy({ description })) {
+      throw new ConflictException('Skill description already exists')
+    }
+
+    const skill = await this.repo.save(this.repo.create())
+    const skillLocale = await this.i18nService.create(skill, { title, description })
+
+    return { ...skill, title: skillLocale.title, description: skillLocale.description }
   }
 
   async update(
     id: number,
-    { changeMe, locale = LOCALES.BR }: UpdateSkillInput
+    { title, description, locale = LOCALES.BR }: UpdateSkillInput
   ): Promise<SkillModel> {
-    const skills = await this.get(id, locale)
-    if (skills?.changeMe && skills.changeMe === changeMe) {
-      return skills
+    const skill = await this.get(id, locale)
+    if (
+      (skill?.title && skill.title === title) ||
+      (skill?.description && skill.description === description)
+    ) {
+      return skill
     }
 
-    const skillsLocale = !skills?.changeMe
-      ? await this.i18nService.create(skills, { changeMe, locale })
-      : await this.i18nService.update(skills, { changeMe, locale })
+    const skillLocale =
+      !skill?.title && !skill?.description
+        ? await this.i18nService.create(skill, { title, description, locale })
+        : await this.i18nService.update(skill, { title, description, locale })
 
-    return { ...skills, changeMe: skillsLocale.changeMe }
+    return { ...skill, title: skillLocale.title, description: skillLocale.description }
   }
 }

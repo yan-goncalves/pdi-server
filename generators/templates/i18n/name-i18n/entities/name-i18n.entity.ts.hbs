@@ -18,9 +18,9 @@ export class {{pascalCase (slice name)}}LocaleModel {
   @Column()
   locale: LOCALES
 
-  @ManyToOne(() => {{pascalCase (slice name)}}Model, (question) => question.id)
-  @JoinColumn({ name: 'id_change_me' })
-  {{pascalCase (slice name)}}: {{pascalCase (slice name)}}Model
+  @ManyToOne(() => {{pascalCase (slice name)}}Model, ({{camelCase (slice name)}}) => {{camelCase (slice name)}}.id)
+  @JoinColumn({ name: 'id_{{snakeCase (slice name)}}' })
+  {{camelCase (slice name)}}: {{pascalCase (slice name)}}Model
 
   @Column({ unique: true })
   changeMe: string

@@ -6,10 +6,7 @@ import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{
 
 @Injectable()
 export class {{pascalCase name}}Service {
-  constructor(
-    @InjectRepository({{pascalCase (slice name)}}Model) 
-    private readonly repo: Repository<{{pascalCase (slice name)}}Model>
-  ) {}
+  constructor(@InjectRepository({{pascalCase (slice name)}}Model) private readonly repo: Repository<{{pascalCase (slice name)}}Model>) {}
 
   async get(id: number): Promise<{{pascalCase (slice name)}}Model> {
     try {

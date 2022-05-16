@@ -35,7 +35,9 @@
       "@questions/*": ["src/resources/questions/*"],
       "@questions-i18n/*": ["src/resources/questions-i18n/*"],
       "@skills/*": ["src/resources/skills/*"],
-      "@skills-i18n/*": ["src/resources/skills-i18n/*"]
+      "@skills-i18n/*": ["src/resources/skills-i18n/*"],
+      "@evaluations/*": ["src/resources/evaluations/*"],
+      "@evaluations-i18n/*": ["src/resources/evaluations-i18n/*"]
     }
   }
 }

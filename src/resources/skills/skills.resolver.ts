@@ -16,7 +16,7 @@ export class SkillsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<SkillModel> {
-    return this.service.get(id, locale)
+    return await this.service.get(id, locale)
   }
 
   @Query(() => [SkillModel], { name: 'skills' })
@@ -29,7 +29,7 @@ export class SkillsResolver {
   }
 
   @Mutation(() => SkillModel)
-  async createQuestion(@Args('input') input: CreateSkillInput): Promise<SkillModel> {
+  async createSkill(@Args('input') input: CreateSkillInput): Promise<SkillModel> {
     return await this.service.create(input)
   }
 
@@ -38,6 +38,6 @@ export class SkillsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateSkillInput
   ): Promise<SkillModel> {
-    return this.service.update(id, input)
+    return await this.service.update(id, input)
   }
 }

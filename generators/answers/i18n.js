@@ -55,7 +55,7 @@ module.exports = [
   // ENTITY
   {
     type: 'add',
-    path: '../src/resources/{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-18n.entity.ts',
+    path: '../src/resources/{{kebabCase name}}-i18n/entities/{{kebabCase (slice name)}}-i18n.entity.ts',
     templateFile: './templates/i18n/name-i18n/entities/name-i18n.entity.ts.hbs'
   },
   // MOCK

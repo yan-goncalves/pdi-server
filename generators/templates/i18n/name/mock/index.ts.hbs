@@ -1,11 +1,13 @@
 import faker from '@faker-js/faker'
 import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
+import {{camelCase (slice name)}}LocaleMock from '@{{kebabCase name}}-i18n/mock'
 
-const {{camelCase name}}Mock: {{pascalCase (slice name)}}Model = {
+const {{camelCase (slice name)}}Mock: {{pascalCase (slice name)}}Model = {
   id: 1,
   changeMe: 'change me',
   createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  updatedAt: faker.date.recent(1),
+  locale: {{camelCase (slice name)}}LocaleMock
 }
 
-export default {{camelCase name}}Mock
+export default {{camelCase (slice name)}}Mock

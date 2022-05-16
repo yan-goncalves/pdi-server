@@ -20,7 +20,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node _modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "plop": "plop --plopfile generators/plopfile.js"
   },
@@ -38,6 +38,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "date-fns": "^2.28.0",
     "graphql": "^16.5.0",
     "ldapts": "^3.2.4",
     "mssql": "^8.1.0",
@@ -108,7 +109,9 @@
       "^@questions/(.*)$": "<rootDir>/resources/questions/$1",
       "^@questions-i18n/(.*)$": "<rootDir>/resources/questions-i18n/$1",
       "^@skills/(.*)$": "<rootDir>/resources/skills/$1",
-      "^@skills-i18n/(.*)$": "<rootDir>/resources/skills-i18n/$1"
+      "^@skills-i18n/(.*)$": "<rootDir>/resources/skills-i18n/$1",
+      "^@evaluations/(.*)$": "<rootDir>/resources/evaluations/$1",
+      "^@evaluations-i18n/(.*)$": "<rootDir>/resources/evaluations-i18n/$1"
     }
   }
 }

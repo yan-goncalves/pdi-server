@@ -1,10 +1,19 @@
 import { LOCALES } from '@constants/locales'
 import { Field, InputType } from '@nestjs/graphql'
-import { IsEnum, IsNotEmpty } from 'class-validator'
-import { CreateSkillInput } from '@skills/dto/create-skill.input'
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 @InputType()
-export class UpdateSkillInput extends CreateSkillInput {
+export class UpdateSkillInput {
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  title?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  description?: string
+
   @Field()
   @IsNotEmpty()
   @IsEnum(LOCALES)

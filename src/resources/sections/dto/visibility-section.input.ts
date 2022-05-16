@@ -6,20 +6,20 @@ export class VisibilitySectionInput {
   @Field(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
-  User: string
+  user: string
 
   @Field(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
-  Manager: string
+  manager: string
 
   @Field(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
-  Coordinator: string
+  coordinator: string
 
   @Field(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
-  Director: string
+  director: string
 }

@@ -16,7 +16,7 @@ export class DepartmentsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<DepartmentModel> {
-    return this.service.get(id, locale)
+    return await this.service.get(id, locale)
   }
 
   @Query(() => [DepartmentModel], { name: 'departments' })
@@ -29,8 +29,8 @@ export class DepartmentsResolver {
   }
 
   @Mutation(() => DepartmentModel)
-  createDepartment(@Args('input') input: CreateDepartmentInput): Promise<DepartmentModel> {
-    return this.service.create(input)
+  async createDepartment(@Args('input') input: CreateDepartmentInput): Promise<DepartmentModel> {
+    return await this.service.create(input)
   }
 
   @Mutation(() => DepartmentModel)
@@ -38,6 +38,6 @@ export class DepartmentsResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateDepartmentInput
   ): Promise<DepartmentModel> {
-    return this.service.update(id, input)
+    return await this.service.update(id, input)
   }
 }
