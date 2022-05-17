@@ -137,8 +137,8 @@ type Query {
   evaluation(id: Int!, locale: String = "br"): EvaluationModel!
   evaluationByYear(year: Int!, locale: String = "br"): EvaluationModel!
   evaluations(locale: String = "br"): [EvaluationModel!]!
-  goal(id: Int!, loadRelations: Boolean = false): GoalModel!
-  goals: [GoalModel!]!
+  goal(id: Int!, loadRelations: Boolean = false, locale: String = "br"): GoalModel!
+  goals(locale: String = "br"): [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!
 }

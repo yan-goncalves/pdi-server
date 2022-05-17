@@ -21,6 +21,7 @@
       "@appModule": ["src/app.module"],
       "@decorators/*": ["src/decorators/*"],
       "@guards/*": ["src/guards/*"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@strategies/*": ["src/strategies/*"],
       "@auth/*": ["src/resources/auth/*"],
       "@ldap/*": ["src/resources/ldap/*"],

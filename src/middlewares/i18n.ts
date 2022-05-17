@@ -1,23 +1,22 @@
 import { LOCALES } from '@constants/locales'
-import { FieldMiddleware, MiddlewareContext, NextFn } from '@nestjs/graphql'
-import { ArgumentNode } from 'graphql'
+import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql'
 import { getRepository } from 'typeorm'
 
-const translation: FieldMiddleware = async (ctx: MiddlewareContext, next: NextFn) => {
-  const repo = getRepository(ctx.info.parentType.name)
-  const found = await repo.findOneBy({ id: +ctx.source?.id })
-  const selections = ctx.info.operation.selectionSet.selections
-  const args = selections[0]?.['arguments'] as ReadonlyArray<ArgumentNode>
-  const locale = args.find((arg) => arg.name.value === 'locale') || LOCALES.BR
-  const split = ctx.info.parentType.name.split(/model/i)
-  const i18n = `${split[0]}LocaleModel`
-  const repoI18N = getRepository(i18n)
-  const foundI18N = await repoI18N.findOneBy({ locale: LOCALES.EN })
+type TranslationType = {
+  field: string
+  inverseField: string
+  i18nModel: string
+}
 
-  console.log('--------------- ctx ---------------', repo?.['target'])
-  // const value = await next()
-  // console.log(value)
-  return await next()
+const translation = ({ field, inverseField, i18nModel }: TranslationType): FieldMiddleware => {
+  return async (ctx: MiddlewareContext) => {
+    const locale = ctx.context?.req?.headers?.locale || LOCALES.BR
+    const i18nRepo = getRepository(i18nModel)
+    const id = +ctx.source?.id
+    const foundI18N = await i18nRepo.findOneBy({ [inverseField]: { id }, locale })
+
+    return foundI18N[field]
+  }
 }
 
 export default translation

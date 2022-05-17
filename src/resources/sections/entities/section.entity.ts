@@ -1,3 +1,4 @@
+import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { QuestionModel } from '@questions/entities/question.entity'
 import { SectionLocaleModel } from '@sections-i18n/entities/sections-i18n.entity'
@@ -36,7 +37,16 @@ export class SectionModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    middleware: [
+      translation({
+        field: 'title',
+        inverseField: 'section',
+        i18nModel: 'SectionLocaleModel'
+      })
+    ]
+  })
   title?: string
 
   @Field(() => VisibilityModel)

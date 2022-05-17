@@ -1,3 +1,4 @@
+import { LOCALES } from '@constants/locales'
 import { ROLES } from '@constants/roles'
 import { CurrentUser } from '@decorators/current-user.decorator'
 import { Roles } from '@decorators/roles.decorator'
@@ -20,16 +21,20 @@ export class GoalsResolver {
   async get(
     @CurrentUser() { id: idManager }: UserModel,
     @Args('id', { type: () => Int }) id: number,
-    @Args('loadRelations', { type: () => Boolean, defaultValue: false }) loadRelations: boolean
+    @Args('loadRelations', { type: () => Boolean, defaultValue: false }) loadRelations: boolean,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
   ): Promise<GoalModel> {
-    return await this.service.get(id, idManager, loadRelations)
+    return await this.service.get(id, idManager, loadRelations, locale)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
   @Query(() => [GoalModel], { name: 'goals' })
-  async list(@CurrentUser() { id, role }: UserModel): Promise<GoalModel[]> {
-    return await this.service.list(id, role === ROLES.DIRECTOR)
+  async list(
+    @CurrentUser() { id, role }: UserModel,
+    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+  ): Promise<GoalModel[]> {
+    return await this.service.list(id, role === ROLES.DIRECTOR, locale)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
