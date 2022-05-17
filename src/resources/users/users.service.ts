@@ -76,7 +76,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with id '${id}' not found`)
     }
-    const department = await this.departmentsService.get(user.department?.id, locale)
+    const department = await this.departmentsService.get(user.department?.id)
 
     return !department ? user : { ...user, department }
   }
@@ -96,9 +96,12 @@ export class UsersService {
     const mappedUsers = users.map(async (user) => {
       const department = !user?.department
         ? null
-        : await this.departmentsService.get(user.department?.id, locale)
+        : await this.departmentsService.get(user.department?.id)
 
-      return { ...user, department }
+      return {
+        ...user,
+        department
+      }
     })
 
     return await Promise.all(mappedUsers)

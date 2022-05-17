@@ -24,11 +24,7 @@ export class DepartmentsI18nService {
   async getBy(
     options: FindOptionsWhere<DepartmentLocaleModel> | FindOptionsWhere<DepartmentLocaleModel>[]
   ): Promise<DepartmentLocaleModel> {
-    try {
-      return await this.repo.findOneByOrFail(options)
-    } catch {
-      return null
-    }
+    return await this.repo.findOneBy(options)
   }
 
   async create(

@@ -1,6 +1,9 @@
+import path = require('path')
 import { LOCALES } from '@constants/locales'
+import { AppDataSource } from '@data-source'
 import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql'
-import { getRepository } from 'typeorm'
+import 'reflect-metadata'
+// import { getRepository } from 'typeorm'
 
 type TranslationType = {
   field: string
@@ -10,9 +13,9 @@ type TranslationType = {
 
 const translation = ({ field, inverseField, i18nModel }: TranslationType): FieldMiddleware => {
   return async (ctx: MiddlewareContext) => {
-    const locale = ctx.context?.req?.headers?.locale || LOCALES.BR
-    const i18nRepo = getRepository(i18nModel)
     const id = +ctx.source?.id
+    const locale = ctx.context?.req?.headers?.locale || LOCALES.BR
+    const i18nRepo = AppDataSource.getRepository(i18nModel)
     const foundI18N = await i18nRepo.findOneBy({ [inverseField]: { id }, locale })
 
     return foundI18N[field]

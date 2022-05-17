@@ -12,20 +12,13 @@ export class {{pascalCase name}}Resolver {
   constructor(@Inject({{pascalCase name}}Service) private readonly service: {{pascalCase name}}Service) {}
 
   @Query(() => {{pascalCase (slice name)}}Model, { name: '{{camelCase (slice name)}}' })
-  async get(
-    @Args('id', { type: () => Int }) id: number,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<{{pascalCase (slice name)}}Model> {
-    return await this.service.get(id, locale)
+  async get(@Args('id', { type: () => Int }) id: number): Promise<{{pascalCase (slice name)}}Model> {
+    return await this.service.get(id)
   }
 
   @Query(() => [{{pascalCase (slice name)}}Model], { name: '{{camelCase name}}' })
-  async list(
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES,
-    @Args('relations', { nullable: true, defaultValue: [], type: () => [String] })
-    relations?: FindOptionsRelations<{{pascalCase (slice name)}}Model>
-  ): Promise<{{pascalCase (slice name)}}Model[]> {
-    return await this.service.list({ locale, relations })
+  async list(): Promise<{{pascalCase (slice name)}}Model[]> {
+    return await this.service.list()
   }
 
   @Mutation(() => {{pascalCase (slice name)}}Model)

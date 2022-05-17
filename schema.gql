@@ -126,17 +126,17 @@ type Query {
   user(id: Int!, locale: String = "br"): UserModel!
   users(locale: String = "br"): [UserModel!]!
   usersInfo(id: Int!): UsersInfoModel!
-  department(id: Int!, locale: String = "br"): DepartmentModel!
-  departments(locale: String = "br", relations: [String!] = []): [DepartmentModel!]!
-  section(id: Int!, locale: String = "br"): SectionModel!
-  sections(locale: String = "br", relations: [String!] = []): [SectionModel!]!
-  question(id: Int!, locale: String = "br"): QuestionModel!
-  questions(locale: String = "br", relations: [String!] = []): [QuestionModel!]!
-  skill(id: Int!, locale: String = "br"): SkillModel!
-  skills(locale: String = "br", relations: [String!] = []): [SkillModel!]!
-  evaluation(id: Int!, locale: String = "br"): EvaluationModel!
-  evaluationByYear(year: Int!, locale: String = "br"): EvaluationModel!
-  evaluations(locale: String = "br"): [EvaluationModel!]!
+  department(id: Int!): DepartmentModel!
+  departments: [DepartmentModel!]!
+  section(id: Int!): SectionModel!
+  sections: [SectionModel!]!
+  question(id: Int!): QuestionModel!
+  questions: [QuestionModel!]!
+  skill(id: Int!): SkillModel!
+  skills: [SkillModel!]!
+  evaluation(id: Int!): EvaluationModel!
+  evaluationByYear(year: Int!): EvaluationModel!
+  evaluations: [EvaluationModel!]!
   goal(id: Int!, loadRelations: Boolean = false, locale: String = "br"): GoalModel!
   goals(locale: String = "br"): [GoalModel!]!
   kpi(id: Int!): KpiModel!
@@ -156,14 +156,14 @@ type Mutation {
   updateDepartment(id: Int!, input: UpdateDepartmentInput!): DepartmentModel!
   createSection(input: CreateSectionInput!): SectionModel!
   updateSection(id: Int!, input: UpdateSectionInput!): SectionModel!
-  addSectionQuestion(id: Int!, idQuestion: Int!): Boolean!
-  addSectionSkill(id: Int!, idSkill: Int!): Boolean!
+  addSectionQuestion(id: Int!, idQuestion: Int!): SectionModel!
+  addSectionSkill(id: Int!, idSkill: Int!): SectionModel!
   createQuestion(input: CreateQuestionInput!): QuestionModel!
   updateQuestion(id: Int!, input: UpdateQuestionInput!): QuestionModel!
   createSkill(input: CreateSkillInput!): SkillModel!
   updateSkill(id: Int!, input: UpdateSkillInput!): SkillModel!
   createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
-  addEvaluationSection(id: Int!, idSection: Int!): Boolean!
+  addEvaluationSection(id: Int!, idSection: Int!): EvaluationModel!
   updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
   removeEvaluation(id: Int!): EvaluationModel!
   createGoal(input: GoalInput!): GoalModel!

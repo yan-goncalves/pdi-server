@@ -1,4 +1,3 @@
-import { LOCALES } from '@constants/locales'
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { EvaluationsService } from '@evaluations/evaluations.service'
@@ -11,26 +10,20 @@ export class EvaluationsResolver {
   constructor(@Inject(EvaluationsService) private readonly service: EvaluationsService) {}
 
   @Query(() => EvaluationModel, { name: 'evaluation' })
-  async get(
-    @Args('id', { type: () => Int }) id: number,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<EvaluationModel> {
-    return await this.service.get(id, locale)
+  async get(@Args('id', { type: () => Int }) id: number): Promise<EvaluationModel> {
+    return await this.service.get(id)
   }
 
   @Query(() => EvaluationModel)
   async evaluationByYear(
-    @Args('year', { type: () => Int }) year: number,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
+    @Args('year', { type: () => Int }) year: number
   ): Promise<EvaluationModel> {
-    return await this.service.getBy({ year }, locale)
+    return await this.service.getBy({ year })
   }
 
   @Query(() => [EvaluationModel], { name: 'evaluations' })
-  async list(
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<EvaluationModel[]> {
-    return await this.service.list(locale)
+  async list(): Promise<EvaluationModel[]> {
+    return await this.service.list()
   }
 
   @Mutation(() => EvaluationModel)
@@ -38,11 +31,11 @@ export class EvaluationsResolver {
     return await this.service.create(input)
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EvaluationModel)
   async addEvaluationSection(
     @Args('id', { type: () => Int }) id: number,
     @Args('idSection', { type: () => Int }) idSection: number
-  ): Promise<boolean> {
+  ): Promise<EvaluationModel> {
     return await this.service.addSection(id, idSection)
   }
 

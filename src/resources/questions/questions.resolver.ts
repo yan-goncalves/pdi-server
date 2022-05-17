@@ -1,31 +1,22 @@
-import { LOCALES } from '@constants/locales'
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreateQuestionInput } from '@questions/dto/create-question.input'
 import { UpdateQuestionInput } from '@questions/dto/update-question.input'
 import { QuestionModel } from '@questions/entities/question.entity'
 import { QuestionsService } from '@questions/questions.service'
-import { FindOptionsRelations } from 'typeorm'
 
 @Resolver(() => QuestionModel)
 export class QuestionsResolver {
   constructor(@Inject(QuestionsService) private readonly service: QuestionsService) {}
 
   @Query(() => QuestionModel, { name: 'question' })
-  async get(
-    @Args('id', { type: () => Int }) id: number,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<QuestionModel> {
-    return await this.service.get(id, locale)
+  async get(@Args('id', { type: () => Int }) id: number): Promise<QuestionModel> {
+    return await this.service.get(id)
   }
 
   @Query(() => [QuestionModel], { name: 'questions' })
-  async list(
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES,
-    @Args('relations', { nullable: true, defaultValue: [], type: () => [String] })
-    relations?: FindOptionsRelations<QuestionModel>
-  ): Promise<QuestionModel[]> {
-    return await this.service.list({ locale, relations })
+  async list(): Promise<QuestionModel[]> {
+    return await this.service.list()
   }
 
   @Mutation(() => QuestionModel)

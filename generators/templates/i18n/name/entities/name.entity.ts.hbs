@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import translation from '@middlewares/i18n'
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -16,7 +17,16 @@ export class {{pascalCase (slice name)}}Model {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    middleware: [
+      translation({
+        field: 'changeMe',
+        inverseField: '{{camelCase (slice name)}}',
+        i18nModel: '{{pascalCase (slice name)}}LocaleModel'
+      })
+    ]
+  })
   changeMe: string
 
   @Field()

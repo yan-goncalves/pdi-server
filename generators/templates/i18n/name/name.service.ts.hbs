@@ -16,33 +16,15 @@ export class {{pascalCase name}}Service {
   ) {}
 
   async get(id: number, locale = LOCALES.BR): Promise<{{pascalCase (slice name)}}Model> {
-    const {{camelCase (slice name)}} = await this.repo.findOneBy({ id })
-    if (!{{camelCase (slice name)}}) {
+    try {  
+      return await this.repo.findOneBy({ id })
+    } catch {
       throw new NotFoundException(`{{pascalCase (slice name)}} with id '${id} not found`)
     }
-
-    const {{camelCase (slice name)}}Locale = await this.i18nService.getBy({
-      {{camelCase (slice name)}}: { id: {{camelCase (slice name)}}.id },
-      locale
-    })
-    return { ...{{camelCase (slice name)}}, changeMe: {{camelCase (slice name)}}Locale?.changeMe || null }
   }
 
   async list(options?: EntityFindOptions<{{pascalCase (slice name)}}Model>): Promise<{{pascalCase (slice name)}}Model[]> {
-    const { locale = LOCALES.BR, relations = [] } = options || {}
-
-    const {{camelCase (slice name)}}s = await this.repo.find({ relations })
-    const mapped{{pascalCase (slice name)}}s = {{camelCase (slice name)}}s.map(async ({{camelCase (slice name)}}) => ({
-      ...{{camelCase (slice name)}},
-      title: await this.i18nService
-        .getBy({
-          {{camelCase (slice name)}}: { id: {{camelCase (slice name)}}.id },
-          locale
-        })
-        .then(({{camelCase (slice name)}}Locale) => {{camelCase (slice name)}}Locale?.changeMe || null)
-    }))
-
-    return await Promise.all(mapped{{pascalCase (slice name)}}s)
+    return await this.repo.find()
   }
 
   async create({ changeMe }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
@@ -53,7 +35,10 @@ export class {{pascalCase name}}Service {
     const {{camelCase (slice name)}} = await this.repo.save(this.repo.create())
     const {{camelCase (slice name)}}Locale = await this.i18nService.create({{camelCase (slice name)}}, { changeMe })
 
-    return { ...{{camelCase (slice name)}}, changeMe: {{camelCase (slice name)}}Locale.changeMe }
+    return { 
+      ...{{camelCase (slice name)}}, 
+      changeMe: {{camelCase (slice name)}}Locale.changeMe 
+    }
   }
 
   async update(
@@ -69,6 +54,9 @@ export class {{pascalCase name}}Service {
       ? await this.i18nService.create({{camelCase (slice name)}}, { changeMe, locale })
       : await this.i18nService.update({{camelCase (slice name)}}, { changeMe, locale })
 
-    return { ...{{camelCase (slice name)}}, changeMe: {{camelCase (slice name)}}Locale.changeMe }
+    return { 
+      ...{{camelCase (slice name)}}, 
+      changeMe: {{camelCase (slice name)}}Locale.changeMe 
+    }
   }
 }

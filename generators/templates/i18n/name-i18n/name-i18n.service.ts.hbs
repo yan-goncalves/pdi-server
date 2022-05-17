@@ -24,11 +24,7 @@ export class {{pascalCase name}}I18nService {
   async getBy(
     options: FindOptionsWhere<{{pascalCase (slice name)}}LocaleModel> | FindOptionsWhere<{{pascalCase (slice name)}}LocaleModel>[]
   ): Promise<{{pascalCase (slice name)}}LocaleModel> {
-    try {
-      return await this.repo.findOneByOrFail(options)
-    } catch {
-      return null
-    }
+      return await this.repo.findOneBy(options)
   }
 
   async create(

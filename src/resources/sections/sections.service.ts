@@ -7,15 +7,12 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { QuestionModel } from '@questions/entities/question.entity'
 import { QuestionsService } from '@questions/questions.service'
 import { SectionsI18nService } from '@sections-i18n/sections-i18n.service'
 import { CreateSectionInput } from '@sections/dto/create-section.input'
 import { UpdateSectionInput } from '@sections/dto/update-section.input'
 import { SectionModel } from '@sections/entities/section.entity'
-import { SkillModel } from '@skills/entities/skill.entity'
 import { SkillsService } from '@skills/skills.service'
-import { EntityFindOptions } from 'src/types/common'
 import { Repository } from 'typeorm'
 
 @Injectable()
@@ -27,69 +24,16 @@ export class SectionsService {
     @Inject(SkillsService) private readonly skillsService: SkillsService
   ) {}
 
-  async get(id: number, locale = LOCALES.BR): Promise<SectionModel> {
-    const section = await this.repo.findOneBy({ id })
-    if (!section) {
+  async get(id: number): Promise<SectionModel> {
+    try {
+      return await this.repo.findOneBy({ id })
+    } catch {
       throw new NotFoundException(`Section with id '${id} not found`)
     }
-
-    const sectionLocale = await this.i18nService.getBy({
-      section: { id: section.id },
-      locale
-    })
-
-    const questionsLocale = await Promise.all(
-      section?.questions.map(async (question) => ({
-        ...question,
-        ...(await this.questionsService.get(question.id, locale))
-      }))
-    )
-
-    const skillsLocale = await Promise.all(
-      section?.skills.map(async (skill) => ({
-        ...skill,
-        ...(await this.skillsService.get(skill.id, locale))
-      }))
-    )
-
-    return {
-      ...section,
-      title: sectionLocale?.title || null,
-      questions: questionsLocale,
-      skills: skillsLocale
-    }
   }
 
-  private isInSection<T extends { id: number }>(
-    array: T[],
-    section: SectionModel,
-    field: 'questions' | 'skills'
-  ): Array<T> {
-    return array.filter((item) =>
-      section[field].some((sectionItem: QuestionModel | SkillModel) => sectionItem.id === item.id)
-    )
-  }
-
-  async list(options?: EntityFindOptions<SectionModel>): Promise<SectionModel[]> {
-    const { locale = LOCALES.BR, relations = [] } = options || {}
-    const questions = await this.questionsService.list({ locale })
-    const skills = await this.skillsService.list({ locale })
-
-    const sections = await this.repo.find({ relations })
-
-    const mappedSections = sections.map(async (section) => ({
-      ...section,
-      title: await this.i18nService
-        .getBy({
-          section: { id: section.id },
-          locale
-        })
-        .then((sectionLocale) => sectionLocale?.title || null),
-      questions: this.isInSection(questions, section, 'questions'),
-      skills: this.isInSection(skills, section, 'skills')
-    }))
-
-    return await Promise.all(mappedSections)
+  async list(): Promise<SectionModel[]> {
+    return await this.repo.find()
   }
 
   async create({ title, visibility }: CreateSectionInput): Promise<SectionModel> {
@@ -100,22 +44,29 @@ export class SectionsService {
     const section = await this.repo.save(this.repo.create({ visibility }))
     const sectionLocale = await this.i18nService.create(section, { title })
 
-    return { ...section, title: sectionLocale.title }
+    return {
+      ...section,
+      title: sectionLocale.title
+    }
   }
 
   async update(
     id: number,
     { title, visibility, locale = LOCALES.BR }: UpdateSectionInput
   ): Promise<SectionModel> {
-    const section = await this.get(id, locale)
+    const section = await this.get(id)
+    const sectionLocaleFound = await this.i18nService.getBy({ section: { id }, locale })
 
     if (visibility) {
       this.repo.merge(section, { visibility })
       await this.repo.save(section)
     }
 
-    if (section?.title && section.title === title) {
-      return section
+    if (sectionLocaleFound?.title && sectionLocaleFound.title === title) {
+      return {
+        ...section,
+        title: sectionLocaleFound.title
+      }
     }
 
     const sectionLocale = !section?.title
@@ -127,7 +78,7 @@ export class SectionsService {
     return !visibility ? ret : { ...ret, visibility }
   }
 
-  async addQuestion(id: number, idQuestion: number): Promise<boolean> {
+  async addQuestion(id: number, idQuestion: number): Promise<SectionModel> {
     const section = await this.get(id)
     const question = await this.questionsService.get(idQuestion)
 
@@ -135,16 +86,11 @@ export class SectionsService {
       throw new MethodNotAllowedException('Question already exist on this Section')
     }
 
-    const merge = {
-      ...section,
-      questions: [{ ...question, ask: question.ask }]
-    }
-    this.repo.merge(section, merge)
-
-    return !!(await this.repo.save(section))
+    this.repo.merge(section, { questions: [question] })
+    return await this.repo.save(section)
   }
 
-  async addSkill(id: number, idSkill: number): Promise<boolean> {
+  async addSkill(id: number, idSkill: number): Promise<SectionModel> {
     const section = await this.get(id)
     const skill = await this.skillsService.get(idSkill)
 
@@ -152,12 +98,7 @@ export class SectionsService {
       throw new MethodNotAllowedException('Skill already exist on this Section')
     }
 
-    const merge = {
-      ...section,
-      skills: [{ ...skill, title: skill.title, description: skill.description }]
-    }
-
-    this.repo.merge(section, merge)
-    return !!(await this.repo.save(section))
+    this.repo.merge(section, { skills: [skill] })
+    return await this.repo.save(section)
   }
 }

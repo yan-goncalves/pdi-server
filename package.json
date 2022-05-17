@@ -95,6 +95,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "^@data-source": "<rootDir>/data-source.ts",
       "^@appModule": "<rootDir>/app.module.ts",
       "^@constants/(.*)$": "<rootDir>/constants/$1",
       "^@guards/(.*)$": "<rootDir>/guards/$1",

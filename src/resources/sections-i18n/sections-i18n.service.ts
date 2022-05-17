@@ -24,11 +24,7 @@ export class SectionsI18nService {
   async getBy(
     options: FindOptionsWhere<SectionLocaleModel> | FindOptionsWhere<SectionLocaleModel>[]
   ): Promise<SectionLocaleModel> {
-    try {
-      return await this.repo.findOneByOrFail(options)
-    } catch {
-      return null
-    }
+    return await this.repo.findOneBy(options)
   }
 
   async create(

@@ -1,3 +1,4 @@
+import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { SkillLocaleModel } from '@skills-i18n/entities/skill-18n.entity'
 import {
@@ -16,10 +17,28 @@ export class SkillModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    middleware: [
+      translation({
+        field: 'description',
+        inverseField: 'skill',
+        i18nModel: 'SkillLocaleModel'
+      })
+    ]
+  })
   title?: string
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    middleware: [
+      translation({
+        field: 'description',
+        inverseField: 'skill',
+        i18nModel: 'SkillLocaleModel'
+      })
+    ]
+  })
   description?: string
 
   @Field()

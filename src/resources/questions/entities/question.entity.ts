@@ -1,3 +1,4 @@
+import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { QuestionLocaleModel } from '@questions-i18n/entities/questions-i18n.entity'
 import {
@@ -16,7 +17,16 @@ export class QuestionModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    middleware: [
+      translation({
+        field: 'ask',
+        inverseField: 'question',
+        i18nModel: 'QuestionLocaleModel'
+      })
+    ]
+  })
   ask?: string
 
   @Field()
