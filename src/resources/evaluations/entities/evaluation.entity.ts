@@ -1,4 +1,5 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
+import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { SectionModel } from '@sections/entities/section.entity'
 import {
@@ -6,8 +7,10 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -82,6 +85,11 @@ export class EvaluationModel {
     inverseJoinColumn: { name: 'id_section', referencedColumnName: 'id' }
   })
   sections?: SectionModel[]
+
+  @Field(() => [EvaluationGoalModel], { nullable: true })
+  @OneToMany(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.evaluation)
+  @JoinColumn({ name: 'id_goal' })
+  goals?: EvaluationGoalModel[]
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

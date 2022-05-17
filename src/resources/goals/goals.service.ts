@@ -1,4 +1,3 @@
-import { LOCALES } from '@constants/locales'
 import { GoalInput } from '@goals/dto/goal.input'
 import { GoalModel } from '@goals/entities/goal.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
@@ -13,12 +12,7 @@ export class GoalsService {
     @Inject(UsersService) private readonly usersService: UsersService
   ) {}
 
-  async get(
-    id: number,
-    idManager: number,
-    loadRelations = false,
-    locale = LOCALES.BR
-  ): Promise<GoalModel> {
+  async get(id: number, idManager: number, loadRelations = false): Promise<GoalModel> {
     try {
       return await this.repo.findOneOrFail({
         where: { id, manager: { id: idManager } },
@@ -39,7 +33,7 @@ export class GoalsService {
     }
   }
 
-  async list(idManager: number, isDirector = false, locale = LOCALES.BR): Promise<GoalModel[]> {
+  async list(idManager: number, isDirector = false): Promise<GoalModel[]> {
     return await this.repo.find({
       where: { manager: { id: !isDirector ? idManager : undefined } },
       relations: !isDirector ? undefined : ['manager']

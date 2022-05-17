@@ -50,6 +50,34 @@ type JWT {
   jwt: String!
 }
 
+type GoalModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type KpiModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type EvaluationGoalModel {
+  evaluation: EvaluationModel!
+  user: UserModel!
+  goal: GoalModel!
+  kpis: [KpiModel!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type QuestionModel {
   id: Int!
   ask: String
@@ -98,24 +126,7 @@ type EvaluationModel {
   endDate: EvaluationDateModel!
   finished: Boolean!
   sections: [SectionModel!]
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type GoalModel {
-  id: Int!
-  manager: UserModel!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type KpiModel {
-  id: Int!
-  manager: UserModel!
-  name: String!
+  goals: [EvaluationGoalModel!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -137,8 +148,8 @@ type Query {
   evaluation(id: Int!): EvaluationModel!
   evaluationByYear(year: Int!): EvaluationModel!
   evaluations: [EvaluationModel!]!
-  goal(id: Int!, loadRelations: Boolean = false, locale: String = "br"): GoalModel!
-  goals(locale: String = "br"): [GoalModel!]!
+  goal(id: Int!, loadRelations: Boolean = false): GoalModel!
+  goals: [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!
 }

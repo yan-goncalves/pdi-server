@@ -2,6 +2,7 @@ import { AppModule } from '@appModule'
 import { AppDataSource } from '@data-source'
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import 'reflect-metadata'
 
 async function bootstrap(): Promise<void> {
   await AppDataSource.initialize()

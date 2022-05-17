@@ -37,9 +37,19 @@ module.exports = (
     ) => {
       const transform = _.kebabCase(name)
 
-      return transform.includes('-')
-        ? `${transform.split('-')[0].slice(0, -1)}-${transform.split('-')[1]}`
-        : name.slice(0, -1)
+      return transform.includes('-') ? formatSlice(transform) : name.slice(0, -1)
     }
   )
+}
+
+const formatSlice = (
+  /**@type {string} */
+  transform
+) => {
+  const split = transform.split('-')
+  const index = split.findIndex((s) => s.charAt(s.length - 1) === 's')
+  const preffix = index === 0 ? split[0].slice(0, -1) : split[0]
+  const suffix = index === 1 ? split[1].slice(0, -1) : split[1]
+
+  return `${preffix}-${suffix}`
 }
