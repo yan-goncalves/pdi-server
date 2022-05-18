@@ -50,6 +50,14 @@ type JWT {
   jwt: String!
 }
 
+type FeedbackModel {
+  id: Int!
+  inquire: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type QuestionModel {
   id: Int!
   ask: String
@@ -99,6 +107,7 @@ type EvaluationModel {
   finished: Boolean!
   sections: [SectionModel!]
   goals: [EvaluationGoalModel!]
+  feedbacks: [FeedbackModel!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -130,7 +139,6 @@ type KpiModel {
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  deletedAt: DateTime
 }
 
 type EvaluationGoalKpiModel {
@@ -142,6 +150,14 @@ type EvaluationGoalKpiModel {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+}
+
+type PerformedEvaluationModel {
+  id: Int!
+  evaluation: EvaluationModel!
+  user: UserModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -157,6 +173,8 @@ type Query {
   questions: [QuestionModel!]!
   skill(id: Int!): SkillModel!
   skills: [SkillModel!]!
+  feedback(id: Int!): FeedbackModel!
+  feedbacks: [FeedbackModel!]!
   evaluation(id: Int!): EvaluationModel!
   evaluationByYear(year: Int!): EvaluationModel!
   evaluations: [EvaluationModel!]!
@@ -168,6 +186,8 @@ type Query {
   evaluationGoals: [EvaluationGoalModel!]!
   evaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
   evaluationGoalsKpis: [EvaluationGoalKpiModel!]!
+  performedEvaluation(id: Int!): PerformedEvaluationModel!
+  performedEvaluations: [PerformedEvaluationModel!]!
 }
 
 input EvaluationGoalInput {
@@ -195,8 +215,11 @@ type Mutation {
   updateQuestion(id: Int!, input: UpdateQuestionInput!): QuestionModel!
   createSkill(input: CreateSkillInput!): SkillModel!
   updateSkill(id: Int!, input: UpdateSkillInput!): SkillModel!
+  createFeedback(input: CreateFeedbackInput!): FeedbackModel!
+  updateFeedback(id: Int!, input: UpdateFeedbackInput!): FeedbackModel!
   createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
   addEvaluationSection(id: Int!, idSection: Int!): EvaluationModel!
+  addEvaluationFeedback(id: Int!, idFeedback: Int!): EvaluationModel!
   updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
   removeEvaluation(id: Int!): EvaluationModel!
   createGoal(input: GoalInput!): GoalModel!
@@ -209,6 +232,8 @@ type Mutation {
   removeEvaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
   createEvaluationGoalKpi(input: CreateEvaluationGoalKpiInput!): EvaluationGoalKpiModel!
   removeEvaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
+  createPerformedEvaluation(input: PerformedEvaluationInput!): PerformedEvaluationModel!
+  removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
 }
 
 input SignInInput {
@@ -295,6 +320,15 @@ input UpdateSkillInput {
   locale: String!
 }
 
+input CreateFeedbackInput {
+  inquire: String!
+}
+
+input UpdateFeedbackInput {
+  inquire: String!
+  locale: String!
+}
+
 input CreateEvaluationInput {
   year: Int!
   mid: CreateEvaluationDateInput!
@@ -328,4 +362,9 @@ input CreateEvaluationGoalKpiInput {
   idKpi: Int!
   target: String!
   weight: Int!
+}
+
+input PerformedEvaluationInput {
+  idEvaluation: Int!
+  idUser: Int!
 }

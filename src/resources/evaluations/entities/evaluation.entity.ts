@@ -1,5 +1,6 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
 import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
+import { FeedbackModel } from '@feedbacks/entities/feedback.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { SectionModel } from '@sections/entities/section.entity'
 import {
@@ -90,6 +91,15 @@ export class EvaluationModel {
   @OneToMany(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.evaluation)
   @JoinColumn({ name: 'id_goal' })
   goals?: EvaluationGoalModel[]
+
+  @Field(() => [FeedbackModel], { nullable: true })
+  @ManyToMany(() => FeedbackModel, (feedback) => feedback.id, { eager: true })
+  @JoinTable({
+    name: 'evaluations_feedbacks',
+    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'id_feedback', referencedColumnName: 'id' }
+  })
+  feedbacks?: FeedbackModel[]
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

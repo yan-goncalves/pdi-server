@@ -1,5 +1,6 @@
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
+import { FeedbacksService } from '@feedbacks/feedbacks.service'
 import {
   ConflictException,
   ForbiddenException,
@@ -18,7 +19,8 @@ import { UpdateEvaluationInput } from './dto/update-evaluation.input'
 export class EvaluationsService {
   constructor(
     @InjectRepository(EvaluationModel) private readonly repo: Repository<EvaluationModel>,
-    @Inject(SectionsService) private readonly sectionsService: SectionsService
+    @Inject(SectionsService) private readonly sectionsService: SectionsService,
+    @Inject(FeedbacksService) private readonly feedbacksService: FeedbacksService
   ) {}
 
   async get(id: number): Promise<EvaluationModel> {
@@ -72,10 +74,23 @@ export class EvaluationsService {
     const section = await this.sectionsService.get(idSection)
 
     if (evaluation?.sections.some((s) => s.id === section.id)) {
-      throw new MethodNotAllowedException('Section already exists on this Evaluation')
+      throw new MethodNotAllowedException('Section already exists in this Evaluation')
     }
 
     this.repo.merge(evaluation, { sections: [section] })
+
+    return await this.repo.save(evaluation)
+  }
+
+  async addFeedback(id: number, idFeedback: number): Promise<EvaluationModel> {
+    const evaluation = await this.get(id)
+    const feedback = await this.feedbacksService.get(idFeedback)
+
+    if (evaluation?.feedbacks.some((s) => s.id === feedback.id)) {
+      throw new MethodNotAllowedException('Feedback already exists in this Evaluation')
+    }
+
+    this.repo.merge(evaluation, { feedbacks: [feedback] })
 
     return await this.repo.save(evaluation)
   }
@@ -93,19 +108,19 @@ export class EvaluationsService {
     }
 
     if (input?.mid || input?.end) {
-      const stage = !input?.mid ? 'endDate' : 'midDate'
-      const opposite = stage === 'endDate' ? 'midDate' : 'endDate'
+      const field = !input?.mid ? 'endDate' : 'midDate'
+      const oppositeField = field === 'endDate' ? 'midDate' : 'endDate'
 
       const dates = [
-        input[stage].start,
-        input[stage].deadline,
-        evaluation[opposite].start,
-        evaluation[opposite].deadline
+        input[field].start,
+        input[field].deadline,
+        evaluation[oppositeField].start,
+        evaluation[oppositeField].deadline
       ]
       const datesSorted = dates.sort(compareAsc)
       this.repo.merge(evaluation, {
         midDate: { start: datesSorted[0], deadline: datesSorted[1] },
-        endDate: { start: datesSorted[2], deadline: datesSorted[2] }
+        endDate: { start: datesSorted[2], deadline: datesSorted[3] }
       })
       await this.repo.save(evaluation)
     }

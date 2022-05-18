@@ -16,7 +16,7 @@ export class SkillsService {
 
   async get(id: number): Promise<SkillModel> {
     try {
-      return await this.repo.findOneBy({ id })
+      return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException(`Skill with id '${id} not found`)
     }

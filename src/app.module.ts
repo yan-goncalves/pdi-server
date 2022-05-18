@@ -1,8 +1,10 @@
 import { AuthModule } from '@auth/auth.module'
+import { AppDataSource } from '@data-source'
 import { DepartmentsModule } from '@departments/departments.module'
 import { EvaluationGoalsKpisModule } from '@evaluation-goals-kpis/evaluation-goals-kpis.module'
 import { EvaluationGoalsModule } from '@evaluation-goals/evaluation-goals.module'
 import { EvaluationsModule } from '@evaluations/evaluations.module'
+import { FeedbacksModule } from '@feedbacks/feedbacks.module'
 import { GoalsModule } from '@goals/goals.module'
 import { KpisModule } from '@kpis/kpis.module'
 import { LdapModule } from '@ldap/ldap.module'
@@ -11,12 +13,12 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
 import { QuestionsModule } from '@questions/questions.module'
 import { SectionsModule } from '@sections/sections.module'
 import { SkillsModule } from '@skills/skills.module'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
-import { AppDataSource } from './data-source'
 
 @Module({
   imports: [
@@ -61,11 +63,13 @@ import { AppDataSource } from './data-source'
     SectionsModule,
     QuestionsModule,
     SkillsModule,
+    FeedbacksModule,
     EvaluationsModule,
     GoalsModule,
     KpisModule,
     EvaluationGoalsModule,
-    EvaluationGoalsKpisModule
+    EvaluationGoalsKpisModule,
+    PerformedEvaluationsModule
   ]
 })
 export class AppModule {}

@@ -16,7 +16,7 @@ export class QuestionsService {
 
   async get(id: number): Promise<QuestionModel> {
     try {
-      return await this.repo.findOneBy({ id })
+      return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException(`Question with id '${id} not found`)
     }

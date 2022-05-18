@@ -3,7 +3,6 @@ import { UserModel } from '@users/entities/user.entity'
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
@@ -34,8 +33,4 @@ export class KpiModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
-
-  @Field({ nullable: true })
-  @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
-  deletedAt?: Date
 }

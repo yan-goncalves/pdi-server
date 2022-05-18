@@ -1,6 +1,12 @@
 import { KpiInput } from '@kpis/dto/kpi.input'
 import { KpiModel } from '@kpis/entities/kpi.entity'
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  MethodNotAllowedException,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersService } from '@users/users.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
@@ -41,20 +47,12 @@ export class KpisService {
   }
 
   async create(idManager: number, { name }: KpiInput): Promise<KpiModel> {
-    const manager = await this.usersService.get(idManager)
-    const kpiFound = await this.repo.findOne({
-      where: { manager: { id: manager.id }, name },
-      withDeleted: true
-    })
-
-    if (kpiFound) {
-      if (!kpiFound?.deletedAt) {
-        throw new ConflictException('Kpi already exists')
-      }
-      return await this.repo.save(this.repo.merge(kpiFound, { deletedAt: null }))
+    try {
+      const manager = await this.usersService.get(idManager)
+      return await this.repo.save(this.repo.create({ manager, name }))
+    } catch {
+      throw new ConflictException('Kpi already exists')
     }
-
-    return await this.repo.save(this.repo.create({ manager, name }))
   }
 
   async update(id: number, idManager: number, { name }: KpiInput): Promise<KpiModel> {
@@ -66,25 +64,17 @@ export class KpisService {
     return await this.repo.save(this.repo.merge(kpiFound, { name }))
   }
 
-  async setDeleted(id: number, idManager: number, deleted = true): Promise<KpiModel> {
-    const kpiFound = await this.repo.findOne({
-      where: { id, manager: { id: idManager } },
-      withDeleted: true
-    })
+  async delete(id: number, idManager: number): Promise<KpiModel> {
+    try {
+      const kpiFound = await this.getBy({ id, manager: { id: idManager } })
+      await this.repo.delete({ id: kpiFound.id })
 
-    if (!kpiFound) {
-      throw new NotFoundException('Kpi not found')
+      return kpiFound
+    } catch (Error) {
+      if (Error instanceof NotFoundException) {
+        throw Error
+      }
+      throw new MethodNotAllowedException('Unable to remove. Kpi in use')
     }
-
-    if (deleted === false) {
-      return await this.repo.save(this.repo.merge(kpiFound, { deletedAt: null }))
-    }
-
-    await this.repo.softDelete({ id: kpiFound.id })
-
-    return await this.repo.findOne({
-      where: { id: kpiFound.id },
-      withDeleted: true
-    })
   }
 }

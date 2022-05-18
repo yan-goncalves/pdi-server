@@ -22,7 +22,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node _modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "plop": "plop --plopfile generators/plopfile.js"
+    "plop": "plop --plopfile generators/plopfile.js",
+    "migration:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate ./src/migrations/entities -d ./src/data-source.ts",
+    "migration:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/data-source.ts"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.11",
@@ -75,7 +77,7 @@
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "tsconfig-paths": "^3.10.1",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.3.5"
   },
   "jest": {
@@ -112,12 +114,15 @@
       "^@questions-i18n/(.*)$": "<rootDir>/resources/questions-i18n/$1",
       "^@skills/(.*)$": "<rootDir>/resources/skills/$1",
       "^@skills-i18n/(.*)$": "<rootDir>/resources/skills-i18n/$1",
+      "^@feedbacks/(.*)$": "<rootDir>/resources/feedbacks/$1",
+      "^@feedbacks-i18n/(.*)$": "<rootDir>/resources/feedbacks-i18n/$1",
       "^@evaluations/(.*)$": "<rootDir>/resources/evaluations/$1",
       "^@evaluations-i18n/(.*)$": "<rootDir>/resources/evaluations-i18n/$1",
       "^@goals/(.*)$": "<rootDir>/resources/goals/$1",
       "^@kpis/(.*)$": "<rootDir>/resources/kpis/$1",
       "^@evaluation-goals/(.*)$": "<rootDir>/resources/evaluation-goals/$1",
-      "^@evaluation-goals-kpis/(.*)$": "<rootDir>/resources/evaluation-goals-kpis/$1"
+      "^@evaluation-goals-kpis/(.*)$": "<rootDir>/resources/evaluation-goals-kpis/$1",
+      "^@performed-evaluations/(.*)$": "<rootDir>/resources/performed-evaluations/$1"
     }
   }
 }

@@ -26,7 +26,7 @@ export class SectionsService {
 
   async get(id: number): Promise<SectionModel> {
     try {
-      return await this.repo.findOneBy({ id })
+      return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException(`Section with id '${id} not found`)
     }
@@ -69,7 +69,7 @@ export class SectionsService {
       }
     }
 
-    const sectionLocale = !section?.title
+    const sectionLocale = !sectionLocaleFound?.title
       ? await this.i18nService.create(section, { title, locale })
       : await this.i18nService.update(section, { title, locale })
 
@@ -83,7 +83,7 @@ export class SectionsService {
     const question = await this.questionsService.get(idQuestion)
 
     if (section?.questions.some((q) => q.id === question.id)) {
-      throw new MethodNotAllowedException('Question already exist on this Section')
+      throw new MethodNotAllowedException('Question already exist in this Section')
     }
 
     this.repo.merge(section, { questions: [question] })
@@ -95,7 +95,7 @@ export class SectionsService {
     const skill = await this.skillsService.get(idSkill)
 
     if (section?.skills.some((s) => s.id === skill.id)) {
-      throw new MethodNotAllowedException('Skill already exist on this Section')
+      throw new MethodNotAllowedException('Skill already exist in this Section')
     }
 
     this.repo.merge(section, { skills: [skill] })

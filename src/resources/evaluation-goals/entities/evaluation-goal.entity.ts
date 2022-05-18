@@ -1,8 +1,8 @@
+import { EvaluationGoalKpiModel } from '@evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { GoalModel } from '@goals/entities/goal.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UserModel } from '@users/entities/user.entity'
-import { EvaluationGoalKpiModel } from 'src/resources/evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
 import {
   CreateDateColumn,
   DeleteDateColumn,

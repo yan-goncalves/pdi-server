@@ -38,12 +38,15 @@
       "@questions-i18n/*": ["src/resources/questions-i18n/*"],
       "@skills/*": ["src/resources/skills/*"],
       "@skills-i18n/*": ["src/resources/skills-i18n/*"],
+      "@feedbacks/*": ["src/resources/feedbacks/*"],
+      "@feedbacks-i18n/*": ["src/resources/feedbacks-i18n/*"],
       "@evaluations/*": ["src/resources/evaluations/*"],
       "@evaluations-i18n/*": ["src/resources/evaluations-i18n/*"],
       "@goals/*": ["src/resources/goals/*"],
       "@kpis/*": ["src/resources/kpis/*"],
       "@evaluation-goals/*": ["src/resources/evaluation-goals/*"],
-      "@evaluation-goals-kpis/*": ["src/resources/evaluation-goals-kpis/*"]
+      "@evaluation-goals-kpis/*": ["src/resources/evaluation-goals-kpis/*"],
+      "@performed-evaluations/*": ["src/resources/performed-evaluations/*"]
     }
   }
 }

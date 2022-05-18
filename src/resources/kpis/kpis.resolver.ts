@@ -59,6 +59,6 @@ export class KpisResolver {
     @CurrentUser() { id: idManager }: UserModel,
     @Args('id', { type: () => Int }) id: number
   ): Promise<KpiModel> {
-    return await this.service.setDeleted(id, idManager)
+    return await this.service.delete(id, idManager)
   }
 }

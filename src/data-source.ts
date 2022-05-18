@@ -7,7 +7,7 @@ export const AppDataSource = new DataSource({
   database: process.env.TYPEORM_DATABASE || 'PDI',
   username: process.env.TYPEORM_USERNAME || 'pdi',
   password: process.env.TYPEORM_PASSWORD || '1@asdfgPDI',
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  entities: [__dirname + '/**/*.entity.{ts,js}'],
   requestTimeout: 60 * 1000,
   autoLoadEntities: true,
   options: {
@@ -16,5 +16,6 @@ export const AppDataSource = new DataSource({
   },
   logging: process.env.NODE_ENV !== 'production',
   synchronize: process.env.NODE_ENV !== 'production',
-  migrationsRun: process.env.NODE_ENV === 'production'
+  migrationsRun: process.env.NODE_ENV === 'production',
+  migrations: [__dirname + '/migrations/*.{ts,js}']
 } as SqlServerConnectionOptions)

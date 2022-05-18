@@ -40,6 +40,14 @@ export class EvaluationsResolver {
   }
 
   @Mutation(() => EvaluationModel)
+  async addEvaluationFeedback(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('idFeedback', { type: () => Int }) idFeedback: number
+  ): Promise<EvaluationModel> {
+    return await this.service.addFeedback(id, idFeedback)
+  }
+
+  @Mutation(() => EvaluationModel)
   async updateEvaluation(
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateEvaluationInput

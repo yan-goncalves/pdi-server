@@ -15,7 +15,7 @@ export class {{pascalCase name}}Service {
     @Inject({{pascalCase name}}I18nService) private readonly i18nService: {{pascalCase name}}I18nService
   ) {}
 
-  async get(id: number, locale = LOCALES.BR): Promise<{{pascalCase (slice name)}}Model> {
+  async get(id: number): Promise<{{pascalCase (slice name)}}Model> {
     try {  
       return await this.repo.findOneBy({ id })
     } catch {
@@ -23,7 +23,7 @@ export class {{pascalCase name}}Service {
     }
   }
 
-  async list(options?: EntityFindOptions<{{pascalCase (slice name)}}Model>): Promise<{{pascalCase (slice name)}}Model[]> {
+  async list(): Promise<{{pascalCase (slice name)}}Model[]> {
     return await this.repo.find()
   }
 
@@ -45,12 +45,16 @@ export class {{pascalCase name}}Service {
     id: number,
     { changeMe, locale = LOCALES.BR }: Update{{pascalCase (slice name)}}Input
   ): Promise<{{pascalCase (slice name)}}Model> {
-    const {{camelCase (slice name)}} = await this.get(id, locale)
-    if ({{camelCase (slice name)}}?.changeMe && {{camelCase (slice name)}}.changeMe === changeMe) {
-      return {{camelCase (slice name)}}
+    const {{camelCase (slice name)}} = await this.get(id)
+    const {{camelCase (slice name)}}LocaleFound = await this.i18nService.getBy({ changeMe: { id }, locale })
+    if ({{camelCase (slice name)}}LocaleFound?.changeMe && {{camelCase (slice name)}}LocaleFound.changeMe === changeMe) {
+      return {
+        ...{{camelCase (slice name)}},
+        changeMe: 
+      }
     }
 
-    const {{camelCase (slice name)}}Locale = !{{camelCase (slice name)}}?.changeMe
+    const {{camelCase (slice name)}}Locale = !{{camelCase (slice name)}}LocaleFound?.changeMe
       ? await this.i18nService.create({{camelCase (slice name)}}, { changeMe, locale })
       : await this.i18nService.update({{camelCase (slice name)}}, { changeMe, locale })
 
