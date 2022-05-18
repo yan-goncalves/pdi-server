@@ -161,9 +161,9 @@ type PerformedEvaluationModel {
 }
 
 type Query {
-  me(locale: String = "br"): UserModel!
-  user(id: Int!, locale: String = "br"): UserModel!
-  users(locale: String = "br"): [UserModel!]!
+  me: UserModel!
+  user(id: Int!): UserModel!
+  users: [UserModel!]!
   usersInfo(id: Int!): UsersInfoModel!
   department(id: Int!): DepartmentModel!
   departments: [DepartmentModel!]!
@@ -244,7 +244,7 @@ input SignInInput {
 input CreateUserInput {
   username: String!
   email: String!
-  role: String = "user"
+  role: String = "USER"
 }
 
 input UpdateUserInput {

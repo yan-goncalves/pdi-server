@@ -15,7 +15,7 @@ export class FeedbackLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Column()
+  @Column({ enum: LOCALES, default: LOCALES.BR })
   locale: LOCALES
 
   @ManyToOne(() => FeedbackModel, (feedback) => feedback.id)

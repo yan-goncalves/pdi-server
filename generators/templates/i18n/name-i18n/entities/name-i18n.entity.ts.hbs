@@ -15,7 +15,7 @@ export class {{pascalCase (slice name)}}LocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Column()
+  @Column({ enum: LOCALES, default: LOCALES.BR })
   locale: LOCALES
 
   @ManyToOne(() => {{pascalCase (slice name)}}Model, ({{camelCase (slice name)}}) => {{camelCase (slice name)}}.id)

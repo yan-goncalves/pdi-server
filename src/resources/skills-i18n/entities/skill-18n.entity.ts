@@ -17,7 +17,7 @@ export class SkillLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Column()
+  @Column({ enum: LOCALES, default: LOCALES.BR })
   locale: LOCALES
 
   @ManyToOne(() => SkillModel, (question) => question.id)

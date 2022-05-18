@@ -1,4 +1,3 @@
-import { LOCALES } from '@constants/locales'
 import { ROLES } from '@constants/roles'
 import { DepartmentsService } from '@departments/departments.service'
 import { LdapService } from '@ldap/ldap.service'
@@ -20,7 +19,6 @@ import { compare } from 'bcrypt'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 export type UserOptions = {
-  locale?: LOCALES
   withDeleted?: boolean
 }
 
@@ -70,7 +68,7 @@ export class UsersService {
   }
 
   async get(id: number, options?: UserOptions): Promise<UserModel> {
-    const { locale = LOCALES.BR, withDeleted = false } = options || {}
+    const { withDeleted = false } = options || {}
 
     const user = await this.repo.findOneOrFail({ where: { id }, withDeleted })
     if (!user) {
@@ -91,20 +89,8 @@ export class UsersService {
     }
   }
 
-  async list(locale = LOCALES.BR): Promise<UserModel[]> {
-    const users = await this.repo.find()
-    const mappedUsers = users.map(async (user) => {
-      const department = !user?.department
-        ? null
-        : await this.departmentsService.get(user.department?.id)
-
-      return {
-        ...user,
-        department
-      }
-    })
-
-    return await Promise.all(mappedUsers)
+  async list(): Promise<UserModel[]> {
+    return await this.repo.find()
   }
 
   async update(id: number, input: UpdateUserInput): Promise<UserModel> {

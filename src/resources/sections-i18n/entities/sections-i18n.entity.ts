@@ -17,7 +17,7 @@ export class SectionLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Column()
+  @Column({ enum: LOCALES, default: LOCALES.BR })
   locale: LOCALES
 
   @ManyToOne(() => SectionModel, (section) => section.id)

@@ -1,4 +1,3 @@
-import { LOCALES } from '@constants/locales'
 import { CurrentUser } from '@decorators/current-user.decorator'
 import { JwtAuthGuard } from '@guards/jwt.auth.guard'
 import { Inject, UseGuards } from '@nestjs/common'
@@ -18,26 +17,18 @@ export class UsersResolver {
 
   @Query(UserModelReturnType)
   @UseGuards(JwtAuthGuard)
-  async me(
-    @CurrentUser() currentUser: UserModel,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<UserModel> {
-    return await this.get(currentUser.id, locale)
+  async me(@CurrentUser() currentUser: UserModel): Promise<UserModel> {
+    return await this.get(currentUser.id)
   }
 
   @Query(UserModelReturnType, { name: 'user' })
-  async get(
-    @Args('id', { type: UserModelReturnTypeArgs }) id: number,
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale?: LOCALES
-  ): Promise<UserModel> {
-    return await this.service.get(id, { locale })
+  async get(@Args('id', { type: UserModelReturnTypeArgs }) id: number): Promise<UserModel> {
+    return await this.service.get(id)
   }
 
   @Query(UserModelReturnTypeArray, { name: 'users' })
-  async list(
-    @Args('locale', { nullable: true, defaultValue: LOCALES.BR }) locale: LOCALES
-  ): Promise<UserModel[]> {
-    return await this.service.list(locale)
+  async list(): Promise<UserModel[]> {
+    return await this.service.list()
   }
 
   @Mutation(UserModelReturnType)

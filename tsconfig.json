@@ -46,7 +46,8 @@
       "@kpis/*": ["src/resources/kpis/*"],
       "@evaluation-goals/*": ["src/resources/evaluation-goals/*"],
       "@evaluation-goals-kpis/*": ["src/resources/evaluation-goals-kpis/*"],
-      "@performed-evaluations/*": ["src/resources/performed-evaluations/*"]
+      "@performed-evaluations/*": ["src/resources/performed-evaluations/*"],
+      "@pdi-coachings/*": ["src/resources/pdi-coachings/*"]
     }
   }
 }

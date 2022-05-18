@@ -1,0 +1,4 @@
+export enum PDI_COACHING_CATEGORY {
+  GROWTH = 'GROWTH',
+  CAREER = 'CAREER'
+}
