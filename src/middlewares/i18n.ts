@@ -1,9 +1,6 @@
-import path = require('path')
 import { LOCALES } from '@constants/locales'
 import { AppDataSource } from '@data-source'
 import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql'
-import 'reflect-metadata'
-// import { getRepository } from 'typeorm'
 
 type TranslationType = {
   field: string

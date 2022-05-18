@@ -47,9 +47,7 @@ const formatSlice = (
   transform
 ) => {
   const split = transform.split('-')
-  const index = split.findIndex((s) => s.charAt(s.length - 1) === 's')
-  const preffix = index === 0 ? split[0].slice(0, -1) : split[0]
-  const suffix = index === 1 ? split[1].slice(0, -1) : split[1]
+  const splits = split.map((s) => (s.charAt(s.length - 1) === 's' ? s.slice(0, -1) : s))
 
-  return `${preffix}-${suffix}`
+  return splits.join('-')
 }

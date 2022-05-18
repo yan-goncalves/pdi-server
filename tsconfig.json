@@ -42,7 +42,8 @@
       "@evaluations-i18n/*": ["src/resources/evaluations-i18n/*"],
       "@goals/*": ["src/resources/goals/*"],
       "@kpis/*": ["src/resources/kpis/*"],
-      "@evaluation-goals/*": ["src/resources/evaluation-goals/*"]
+      "@evaluation-goals/*": ["src/resources/evaluation-goals/*"],
+      "@evaluation-goals-kpis/*": ["src/resources/evaluation-goals-kpis/*"]
     }
   }
 }

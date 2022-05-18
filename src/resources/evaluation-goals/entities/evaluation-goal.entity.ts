@@ -1,53 +1,47 @@
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { GoalModel } from '@goals/entities/goal.entity'
-import { KpiModel } from '@kpis/entities/kpi.entity'
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UserModel } from '@users/entities/user.entity'
+import { EvaluationGoalKpiModel } from 'src/resources/evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
 import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
-  PrimaryColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 
 @ObjectType()
 @Entity('evaluation_goals')
+@Index(['evaluation', 'user', 'goal'], { unique: true })
 export class EvaluationGoalModel {
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  readonly id: number
+
   @Field(() => EvaluationModel)
-  @PrimaryColumn('int')
-  @ManyToOne(() => EvaluationModel, (evaluation) => evaluation.goals)
+  @ManyToOne(() => EvaluationModel, (evaluation) => evaluation.id, { eager: true })
   @JoinColumn({ name: 'id_evaluation' })
   evaluation: EvaluationModel
 
   @Field(() => UserModel)
-  @PrimaryColumn('int')
-  @ManyToOne(() => UserModel)
+  @ManyToOne(() => UserModel, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'id_user' })
   user: UserModel
 
   @Field(() => GoalModel)
-  @PrimaryColumn('int')
-  @ManyToOne(() => GoalModel)
+  @ManyToOne(() => GoalModel, (goal) => goal.id, { eager: true })
   @JoinColumn({ name: 'id_goal' })
   goal: GoalModel
 
-  @Field(() => [KpiModel])
-  @ManyToMany(() => KpiModel)
-  @JoinTable({
-    name: 'evaluation_goals_kpis',
-    joinColumns: [
-      { name: 'id_evaluation_goal_evaluation', referencedColumnName: 'evaluation' },
-      { name: 'id_evaluation_goal_user', referencedColumnName: 'user' },
-      { name: 'id_evaluation_goal_goal', referencedColumnName: 'goal' }
-    ],
-    inverseJoinColumns: [{ name: 'id_kpi', referencedColumnName: 'id' }]
-  })
-  kpis: KpiModel[]
+  @Field(() => [EvaluationGoalKpiModel])
+  @OneToMany(() => EvaluationGoalKpiModel, (evaluationGoalKpi) => evaluationGoalKpi.kpi)
+  @JoinColumn({ name: 'id_kpi' })
+  kpis: EvaluationGoalKpiModel[]
 
   @Field(() => GoalModel)
   @Field()

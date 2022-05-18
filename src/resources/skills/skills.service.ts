@@ -27,17 +27,17 @@ export class SkillsService {
   }
 
   async create({ title, description }: CreateSkillInput): Promise<SkillModel> {
-    if (await this.i18nService.getBy({ description })) {
+    try {
+      const skill = await this.repo.save(this.repo.create())
+      const skillLocale = await this.i18nService.create(skill, { title, description })
+
+      return {
+        ...skill,
+        title: skillLocale.title,
+        description: skillLocale.description
+      }
+    } catch {
       throw new ConflictException('Skill description already exists')
-    }
-
-    const skill = await this.repo.save(this.repo.create())
-    const skillLocale = await this.i18nService.create(skill, { title, description })
-
-    return {
-      ...skill,
-      title: skillLocale.title,
-      description: skillLocale.description
     }
   }
 

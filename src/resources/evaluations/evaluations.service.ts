@@ -44,28 +44,27 @@ export class EvaluationsService {
   }
 
   async create({ year, mid, end, period }: CreateEvaluationInput): Promise<EvaluationModel> {
-    const evaluationFound = await this.repo.findOneBy({ year })
-    if (evaluationFound) {
+    try {
+      const dates = [mid.start, mid.deadline, end.start, end.deadline]
+      const datesSorted = dates.sort(compareAsc)
+
+      return await this.repo.save(
+        this.repo.create({
+          year,
+          midDate: {
+            start: datesSorted[0],
+            deadline: datesSorted[1]
+          },
+          endDate: {
+            start: datesSorted[2],
+            deadline: datesSorted[3]
+          },
+          period
+        })
+      )
+    } catch {
       throw new ConflictException('Evaluation already exists')
     }
-
-    const dates = [mid.start, mid.deadline, end.start, end.deadline]
-    const datesSorted = dates.sort(compareAsc)
-
-    return await this.repo.save(
-      this.repo.create({
-        year,
-        midDate: {
-          start: datesSorted[0],
-          deadline: datesSorted[1]
-        },
-        endDate: {
-          start: datesSorted[2],
-          deadline: datesSorted[3]
-        },
-        period
-      })
-    )
   }
 
   async addSection(id: number, idSection: number): Promise<EvaluationModel> {

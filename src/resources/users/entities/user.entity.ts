@@ -9,6 +9,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -18,6 +19,7 @@ import {
 
 @ObjectType()
 @Entity('users')
+@Index(['username', 'email'], { unique: true })
 export class UserModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

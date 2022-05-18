@@ -1,5 +1,7 @@
 import { AuthModule } from '@auth/auth.module'
 import { DepartmentsModule } from '@departments/departments.module'
+import { EvaluationGoalsKpisModule } from '@evaluation-goals-kpis/evaluation-goals-kpis.module'
+import { EvaluationGoalsModule } from '@evaluation-goals/evaluation-goals.module'
 import { EvaluationsModule } from '@evaluations/evaluations.module'
 import { GoalsModule } from '@goals/goals.module'
 import { KpisModule } from '@kpis/kpis.module'
@@ -61,7 +63,9 @@ import { AppDataSource } from './data-source'
     SkillsModule,
     EvaluationsModule,
     GoalsModule,
-    KpisModule
+    KpisModule,
+    EvaluationGoalsModule,
+    EvaluationGoalsKpisModule
   ]
 })
 export class AppModule {}

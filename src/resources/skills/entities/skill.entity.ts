@@ -21,7 +21,7 @@ export class SkillModel {
     nullable: true,
     middleware: [
       translation({
-        field: 'description',
+        field: 'title',
         inverseField: 'skill',
         i18nModel: 'SkillLocaleModel'
       })

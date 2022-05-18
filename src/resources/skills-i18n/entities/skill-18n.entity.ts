@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import {
 } from 'typeorm'
 
 @Entity('skills_i18n')
+@Index(['locale', 'title', 'description'], { unique: true })
 export class SkillLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number

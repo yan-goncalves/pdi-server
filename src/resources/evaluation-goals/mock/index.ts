@@ -5,6 +5,7 @@ import goalMock from '@goals/mock'
 import userMock from '@users/mock'
 
 const evaluationGoalMock: EvaluationGoalModel = {
+  id: 1,
   evaluation: evaluationMock,
   user: userMock(),
   goal: goalMock,

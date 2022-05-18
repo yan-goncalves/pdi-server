@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import {
 } from 'typeorm'
 
 @Entity('questions_i18n')
+@Index(['locale', 'ask'], { unique: true })
 export class QuestionLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number

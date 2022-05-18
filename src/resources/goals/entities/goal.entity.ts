@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -12,6 +13,7 @@ import {
 
 @ObjectType()
 @Entity('goals')
+@Index(['manager', 'name'], { unique: true })
 export class GoalModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

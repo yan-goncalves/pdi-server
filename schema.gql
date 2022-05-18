@@ -50,34 +50,6 @@ type JWT {
   jwt: String!
 }
 
-type GoalModel {
-  id: Int!
-  manager: UserModel!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type KpiModel {
-  id: Int!
-  manager: UserModel!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type EvaluationGoalModel {
-  evaluation: EvaluationModel!
-  user: UserModel!
-  goal: GoalModel!
-  kpis: [KpiModel!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type QuestionModel {
   id: Int!
   ask: String
@@ -132,6 +104,46 @@ type EvaluationModel {
   deletedAt: DateTime
 }
 
+type GoalModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type EvaluationGoalModel {
+  id: Int!
+  evaluation: EvaluationModel!
+  user: UserModel!
+  goal: GoalModel!
+  kpis: [EvaluationGoalKpiModel!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type KpiModel {
+  id: Int!
+  manager: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type EvaluationGoalKpiModel {
+  id: Int!
+  evaluationGoal: EvaluationGoalModel!
+  kpi: KpiModel!
+  target: String!
+  weight: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type Query {
   me(locale: String = "br"): UserModel!
   user(id: Int!, locale: String = "br"): UserModel!
@@ -152,6 +164,16 @@ type Query {
   goals: [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!
+  evaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
+  evaluationGoals: [EvaluationGoalModel!]!
+  evaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
+  evaluationGoalsKpis: [EvaluationGoalKpiModel!]!
+}
+
+input EvaluationGoalInput {
+  idEvaluation: Int!
+  idUser: Int!
+  idGoal: Int!
 }
 
 type Mutation {
@@ -183,6 +205,10 @@ type Mutation {
   createKpi(input: KpiInput!): KpiModel!
   updateKpi(id: Int!, input: KpiInput!): KpiModel!
   removeKpi(id: Int!): KpiModel!
+  createEvaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
+  removeEvaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
+  createEvaluationGoalKpi(input: CreateEvaluationGoalKpiInput!): EvaluationGoalKpiModel!
+  removeEvaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
 }
 
 input SignInInput {
@@ -295,4 +321,11 @@ input GoalInput {
 
 input KpiInput {
   name: String!
+}
+
+input CreateEvaluationGoalKpiInput {
+  idEvaluationGoal: Int!
+  idKpi: Int!
+  target: String!
+  weight: Int!
 }

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -12,6 +13,7 @@ import {
 
 @ObjectType()
 @Entity('kpis')
+@Index(['manager', 'name'], { unique: true })
 export class KpiModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
