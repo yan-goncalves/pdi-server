@@ -152,6 +152,23 @@ type EvaluationGoalKpiModel {
   deletedAt: DateTime
 }
 
+type PerformedEvaluationModel {
+  id: Int!
+  evaluation: EvaluationModel!
+  user: UserModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiCoachingModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: String!
+  action: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PdiCompetenceCategoryModel {
   id: Int!
   name: String
@@ -160,12 +177,23 @@ type PdiCompetenceCategoryModel {
   deletedAt: DateTime
 }
 
-type PerformedEvaluationModel {
+type PdiQualityModel {
   id: Int!
-  evaluation: EvaluationModel!
-  user: UserModel!
+  performed: PerformedEvaluationModel!
+  category: String!
+  description: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type RatingModel {
+  id: Int!
+  description: String
+  value: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 type Query {
@@ -196,8 +224,14 @@ type Query {
   evaluationGoalsKpis: [EvaluationGoalKpiModel!]!
   performedEvaluation(id: Int!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
+  pdiCoaching(id: Int!): PdiCoachingModel!
+  pdiCoachings: [PdiCoachingModel!]!
   pdiCompetenceCategory(id: Int!): PdiCompetenceCategoryModel!
   pdiCompetencesCategories: [PdiCompetenceCategoryModel!]!
+  pdiQuality(id: Int!): PdiQualityModel!
+  pdiQualities: [PdiQualityModel!]!
+  rating(id: Int!): RatingModel!
+  ratings: [RatingModel!]!
 }
 
 input EvaluationGoalInput {
@@ -244,8 +278,16 @@ type Mutation {
   removeEvaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
   createPerformedEvaluation(input: PerformedEvaluationInput!): PerformedEvaluationModel!
   removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
+  createPdiCoaching(input: CreatePdiCoachingInput!): PdiCoachingModel!
+  updatePdiCoaching(id: Int!, input: UpdatePdiCoachingInput!): PdiCoachingModel!
+  removePdiCoaching(id: Int!): PdiCoachingModel!
   createPdiCompetenceCategory(input: CreatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
   updatePdiCompetenceCategory(id: Int!, input: UpdatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
+  createPdiQuality(input: CreatePdiQualityInput!): PdiQualityModel!
+  updatePdiQuality(id: Int!, input: UpdatePdiQualityInput!): PdiQualityModel!
+  removePdiQuality(id: Int!): PdiQualityModel!
+  createRating(input: CreateRatingInput!): RatingModel!
+  updateRating(id: Int!, input: UpdateRatingInput!): RatingModel!
 }
 
 input SignInInput {
@@ -381,11 +423,44 @@ input PerformedEvaluationInput {
   idUser: Int!
 }
 
+input CreatePdiCoachingInput {
+  idPerformed: Int!
+  category: String!
+  action: String!
+}
+
+input UpdatePdiCoachingInput {
+  category: String
+  action: String
+}
+
 input CreatePdiCompetenceCategoryInput {
   name: String!
 }
 
 input UpdatePdiCompetenceCategoryInput {
   name: String!
+  locale: String!
+}
+
+input CreatePdiQualityInput {
+  idPerformed: Int!
+  category: String!
+  description: String!
+}
+
+input UpdatePdiQualityInput {
+  category: String
+  description: String
+}
+
+input CreateRatingInput {
+  description: String!
+  value: Int!
+}
+
+input UpdateRatingInput {
+  description: String
+  value: Int
   locale: String!
 }

@@ -26,12 +26,12 @@ export class {{pascalCase name}}Service {
     return await this.repo.find()
   }
 
-  async create({ {{camelCase field}} }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
+  async create({ {{camelCase field}}, ...input }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
     if (await this.i18nService.getBy({ {{camelCase field}} })) {
       throw new ConflictException('{{pascalCase (slice name)}} already exists')
     }
 
-    const {{camelCase (slice name)}} = await this.repo.save(this.repo.create())
+    const {{camelCase (slice name)}} = await this.repo.save(this.repo.create({ ...input }))
     const {{camelCase (slice name)}}Locale = await this.i18nService.create({{camelCase (slice name)}}, { {{camelCase field}} })
 
     return { 

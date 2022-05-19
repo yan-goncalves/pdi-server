@@ -1,11 +1,9 @@
-import { LOCALES } from '@constants/locales'
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Create{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/create-{{kebabCase (slice name)}}.input'
 import { Update{{pascalCase (slice name)}}Input } from '@{{kebabCase name}}/dto/update-{{kebabCase (slice name)}}.input'
 import { {{pascalCase (slice name)}}Model } from '@{{kebabCase name}}/entities/{{kebabCase (slice name)}}.entity'
 import { {{pascalCase name}}Service } from '@{{kebabCase name}}/{{kebabCase name}}.service'
-import { FindOptionsRelations } from 'typeorm'
 
 @Resolver(() => {{pascalCase (slice name)}}Model)
 export class {{pascalCase name}}Resolver {

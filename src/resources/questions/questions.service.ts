@@ -26,12 +26,12 @@ export class QuestionsService {
     return await this.repo.find()
   }
 
-  async create({ ask }: CreateQuestionInput): Promise<QuestionModel> {
+  async create({ ask, ...input }: CreateQuestionInput): Promise<QuestionModel> {
     if (await this.i18nService.getBy({ ask })) {
       throw new ConflictException('Question already exists')
     }
 
-    const question = await this.repo.save(this.repo.create())
+    const question = await this.repo.save(this.repo.create({ ...input }))
     const questionLocale = await this.i18nService.create(question, { ask })
 
     return {

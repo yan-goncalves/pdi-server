@@ -131,7 +131,9 @@
       "^@pdi-coachings/(.*)$": "<rootDir>/resources/pdi-coachings/$1",
       "^@pdi-qualities/(.*)$": "<rootDir>/resources/pdi-qualities/$1",
       "^@pdi-competences-categories/(.*)$": "<rootDir>/resources/pdi-competences-categories/$1",
-      "^@pdi-competences-categories-i18n/(.*)$": "<rootDir>/resources/pdi-competences-categories-i18n/$1"
+      "^@pdi-competences-categories-i18n/(.*)$": "<rootDir>/resources/pdi-competences-categories-i18n/$1",
+      "^@ratings/(.*)$": "<rootDir>/resources/ratings/$1",
+      "^@ratings-i18n/(.*)$": "<rootDir>/resources/ratings-i18n/$1"
     }
   }
 }

@@ -51,7 +51,9 @@
       "@pdi-qualities/*": ["src/resources/pdi-qualities/*"],
       "@pdi-competences/*": ["src/resources/pdi-competences/*"],
       "@pdi-competences-categories/*": ["src/resources/pdi-competences-categories/*"],
-      "@pdi-competences-categories-i18n/*": ["src/resources/pdi-competences-categories-i18n/*"]
+      "@pdi-competences-categories-i18n/*": ["src/resources/pdi-competences-categories-i18n/*"],
+      "@ratings/*": ["src/resources/ratings/*"],
+      "@ratings-i18n/*": ["src/resources/ratings-i18n/*"]
     }
   }
 }
