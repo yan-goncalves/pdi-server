@@ -1,4 +1,3 @@
-import { EntityFindOptions } from '@constants/common'
 import { LOCALES } from '@constants/locales'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -27,40 +26,40 @@ export class {{pascalCase name}}Service {
     return await this.repo.find()
   }
 
-  async create({ changeMe }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
-    if (await this.i18nService.getBy({ changeMe })) {
+  async create({ {{camelCase field}} }: Create{{pascalCase (slice name)}}Input): Promise<{{pascalCase (slice name)}}Model> {
+    if (await this.i18nService.getBy({ {{camelCase field}} })) {
       throw new ConflictException('{{pascalCase (slice name)}} already exists')
     }
 
     const {{camelCase (slice name)}} = await this.repo.save(this.repo.create())
-    const {{camelCase (slice name)}}Locale = await this.i18nService.create({{camelCase (slice name)}}, { changeMe })
+    const {{camelCase (slice name)}}Locale = await this.i18nService.create({{camelCase (slice name)}}, { {{camelCase field}} })
 
     return { 
       ...{{camelCase (slice name)}}, 
-      changeMe: {{camelCase (slice name)}}Locale.changeMe 
+      {{camelCase field}}: {{camelCase (slice name)}}Locale.{{camelCase field}} 
     }
   }
 
   async update(
     id: number,
-    { changeMe, locale = LOCALES.BR }: Update{{pascalCase (slice name)}}Input
+    { {{camelCase field}}, locale = LOCALES.BR }: Update{{pascalCase (slice name)}}Input
   ): Promise<{{pascalCase (slice name)}}Model> {
     const {{camelCase (slice name)}} = await this.get(id)
-    const {{camelCase (slice name)}}LocaleFound = await this.i18nService.getBy({ changeMe: { id }, locale })
-    if ({{camelCase (slice name)}}LocaleFound?.changeMe && {{camelCase (slice name)}}LocaleFound.changeMe === changeMe) {
+    const {{camelCase (slice name)}}LocaleFound = await this.i18nService.getBy({ {{camelCase (slice name)}}: { id }, locale })
+    if ({{camelCase (slice name)}}LocaleFound?.{{camelCase field}} && {{camelCase (slice name)}}LocaleFound.{{camelCase field}} === {{camelCase field}}) {
       return {
         ...{{camelCase (slice name)}},
-        changeMe: 
+        {{camelCase field}}: {{camelCase (slice name)}}LocaleFound.{{camelCase field}}
       }
     }
 
-    const {{camelCase (slice name)}}Locale = !{{camelCase (slice name)}}LocaleFound?.changeMe
-      ? await this.i18nService.create({{camelCase (slice name)}}, { changeMe, locale })
-      : await this.i18nService.update({{camelCase (slice name)}}, { changeMe, locale })
+    const {{camelCase (slice name)}}Locale = !{{camelCase (slice name)}}LocaleFound?.{{camelCase field}}
+      ? await this.i18nService.create({{camelCase (slice name)}}, { {{camelCase field}}, locale })
+      : await this.i18nService.update({{camelCase (slice name)}}, { {{camelCase field}}, locale })
 
     return { 
       ...{{camelCase (slice name)}}, 
-      changeMe: {{camelCase (slice name)}}Locale.changeMe 
+      {{camelCase field}}: {{camelCase (slice name)}}Locale.{{camelCase field}} 
     }
   }
 }

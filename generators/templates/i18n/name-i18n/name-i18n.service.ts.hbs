@@ -29,17 +29,17 @@ export class {{pascalCase name}}I18nService {
 
   async create(
     {{camelCase (slice name)}}: {{pascalCase (slice name)}}Model,
-    { locale = LOCALES.BR, ...input }: {{pascalCase (slice name)}}I18nInput
+    { locale = LOCALES.BR, {{camelCase field}} }: {{pascalCase (slice name)}}I18nInput
   ): Promise<{{pascalCase (slice name)}}LocaleModel> {
-    return await this.repo.save(this.repo.create({ {{camelCase (slice name)}}, locale, ...input }))
+    return await this.repo.save(this.repo.create({ {{camelCase (slice name)}}, locale, {{camelCase field}} }))
   }
 
   async update(
     {{camelCase (slice name)}}: {{pascalCase (slice name)}}Model,
-    { locale = LOCALES.BR, ...input }: {{pascalCase (slice name)}}I18nInput
+    { locale = LOCALES.BR, {{camelCase field}} }: {{pascalCase (slice name)}}I18nInput
   ): Promise<{{pascalCase (slice name)}}LocaleModel> {
     const {{camelCase (slice name)}}Locale = await this.getBy({ {{camelCase (slice name)}}: { id: {{camelCase (slice name)}}.id }, locale })
-    this.repo.merge({{camelCase (slice name)}}Locale, { ...input })
+    this.repo.merge({{camelCase (slice name)}}Locale, { {{camelCase field}} })
     return await this.repo.save({{camelCase (slice name)}}Locale)
   }
 }

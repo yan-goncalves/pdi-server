@@ -11,7 +11,7 @@ type TranslationType = {
 const translation = ({ field, inverseField, i18nModel }: TranslationType): FieldMiddleware => {
   return async (ctx: MiddlewareContext) => {
     const id = +ctx.source?.id
-    const locale = ctx.context?.req?.headers?.locale || LOCALES.BR
+    const locale = ctx.context?.req?.headers?.locale.toUpperCase() || LOCALES.BR
     const i18nRepo = AppDataSource.getRepository(i18nModel)
     const foundI18N = await i18nRepo.findOneBy({ [inverseField]: { id }, locale })
 

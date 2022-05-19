@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const { singular } = require('pluralize')
 const i18nAnswer = require('./answers/i18n')
 const regularAnswer = require('./answers/regular')
 
@@ -18,12 +19,18 @@ module.exports = (
         type: 'list',
         choices: ['regular', 'i18n'],
         name: 'type',
-        message: 'What is your resource type?'
+        message: 'What is the resource type?'
       },
       {
         type: 'input',
         name: 'name',
-        message: 'What is your resource name (in plural and lowercase)?'
+        message: 'What is the resource name (in plural and lowercase)?'
+      },
+      {
+        type: 'input',
+        name: 'field',
+        message: 'What is the field name that should be translated?',
+        when: (answers) => answers.type === 'i18n'
       }
     ],
     actions: ({ type }) => answers[type]
@@ -37,7 +44,7 @@ module.exports = (
     ) => {
       const transform = _.kebabCase(name)
 
-      return transform.includes('-') ? formatSlice(transform) : name.slice(0, -1)
+      return transform.includes('-') ? formatSlice(transform) : singular(name)
     }
   )
 }
@@ -47,7 +54,7 @@ const formatSlice = (
   transform
 ) => {
   const split = transform.split('-')
-  const splits = split.map((s) => (s.charAt(s.length - 1) === 's' ? s.slice(0, -1) : s))
+  const splits = split.map((s) => (s.charAt(s.length - 1) === 's' ? singular(s) : s))
 
   return splits.join('-')
 }

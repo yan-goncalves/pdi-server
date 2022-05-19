@@ -7,7 +7,7 @@ const {{camelCase (slice name)}}LocaleMock: {{pascalCase (slice name)}}LocaleMod
   id: 1,
   {{camelCase (slice name)}}: {{camelCase (slice name)}}Mock,
   locale: LOCALES.BR,
-  changeMe: 'change me',
+  {{camelCase field}}: '{{sentenceCase field}}',
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1)
 }

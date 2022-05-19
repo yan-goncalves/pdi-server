@@ -13,6 +13,9 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { PdiCoachingsModule } from '@pdi-coachings/pdi-coachings.module'
+import { PdiCompetencesCategoriesModule } from '@pdi-competences-categories/pdi-competences-categories.module'
+import { PdiQualitiesModule } from '@pdi-qualities/pdi-qualities.module'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
 import { QuestionsModule } from '@questions/questions.module'
 import { SectionsModule } from '@sections/sections.module'
@@ -69,7 +72,10 @@ import { UsersModule } from '@users/users.module'
     KpisModule,
     EvaluationGoalsModule,
     EvaluationGoalsKpisModule,
-    PerformedEvaluationsModule
+    PerformedEvaluationsModule,
+    PdiCoachingsModule,
+    PdiCompetencesCategoriesModule,
+    PdiQualitiesModule
   ]
 })
 export class AppModule {}

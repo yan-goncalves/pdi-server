@@ -21,13 +21,13 @@ export class {{pascalCase (slice name)}}Model {
     nullable: true,
     middleware: [
       translation({
-        field: 'changeMe',
+        field: '{{camelCase field}}',
         inverseField: '{{camelCase (slice name)}}',
         i18nModel: '{{pascalCase (slice name)}}LocaleModel'
       })
     ]
   })
-  changeMe: string
+  {{camelCase field}}: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

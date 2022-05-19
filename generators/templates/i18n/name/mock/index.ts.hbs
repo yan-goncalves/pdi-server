@@ -4,7 +4,7 @@ import {{camelCase (slice name)}}LocaleMock from '@{{kebabCase name}}-i18n/mock'
 
 const {{camelCase (slice name)}}Mock: {{pascalCase (slice name)}}Model = {
   id: 1,
-  changeMe: 'change me',
+  {{camelCase field}}: '{{sentenceCase field}}',
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1),
   locale: {{camelCase (slice name)}}LocaleMock

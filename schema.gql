@@ -152,6 +152,14 @@ type EvaluationGoalKpiModel {
   deletedAt: DateTime
 }
 
+type PdiCompetenceCategoryModel {
+  id: Int!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type PerformedEvaluationModel {
   id: Int!
   evaluation: EvaluationModel!
@@ -188,6 +196,8 @@ type Query {
   evaluationGoalsKpis: [EvaluationGoalKpiModel!]!
   performedEvaluation(id: Int!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
+  pdiCompetenceCategory(id: Int!): PdiCompetenceCategoryModel!
+  pdiCompetencesCategories: [PdiCompetenceCategoryModel!]!
 }
 
 input EvaluationGoalInput {
@@ -234,6 +244,8 @@ type Mutation {
   removeEvaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
   createPerformedEvaluation(input: PerformedEvaluationInput!): PerformedEvaluationModel!
   removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
+  createPdiCompetenceCategory(input: CreatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
+  updatePdiCompetenceCategory(id: Int!, input: UpdatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
 }
 
 input SignInInput {
@@ -297,7 +309,7 @@ input VisibilitySectionInput {
 input UpdateSectionInput {
   title: String
   visibility: VisibilitySectionInput
-  locale: String = "br"
+  locale: String = "BR"
 }
 
 input CreateQuestionInput {
@@ -333,7 +345,7 @@ input CreateEvaluationInput {
   year: Int!
   mid: CreateEvaluationDateInput!
   end: CreateEvaluationDateInput!
-  period: String = "out"
+  period: String = "OUT"
 }
 
 input CreateEvaluationDateInput {
@@ -367,4 +379,13 @@ input CreateEvaluationGoalKpiInput {
 input PerformedEvaluationInput {
   idEvaluation: Int!
   idUser: Int!
+}
+
+input CreatePdiCompetenceCategoryInput {
+  name: String!
+}
+
+input UpdatePdiCompetenceCategoryInput {
+  name: String!
+  locale: String!
 }

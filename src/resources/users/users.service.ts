@@ -178,7 +178,7 @@ export class UsersService {
 
   async populate(): Promise<UserModel[]> {
     const users = await this.ldapService.getAll()
-    const departments = await this.departmentsService.list()
+    const departments = await this.departmentsService.list({ loadName: true })
 
     for (const i in users) {
       const user = users[i]

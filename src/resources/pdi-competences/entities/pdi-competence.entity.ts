@@ -1,5 +1,5 @@
-import { PDI_COACHING_CATEGORY } from '@constants/pdi'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { PdiCompetenceCategoryModel } from '@pdi-competences-categories/entities/pdi-competence-category.entity'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import {
   Column,
@@ -13,9 +13,9 @@ import {
 } from 'typeorm'
 
 @ObjectType()
-@Entity('pdi_coachings')
+@Entity('pdi_competences')
 @Index(['performed', 'category', 'action'], { unique: true })
-export class PdiCoachingModel {
+export class PdiCompetenceModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   readonly id: number
@@ -25,9 +25,10 @@ export class PdiCoachingModel {
   @JoinColumn({ name: 'id_performed_evaluation' })
   performed: PerformedEvaluationModel
 
-  @Field()
-  @Column({ enum: PDI_COACHING_CATEGORY })
-  category: PDI_COACHING_CATEGORY
+  @Field(() => PdiCompetenceCategoryModel)
+  @ManyToOne(() => PdiCompetenceCategoryModel, (category) => category.id)
+  @JoinColumn({ name: 'id_category' })
+  category: PdiCompetenceCategoryModel
 
   @Field()
   @Column({ length: 500 })

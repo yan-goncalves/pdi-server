@@ -1,17 +1,17 @@
 import { Field, InputType, Int } from '@nestjs/graphql'
-import { IsEnum, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator'
+import { IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator'
 
 @InputType()
-export class CreatePdicompetencyInput {
+export class CreatePdiCompetenceInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
   idPerformed: number
 
-  @Field()
+  @Field(() => Int)
   @IsNotEmpty()
-  @IsEnum(PDI_COMPETENCE_CATEGORY)
-  category: PDI_COMPETENCE_CATEGORY
+  @IsInt()
+  idCategory: number
 
   @Field()
   @IsNotEmpty()

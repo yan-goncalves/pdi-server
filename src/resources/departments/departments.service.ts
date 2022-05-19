@@ -22,8 +22,26 @@ export class DepartmentsService {
     }
   }
 
-  async list(): Promise<DepartmentModel[]> {
-    return await this.repo.find()
+  async list({ loadName } = { loadName: false }): Promise<DepartmentModel[]> {
+    const departments = await this.repo.find()
+
+    if (!loadName) {
+      return departments
+    }
+
+    const departmentsMap = departments.map(async (department) => {
+      const departmentLocale = await this.i18nService.getBy({
+        department: { id: department.id },
+        locale: LOCALES.BR
+      })
+
+      return {
+        ...department,
+        name: departmentLocale.name
+      }
+    })
+
+    return Promise.all(departmentsMap)
   }
 
   async create({ key, name }: CreateDepartmentInput): Promise<DepartmentModel> {

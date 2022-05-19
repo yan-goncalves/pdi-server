@@ -18,7 +18,7 @@ export class UsersInfoModel {
   readonly id: number
 
   @Field(() => UserModel)
-  @OneToOne(() => UserModel, (user) => user.info)
+  @OneToOne(() => UserModel, (user) => user.info, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_user' })
   readonly user: UserModel
 

@@ -2,9 +2,9 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
-export class Create{{pascalCase (slice name)}}Input {
+export class CreatePdiCompetenceCategoryInput {
   @Field()
   @IsNotEmpty()
   @IsString()
-  {{camelCase field}}: string
+  name: string
 }
