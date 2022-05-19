@@ -73,11 +73,11 @@ import { UsersModule } from '@users/users.module'
     KpisModule,
     EvaluationGoalsModule,
     EvaluationGoalsKpisModule,
-    PerformedEvaluationsModule,
     PdiCoachingsModule,
     PdiCompetencesCategoriesModule,
     PdiQualitiesModule,
-    RatingsModule
+    RatingsModule,
+    PerformedEvaluationsModule
   ]
 })
 export class AppModule {}

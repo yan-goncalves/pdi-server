@@ -21,7 +21,7 @@ export class PdiCoachingModel {
   readonly id: number
 
   @Field(() => PerformedEvaluationModel)
-  @ManyToOne(() => PerformedEvaluationModel)
+  @ManyToOne(() => PerformedEvaluationModel, (performed) => performed.id)
   @JoinColumn({ name: 'id_performed_evaluation' })
   performed: PerformedEvaluationModel
 

@@ -46,14 +46,15 @@
       "@kpis/*": ["src/resources/kpis/*"],
       "@evaluation-goals/*": ["src/resources/evaluation-goals/*"],
       "@evaluation-goals-kpis/*": ["src/resources/evaluation-goals-kpis/*"],
-      "@performed-evaluations/*": ["src/resources/performed-evaluations/*"],
       "@pdi-coachings/*": ["src/resources/pdi-coachings/*"],
       "@pdi-qualities/*": ["src/resources/pdi-qualities/*"],
       "@pdi-competences/*": ["src/resources/pdi-competences/*"],
       "@pdi-competences-categories/*": ["src/resources/pdi-competences-categories/*"],
       "@pdi-competences-categories-i18n/*": ["src/resources/pdi-competences-categories-i18n/*"],
       "@ratings/*": ["src/resources/ratings/*"],
-      "@ratings-i18n/*": ["src/resources/ratings-i18n/*"]
+      "@ratings-i18n/*": ["src/resources/ratings-i18n/*"],
+      "@performed-evaluations/*": ["src/resources/performed-evaluations/*"],
+      "@performed-questions/*": ["src/resources/performed-questions/*"]
     }
   }
 }
