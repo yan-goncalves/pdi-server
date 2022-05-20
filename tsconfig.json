@@ -56,7 +56,8 @@
       "@performed-evaluations/*": ["src/resources/performed-evaluations/*"],
       "@performed-questions/*": ["src/resources/performed-questions/*"],
       "@performed-skills/*": ["src/resources/performed-skills/*"],
-      "@performed-goals/*": ["src/resources/performed-goals/*"]
+      "@performed-goals/*": ["src/resources/performed-goals/*"],
+      "@performed-goals-kpis/*": ["src/resources/performed-goals-kpis/*"],
     }
   }
 }

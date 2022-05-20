@@ -1,6 +1,6 @@
 import { QUESTION_REPLY } from '@constants/performed'
 import { Field, InputType } from '@nestjs/graphql'
-import { IsEnum, IsOptional, IsString } from 'class-validator'
+import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator'
 
 @InputType()
 export class UpdatePerformedQuestionInput {
@@ -12,5 +12,6 @@ export class UpdatePerformedQuestionInput {
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
+  @MaxLength(3000)
   justification?: string
 }

@@ -188,6 +188,28 @@ type PdiQualityModel {
   deletedAt: DateTime
 }
 
+type RatingModel {
+  id: Int!
+  description: String
+  value: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type PerformedGoalKpiModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  evaluationGoalKpi: EvaluationGoalKpiModel!
+  ratingManager: RatingModel!
+  achieved: Int
+  midFeedbackUser: String
+  midFeedbackManager: String
+  endFeedbackManager: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PerformedGoalModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -204,15 +226,6 @@ type PerformedQuestionModel {
   justification: String
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-type RatingModel {
-  id: Int!
-  description: String
-  value: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
 }
 
 type PerformedSkillModel {
@@ -270,6 +283,8 @@ type Query {
   performedSkills: [PerformedSkillModel!]!
   performedGoal(id: Int!): PerformedGoalModel!
   performedGoals: [PerformedGoalModel!]!
+  performedGoalKpi(id: Int!): PerformedGoalKpiModel!
+  performedGoalsKpis: [PerformedGoalKpiModel!]!
 }
 
 input EvaluationGoalInput {
@@ -331,6 +346,8 @@ type Mutation {
   createPerformedSkill(input: CreatePerformedSkillInput!): PerformedSkillModel!
   updatePerformedSkill(id: Int!, input: UpdatePerformedSkillInput!): PerformedSkillModel!
   createPerformedGoal(input: PerformedGoalInput!): PerformedGoalModel!
+  createPerformedGoalKpi(input: CreatePerformedGoalKpiInput!): PerformedGoalKpiModel!
+  updatePerformedGoalKpi(id: Int!, input: UpdatePerformedGoalKpiInput!): PerformedGoalKpiModel!
 }
 
 input SignInInput {
@@ -541,4 +558,22 @@ input UpdatePerformedSkillInput {
 input PerformedGoalInput {
   idPerformed: Int!
   idEvaluationGoal: Int!
+}
+
+input CreatePerformedGoalKpiInput {
+  idRatingManager: Int
+  achieved: Int
+  midFeedbackUser: String
+  midFeedbackManager: String
+  endFeedbackManager: String
+  idPerformed: Int!
+  idEvaluationGoalKpi: Int!
+}
+
+input UpdatePerformedGoalKpiInput {
+  idRatingManager: Int
+  achieved: Int
+  midFeedbackUser: String
+  midFeedbackManager: String
+  endFeedbackManager: String
 }

@@ -17,6 +17,7 @@ import { PdiCoachingsModule } from '@pdi-coachings/pdi-coachings.module'
 import { PdiCompetencesCategoriesModule } from '@pdi-competences-categories/pdi-competences-categories.module'
 import { PdiQualitiesModule } from '@pdi-qualities/pdi-qualities.module'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
+import { PerformedGoalsKpisModule } from '@performed-goals-kpis/performed-goals-kpis.module'
 import { PerformedGoalsModule } from '@performed-goals/performed-goals.module'
 import { PerformedQuestionsModule } from '@performed-questions/performed-questions.module'
 import { PerformedSkillsModule } from '@performed-skills/performed-skills.module'
@@ -83,7 +84,8 @@ import { UsersModule } from '@users/users.module'
     PerformedEvaluationsModule,
     PerformedQuestionsModule,
     PerformedSkillsModule,
-    PerformedGoalsModule
+    PerformedGoalsModule,
+    PerformedGoalsKpisModule
   ]
 })
 export class AppModule {}
