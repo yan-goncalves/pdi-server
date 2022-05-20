@@ -27,7 +27,7 @@ export class PerformedSkillModel {
   performed: PerformedEvaluationModel
 
   @Field(() => SkillModel)
-  @ManyToOne(() => SkillModel, (skill) => skill.id)
+  @ManyToOne(() => SkillModel, (skill) => skill.id, { eager: true })
   @JoinColumn({ name: 'id_skill' })
   skill: SkillModel
 

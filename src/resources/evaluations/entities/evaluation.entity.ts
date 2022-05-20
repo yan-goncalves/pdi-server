@@ -1,5 +1,4 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
-import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
 import { FeedbackModel } from '@feedbacks/entities/feedback.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { SectionModel } from '@sections/entities/section.entity'
@@ -8,10 +7,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -78,29 +75,6 @@ export class EvaluationModel {
   @Column({ default: false })
   finished: boolean
 
-  @Field(() => [SectionModel], { nullable: true })
-  @ManyToMany(() => SectionModel, (section) => section.id, { eager: true })
-  @JoinTable({
-    name: 'evaluations_sections',
-    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'id_section', referencedColumnName: 'id' }
-  })
-  sections?: SectionModel[]
-
-  @Field(() => [EvaluationGoalModel], { nullable: true })
-  @OneToMany(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.evaluation)
-  @JoinColumn({ name: 'id_goal' })
-  goals?: EvaluationGoalModel[]
-
-  @Field(() => [FeedbackModel], { nullable: true })
-  @ManyToMany(() => FeedbackModel, (feedback) => feedback.id, { eager: true })
-  @JoinTable({
-    name: 'evaluations_feedbacks',
-    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'id_feedback', referencedColumnName: 'id' }
-  })
-  feedbacks?: FeedbackModel[]
-
   @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -112,4 +86,22 @@ export class EvaluationModel {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
+
+  @Field(() => [SectionModel], { nullable: true })
+  @ManyToMany(() => SectionModel, (section) => section.id, { eager: true })
+  @JoinTable({
+    name: 'evaluations_sections',
+    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'id_section', referencedColumnName: 'id' }
+  })
+  sections?: SectionModel[]
+
+  @Field(() => [FeedbackModel], { nullable: true })
+  @ManyToMany(() => FeedbackModel, (feedback) => feedback.id, { eager: true })
+  @JoinTable({
+    name: 'evaluations_feedbacks',
+    joinColumn: { name: 'id_evaluation', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'id_feedback', referencedColumnName: 'id' }
+  })
+  feedbacks?: FeedbackModel[]
 }

@@ -18,16 +18,16 @@ import {
 @ObjectType()
 export class VisibilityModel {
   @Field(() => Boolean)
-  user: boolean
+  USER: boolean
 
   @Field(() => Boolean)
-  manager: boolean
+  MANAGER: boolean
 
   @Field(() => Boolean)
-  coordinator: boolean
+  COORDINATOR: boolean
 
   @Field(() => Boolean)
-  director: boolean
+  DIRECTOR: boolean
 }
 
 @ObjectType()

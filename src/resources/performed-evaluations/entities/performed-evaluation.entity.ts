@@ -1,5 +1,7 @@
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { PerformedQuestionModel } from '@performed-questions/entities/performed-question.entity'
+import { PerformedSkillModel } from '@performed-skills/entities/performed-skill.entity'
 import { UserModel } from '@users/entities/user.entity'
 import {
   Column,
@@ -8,6 +10,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -41,4 +44,12 @@ export class PerformedEvaluationModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  @Field(() => [PerformedQuestionModel])
+  @OneToMany(() => PerformedQuestionModel, (question) => question.performed, { eager: true })
+  questions: PerformedQuestionModel[]
+
+  @Field(() => [PerformedSkillModel])
+  @OneToMany(() => PerformedSkillModel, (skill) => skill.performed, { eager: true })
+  skills: PerformedSkillModel[]
 }

@@ -24,7 +24,7 @@ export class SkillsI18nService {
   async getBy(
     options: FindOptionsWhere<SkillLocaleModel> | FindOptionsWhere<SkillLocaleModel>[]
   ): Promise<SkillLocaleModel> {
-    return await this.repo.findOneByOrFail(options)
+    return await this.repo.findOneBy(options)
   }
 
   async create(

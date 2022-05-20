@@ -8,10 +8,10 @@ const sectionMock: SectionModel = {
   id: 1,
   title: 'Questões Iniciais',
   visibility: {
-    user: true,
-    manager: true,
-    coordinator: true,
-    director: true
+    USER: true,
+    MANAGER: true,
+    COORDINATOR: true,
+    DIRECTOR: true
   },
   questions: [questionMock],
   skills: [skillMock],

@@ -48,10 +48,14 @@ export class PerformedSkillsService {
     ...input
   }: CreatePerformedSkillInput): Promise<PerformedSkillModel> {
     try {
+      const typeofUser = typeof idRatingUser === 'number'
+      const ratingUser = !typeofUser ? null : await this.ratingsService.get(idRatingUser)
+
+      const typeofManager = typeof idRatingManager === 'number'
+      const ratingManager = !typeofManager ? null : await this.ratingsService.get(idRatingManager)
+
       const performed = await this.performedService.get(idPerformed)
       const skill = await this.skillsService.get(idSkill)
-      const ratingUser = await this.ratingsService.get(idRatingUser)
-      const ratingManager = await this.ratingsService.get(idRatingManager)
 
       return await this.repo.save(
         this.repo.create({

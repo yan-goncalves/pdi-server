@@ -76,10 +76,10 @@ type SkillModel {
 }
 
 type VisibilityModel {
-  user: Boolean!
-  manager: Boolean!
-  coordinator: Boolean!
-  director: Boolean!
+  USER: Boolean!
+  MANAGER: Boolean!
+  COORDINATOR: Boolean!
+  DIRECTOR: Boolean!
 }
 
 type SectionModel {
@@ -105,12 +105,11 @@ type EvaluationModel {
   midDate: EvaluationDateModel!
   endDate: EvaluationDateModel!
   finished: Boolean!
-  sections: [SectionModel!]
-  goals: [EvaluationGoalModel!]
-  feedbacks: [FeedbackModel!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+  sections: [SectionModel!]
+  feedbacks: [FeedbackModel!]
 }
 
 type GoalModel {
@@ -152,6 +151,38 @@ type EvaluationGoalKpiModel {
   deletedAt: DateTime
 }
 
+type PerformedQuestionModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  question: QuestionModel!
+  reply: String
+  justification: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type RatingModel {
+  id: Int!
+  description: String
+  value: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type PerformedSkillModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  skill: SkillModel!
+  ratingUser: RatingModel
+  ratingManager: RatingModel
+  endFeedbackUser: String
+  midFeedbackManager: String
+  endFeedbackManager: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PerformedEvaluationModel {
   id: Int!
   evaluation: EvaluationModel!
@@ -159,6 +190,8 @@ type PerformedEvaluationModel {
   grade: Int
   createdAt: DateTime!
   updatedAt: DateTime!
+  questions: [PerformedQuestionModel!]!
+  skills: [PerformedSkillModel!]!
 }
 
 type PdiCoachingModel {
@@ -188,15 +221,6 @@ type PdiQualityModel {
   deletedAt: DateTime
 }
 
-type RatingModel {
-  id: Int!
-  description: String
-  value: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type PerformedGoalKpiModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -214,29 +238,6 @@ type PerformedGoalModel {
   id: Int!
   performed: PerformedEvaluationModel!
   evaluationGoal: EvaluationGoalModel!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PerformedQuestionModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  question: QuestionModel!
-  reply: String
-  justification: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PerformedSkillModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  skill: SkillModel!
-  ratingUser: RatingModel
-  ratingManager: RatingModel
-  endFeedbackUser: String
-  midFeedbackManager: String
-  endFeedbackManager: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -402,10 +403,10 @@ input CreateSectionInput {
 }
 
 input VisibilitySectionInput {
-  user: Boolean!
-  manager: Boolean!
-  coordinator: Boolean!
-  director: Boolean!
+  USER: Boolean!
+  MANAGER: Boolean!
+  COORDINATOR: Boolean!
+  DIRECTOR: Boolean!
 }
 
 input UpdateSectionInput {

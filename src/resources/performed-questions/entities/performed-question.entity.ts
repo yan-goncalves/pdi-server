@@ -27,7 +27,7 @@ export class PerformedQuestionModel {
   performed: PerformedEvaluationModel
 
   @Field(() => QuestionModel)
-  @ManyToOne(() => QuestionModel, (question) => question.id)
+  @ManyToOne(() => QuestionModel, (question) => question.id, { eager: true })
   @JoinColumn({ name: 'id_question' })
   question: QuestionModel
 

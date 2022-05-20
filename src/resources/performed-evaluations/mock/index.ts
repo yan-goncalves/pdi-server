@@ -1,6 +1,8 @@
 import evaluationMock from '@evaluations/mock'
 import faker from '@faker-js/faker'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
+import performedQuestionMock from '@performed-questions/mock'
+import performedSkillMock from '@performed-skills/mock'
 import userMock from '@users/mock'
 
 const performedEvaluationMock: PerformedEvaluationModel = {
@@ -8,7 +10,9 @@ const performedEvaluationMock: PerformedEvaluationModel = {
   evaluation: evaluationMock,
   user: userMock(),
   createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  updatedAt: faker.date.recent(1),
+  questions: [performedQuestionMock],
+  skills: [performedSkillMock]
 }
 
 export default performedEvaluationMock
