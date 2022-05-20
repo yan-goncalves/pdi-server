@@ -54,7 +54,8 @@
       "@ratings/*": ["src/resources/ratings/*"],
       "@ratings-i18n/*": ["src/resources/ratings-i18n/*"],
       "@performed-evaluations/*": ["src/resources/performed-evaluations/*"],
-      "@performed-questions/*": ["src/resources/performed-questions/*"]
+      "@performed-questions/*": ["src/resources/performed-questions/*"],
+      "@performed-skills/*": ["src/resources/performed-skills/*"]
     }
   }
 }

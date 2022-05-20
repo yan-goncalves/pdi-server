@@ -5,7 +5,6 @@ import { QuestionModel } from '@questions/entities/question.entity'
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -34,11 +33,11 @@ export class PerformedQuestionModel {
 
   @Field({ nullable: true })
   @Column({ nullable: true, enum: QUESTION_REPLY })
-  reply: QUESTION_REPLY
+  reply?: QUESTION_REPLY
 
-  @Field()
-  @Column({ length: 3000, nullable: true })
-  justification: string
+  @Field({ nullable: true })
+  @Column({ nullable: true, length: 3000 })
+  justification?: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
@@ -47,8 +46,4 @@ export class PerformedQuestionModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
-
-  @Field({ nullable: true })
-  @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
-  deletedAt?: Date
 }

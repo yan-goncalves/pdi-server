@@ -48,9 +48,9 @@ export class PerformedQuestionsService {
       const performed = await this.performedService.get(idPerformed)
       const question = await this.questionsService.get(idQuestion)
       return await this.repo.save(this.repo.create({ performed, question, ...input }))
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new ConflictException('PerformedQuestion already exists')
     }

@@ -86,7 +86,7 @@
     "typescript": "4.3.5"
   },
   "jest": {
-    "moduleFileExtensions": [  
+    "moduleFileExtensions": [
       "js",
       "json",
       "ts"
@@ -134,7 +134,8 @@
       "^@ratings/(.*)$": "<rootDir>/resources/ratings/$1",
       "^@ratings-i18n/(.*)$": "<rootDir>/resources/ratings-i18n/$1",
       "^@performed-evaluations/(.*)$": "<rootDir>/resources/performed-evaluations/$1",
-      "^@performed-questions/(.*)$": "<rootDir>/resources/performed-questions/$1"
+      "^@performed-questions/(.*)$": "<rootDir>/resources/performed-questions/$1",
+      "^@performed-skills/(.*)$": "<rootDir>/resources/performed-skills/$1"
     }
   }
 }

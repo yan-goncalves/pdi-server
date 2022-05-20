@@ -1,9 +1,9 @@
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
+import { UpdateEvaluationInput } from '@evaluations/dto/update-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { EvaluationsService } from '@evaluations/evaluations.service'
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { UpdateEvaluationInput } from './dto/update-evaluation.input'
 
 @Resolver(() => EvaluationModel)
 export class EvaluationsResolver {

@@ -17,6 +17,8 @@ import { PdiCoachingsModule } from '@pdi-coachings/pdi-coachings.module'
 import { PdiCompetencesCategoriesModule } from '@pdi-competences-categories/pdi-competences-categories.module'
 import { PdiQualitiesModule } from '@pdi-qualities/pdi-qualities.module'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
+import { PerformedQuestionsModule } from '@performed-questions/performed-questions.module'
+import { PerformedSkillsModule } from '@performed-skills/performed-skills.module'
 import { QuestionsModule } from '@questions/questions.module'
 import { RatingsModule } from '@ratings/ratings.module'
 import { SectionsModule } from '@sections/sections.module'
@@ -77,7 +79,9 @@ import { UsersModule } from '@users/users.module'
     PdiCompetencesCategoriesModule,
     PdiQualitiesModule,
     RatingsModule,
-    PerformedEvaluationsModule
+    PerformedEvaluationsModule,
+    PerformedQuestionsModule,
+    PerformedSkillsModule
   ]
 })
 export class AppModule {}

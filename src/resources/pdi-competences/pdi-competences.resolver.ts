@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePdiCompetenceInput } from '@pdi-competences/dto/create-pdi-competence.input'
+import { UpdatePdiCompetenceInput } from '@pdi-competences/dto/update-pdi-competence.input'
 import { PdiCompetenceModel } from '@pdi-competences/entities/pdi-competence.entity'
 import { PdiCompetencesService } from '@pdi-competences/pdi-competences.service'
-import { UpdatePdiCompetenceInput } from './dto/update-pdi-competence.input'
 
 @Resolver(() => PdiCompetenceModel)
 export class PdiCompetencesResolver {

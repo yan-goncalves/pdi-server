@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePerformedQuestionInput } from '@performed-questions/dto/create-performed-question.input'
+import { UpdatePerformedQuestionInput } from '@performed-questions/dto/update-performed-question.input'
 import { PerformedQuestionModel } from '@performed-questions/entities/performed-question.entity'
 import { PerformedQuestionsService } from '@performed-questions/performed-questions.service'
-import { UpdatePerformedQuestionInput } from './dto/update-performed-question.input'
 
 @Resolver(() => PerformedQuestionModel)
 export class PerformedQuestionsResolver {

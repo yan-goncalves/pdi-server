@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePdiCoachingInput } from '@pdi-coachings/dto/create-pdi-coaching.input'
+import { UpdatePdiCoachingInput } from '@pdi-coachings/dto/update-pdi-coaching.input'
 import { PdiCoachingModel } from '@pdi-coachings/entities/pdi-coaching.entity'
 import { PdiCoachingsService } from '@pdi-coachings/pdi-coachings.service'
-import { UpdatePdiCoachingInput } from './dto/update-pdi-coaching.input'
 
 @Resolver(() => PdiCoachingModel)
 export class PdiCoachingsResolver {

@@ -1,8 +1,8 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
+import { CreateEvaluationDateInput } from '@evaluations/dto/create-evaluation-date.input'
 import { EvaluationDateModel } from '@evaluations/entities/evaluation.entity'
 import { Field, InputType, Int } from '@nestjs/graphql'
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator'
-import { CreateEvaluationDateInput } from './create-evaluation-date.input'
 
 @InputType()
 export class CreateEvaluationInput {

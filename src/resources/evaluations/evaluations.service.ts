@@ -1,4 +1,5 @@
 import { CreateEvaluationInput } from '@evaluations/dto/create-evaluation.input'
+import { UpdateEvaluationInput } from '@evaluations/dto/update-evaluation.input'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { FeedbacksService } from '@feedbacks/feedbacks.service'
 import {
@@ -13,7 +14,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { SectionsService } from '@sections/sections.service'
 import { compareAsc } from 'date-fns'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { UpdateEvaluationInput } from './dto/update-evaluation.input'
 
 @Injectable()
 export class EvaluationsService {

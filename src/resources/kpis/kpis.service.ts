@@ -70,9 +70,9 @@ export class KpisService {
       await this.repo.delete({ id: kpiFound.id })
 
       return kpiFound
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new MethodNotAllowedException('Unable to remove. Kpi in use')
     }

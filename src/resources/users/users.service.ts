@@ -120,8 +120,8 @@ export class UsersService {
       }
 
       return await this.get(id, { withDeleted: true })
-    } catch (err) {
-      throw err
+    } catch (error) {
+      throw error
     }
   }
 

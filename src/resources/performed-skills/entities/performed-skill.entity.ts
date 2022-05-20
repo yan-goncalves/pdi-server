@@ -1,0 +1,63 @@
+import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
+import { RatingModel } from '@ratings/entities/rating.entity'
+import { SkillModel } from '@skills/entities/skill.entity'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
+
+@ObjectType()
+@Entity('performed_skills')
+@Index(['performed', 'skill'], { unique: true })
+export class PerformedSkillModel {
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  readonly id: number
+
+  @Field(() => PerformedEvaluationModel)
+  @ManyToOne(() => PerformedEvaluationModel, (performed) => performed.id)
+  @JoinColumn({ name: 'id_performed_evaluation' })
+  performed: PerformedEvaluationModel
+
+  @Field(() => SkillModel)
+  @ManyToOne(() => SkillModel, (skill) => skill.id)
+  @JoinColumn({ name: 'id_skill' })
+  skill: SkillModel
+
+  @Field(() => RatingModel, { nullable: true })
+  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true })
+  @JoinColumn({ name: 'id_rating_user' })
+  ratingUser?: RatingModel
+
+  @Field(() => RatingModel, { nullable: true })
+  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true })
+  @JoinColumn({ name: 'id_rating_manager' })
+  ratingManager?: RatingModel
+
+  @Field({ nullable: true })
+  @Column({ name: 'end_feedback_user', nullable: true })
+  endFeedbackUser?: string
+
+  @Field({ nullable: true })
+  @Column({ name: 'mid_feedback_manager', nullable: true })
+  midFeedbackManager?: string
+
+  @Field({ nullable: true })
+  @Column({ name: 'end_feedback_manager', nullable: true })
+  endFeedbackManager?: string
+
+  @Field()
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date
+
+  @Field()
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date
+}

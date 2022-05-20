@@ -64,9 +64,9 @@ export class PerformedEvaluationsService {
       await this.repo.delete({ id: performedEvaluationFound.id })
 
       return performedEvaluationFound
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new MethodNotAllowedException('Unable to remove. PerformedEvaluation in use')
     }

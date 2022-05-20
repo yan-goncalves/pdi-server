@@ -45,9 +45,9 @@ export class PdiQualitiesService {
     try {
       const performed = await this.performedService.get(idPerformed)
       return await this.repo.save(this.repo.create({ performed, category, description }))
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new ConflictException('PdiQuality already exists')
     }

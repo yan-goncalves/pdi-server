@@ -2,6 +2,7 @@ import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UserModel } from '@users/entities/user.entity'
 import {
+  Column,
   CreateDateColumn,
   Entity,
   Index,
@@ -28,6 +29,10 @@ export class PerformedEvaluationModel {
   @ManyToOne(() => UserModel, (user) => user.id)
   @JoinColumn({ name: 'id_user' })
   user: UserModel
+
+  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true })
+  grade?: number
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

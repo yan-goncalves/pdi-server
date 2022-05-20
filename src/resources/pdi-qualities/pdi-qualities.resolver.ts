@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePdiQualityInput } from '@pdi-qualities/dto/create-pdi-quality.input'
+import { UpdatePdiQualityInput } from '@pdi-qualities/dto/update-pdi-quality.input'
 import { PdiQualityModel } from '@pdi-qualities/entities/pdi-quality.entity'
 import { PdiQualitiesService } from '@pdi-qualities/pdi-qualities.service'
-import { UpdatePdiQualityInput } from './dto/update-pdi-quality.input'
 
 @Resolver(() => PdiQualityModel)
 export class PdiQualitiesResolver {

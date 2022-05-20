@@ -16,8 +16,8 @@ export class AuthService {
     let user: UserModel
     try {
       user = await this.userService.validate(identifier, password)
-    } catch (err) {
-      throw err
+    } catch (error) {
+      throw error
     }
 
     try {

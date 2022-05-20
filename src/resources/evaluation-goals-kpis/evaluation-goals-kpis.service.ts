@@ -46,9 +46,9 @@ export class EvaluationGoalsKpisService {
       const evaluationGoal = await this.evaluationGoalsService.getBy({ id: idEvaluationGoal })
       const kpi = await this.kpisService.getBy({ id: idKpi })
       return await this.repo.save(this.repo.create({ evaluationGoal, kpi, ...input }))
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new ConflictException('EvaluationGoalKpi already exists')
     }

@@ -2,10 +2,10 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm'
 import { PdiCompetencesCategoriesService } from '@pdi-competences-categories/pdi-competences-categories.service'
 import { CreatePdiCompetenceInput } from '@pdi-competences/dto/create-pdi-competence.input'
+import { UpdatePdiCompetenceInput } from '@pdi-competences/dto/update-pdi-competence.input'
+import { PdiCompetenceModel } from '@pdi-competences/entities/pdi-competence.entity'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { UpdatePdiCompetenceInput } from './dto/update-pdi-competence.input'
-import { PdiCompetenceModel } from './entities/pdi-competence.entity'
 
 @Injectable()
 export class PdiCompetencesService {
@@ -49,9 +49,9 @@ export class PdiCompetencesService {
       const performed = await this.performedService.get(idPerformed)
       const category = await this.categoryService.get(idCategory)
       return await this.repo.save(this.repo.create({ performed, category, action }))
-    } catch (Error) {
-      if (Error instanceof NotFoundException) {
-        throw Error
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
       }
       throw new ConflictException('PdiCompetence already exists')
     }

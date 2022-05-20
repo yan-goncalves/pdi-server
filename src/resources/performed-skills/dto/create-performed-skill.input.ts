@@ -1,9 +1,9 @@
 import { Field, InputType, Int } from '@nestjs/graphql'
-import { UpdatePerformedQuestionInput } from '@performed-questions/dto/update-performed-question.input'
+import { UpdatePerformedSkillInput } from '@performed-skills/dto/update-performed-skill.input'
 import { IsInt, IsNotEmpty } from 'class-validator'
 
 @InputType()
-export class CreatePerformedQuestionInput extends UpdatePerformedQuestionInput {
+export class CreatePerformedSkillInput extends UpdatePerformedSkillInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
@@ -12,5 +12,5 @@ export class CreatePerformedQuestionInput extends UpdatePerformedQuestionInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
-  idQuestion: number
+  idSkill: number
 }
