@@ -38,7 +38,6 @@ export class SectionModel {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'title',
@@ -47,7 +46,7 @@ export class SectionModel {
       })
     ]
   })
-  title?: string
+  title: string
 
   @Field(() => VisibilityModel)
   @Column({

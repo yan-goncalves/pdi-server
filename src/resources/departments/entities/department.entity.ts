@@ -24,7 +24,6 @@ export class DepartmentModel {
   readonly key: string
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'name',
@@ -33,7 +32,7 @@ export class DepartmentModel {
       })
     ]
   })
-  name?: string
+  name: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

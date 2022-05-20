@@ -18,7 +18,6 @@ export class {{pascalCase (slice name)}}Model {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: '{{camelCase field}}',

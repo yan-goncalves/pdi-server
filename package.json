@@ -138,7 +138,10 @@
       "^@performed-skills/(.*)$": "<rootDir>/resources/performed-skills/$1",
       "^@performed-goals/(.*)$": "<rootDir>/resources/performed-goals/$1",
       "^@performed-goals-kpis/(.*)$": "<rootDir>/resources/performed-goals-kpis/$1",
-      "^@performed-feedbacks/(.*)$": "<rootDir>/resources/performed-feedbacks/$1"
+      "^@performed-feedbacks/(.*)$": "<rootDir>/resources/performed-feedbacks/$1",
+      "^@pages/(.*)$": "<rootDir>/resources/pages/$1",
+      "^@medias/(.*)$": "<rootDir>/resources/media/$1",
+      "^@components/(.*)$": "<rootDir>/resources/components/$1"
     }
   }
 }

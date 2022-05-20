@@ -1,7 +1,6 @@
 import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PdiCompetenceCategoryLocaleModel } from '@pdi-competences-categories-i18n/entities/pdi-competence-category-i18n.entity'
-
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -19,7 +18,6 @@ export class PdiCompetenceCategoryModel {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'name',

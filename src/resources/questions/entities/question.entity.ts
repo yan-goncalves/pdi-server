@@ -18,7 +18,6 @@ export class QuestionModel {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'ask',
@@ -27,7 +26,7 @@ export class QuestionModel {
       })
     ]
   })
-  ask?: string
+  ask: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

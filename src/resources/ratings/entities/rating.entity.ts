@@ -19,7 +19,6 @@ export class RatingModel {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'description',

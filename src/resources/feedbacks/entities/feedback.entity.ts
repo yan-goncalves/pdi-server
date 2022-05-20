@@ -18,7 +18,6 @@ export class FeedbackModel {
   readonly id: number
 
   @Field({
-    nullable: true,
     middleware: [
       translation({
         field: 'inquire',

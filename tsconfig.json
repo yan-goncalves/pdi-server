@@ -59,6 +59,9 @@
       "@performed-goals/*": ["src/resources/performed-goals/*"],
       "@performed-goals-kpis/*": ["src/resources/performed-goals-kpis/*"],
       "@performed-feedbacks/*": ["src/resources/performed-feedbacks/*"],
+      "@pages/*": ["src/resources/pages/*"],
+      "@medias/*": ["src/resources/medias/*"],
+      "@components/*": ["src/resources/components/*"]
     }
   }
 }
