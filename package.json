@@ -135,7 +135,8 @@
       "^@ratings-i18n/(.*)$": "<rootDir>/resources/ratings-i18n/$1",
       "^@performed-evaluations/(.*)$": "<rootDir>/resources/performed-evaluations/$1",
       "^@performed-questions/(.*)$": "<rootDir>/resources/performed-questions/$1",
-      "^@performed-skills/(.*)$": "<rootDir>/resources/performed-skills/$1"
+      "^@performed-skills/(.*)$": "<rootDir>/resources/performed-skills/$1",
+      "^@performed-goals/(.*)$": "<rootDir>/resources/performed-goals/$1"
     }
   }
 }

@@ -188,6 +188,14 @@ type PdiQualityModel {
   deletedAt: DateTime
 }
 
+type PerformedGoalModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  evaluationGoal: EvaluationGoalModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PerformedQuestionModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -260,6 +268,8 @@ type Query {
   performedQuestions: [PerformedQuestionModel!]!
   performedSkill(id: Int!): PerformedSkillModel!
   performedSkills: [PerformedSkillModel!]!
+  performedGoal(id: Int!): PerformedGoalModel!
+  performedGoals: [PerformedGoalModel!]!
 }
 
 input EvaluationGoalInput {
@@ -320,6 +330,7 @@ type Mutation {
   updatePerformedQuestion(id: Int!, input: UpdatePerformedQuestionInput!): PerformedQuestionModel!
   createPerformedSkill(input: CreatePerformedSkillInput!): PerformedSkillModel!
   updatePerformedSkill(id: Int!, input: UpdatePerformedSkillInput!): PerformedSkillModel!
+  createPerformedGoal(input: PerformedGoalInput!): PerformedGoalModel!
 }
 
 input SignInInput {
@@ -525,4 +536,9 @@ input UpdatePerformedSkillInput {
   endFeedbackUser: Int
   midFeedbackUser: Int
   endFeedbackManager: Int
+}
+
+input PerformedGoalInput {
+  idPerformed: Int!
+  idEvaluationGoal: Int!
 }
