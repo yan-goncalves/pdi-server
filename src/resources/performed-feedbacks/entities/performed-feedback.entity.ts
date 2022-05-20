@@ -26,16 +26,16 @@ export class PerformedFeedbackModel {
   performed: PerformedEvaluationModel
 
   @Field(() => FeedbackModel)
-  @ManyToOne(() => FeedbackModel, (feedback) => feedback.id)
+  @ManyToOne(() => FeedbackModel, (feedback) => feedback.id, { eager: true })
   @JoinColumn({ name: 'id_feedback' })
   feedback: FeedbackModel
 
   @Field({ nullable: true })
-  @Column({ name: 'mid_reply', length: 5000, nullable: true })
+  @Column({ name: 'mid_reply', length: 4000, nullable: true })
   midReply?: string
 
   @Field({ nullable: true })
-  @Column({ name: 'end_reply', length: 5000, nullable: true })
+  @Column({ name: 'end_reply', length: 4000, nullable: true })
   endReply?: string
 
   @Field()

@@ -151,6 +151,24 @@ type EvaluationGoalKpiModel {
   deletedAt: DateTime
 }
 
+type PerformedFeedbackModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  feedback: FeedbackModel!
+  midReply: String
+  endReply: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PerformedGoalModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  evaluationGoal: EvaluationGoalModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PerformedQuestionModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -192,6 +210,8 @@ type PerformedEvaluationModel {
   updatedAt: DateTime!
   questions: [PerformedQuestionModel!]!
   skills: [PerformedSkillModel!]!
+  goals: [PerformedGoalModel!]!
+  feedbacks: [PerformedFeedbackModel!]!
 }
 
 type PdiCoachingModel {
@@ -230,14 +250,6 @@ type PerformedGoalKpiModel {
   midFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PerformedGoalModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  evaluationGoal: EvaluationGoalModel!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -286,6 +298,8 @@ type Query {
   performedGoals: [PerformedGoalModel!]!
   performedGoalKpi(id: Int!): PerformedGoalKpiModel!
   performedGoalsKpis: [PerformedGoalKpiModel!]!
+  performedFeedback(id: Int!): PerformedFeedbackModel!
+  performedFeedbacks: [PerformedFeedbackModel!]!
 }
 
 input EvaluationGoalInput {
@@ -349,6 +363,8 @@ type Mutation {
   createPerformedGoal(input: PerformedGoalInput!): PerformedGoalModel!
   createPerformedGoalKpi(input: CreatePerformedGoalKpiInput!): PerformedGoalKpiModel!
   updatePerformedGoalKpi(id: Int!, input: UpdatePerformedGoalKpiInput!): PerformedGoalKpiModel!
+  createPerformedFeedback(input: CreatePerformedFeedbackInput!): PerformedFeedbackModel!
+  removePerformedFeedback(id: Int!, input: UpdatePerformedFeedbackInput!): PerformedFeedbackModel!
 }
 
 input SignInInput {
@@ -577,4 +593,16 @@ input UpdatePerformedGoalKpiInput {
   midFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
+}
+
+input CreatePerformedFeedbackInput {
+  midReply: String
+  endReply: String
+  idPerformed: Int!
+  idFeedback: Int!
+}
+
+input UpdatePerformedFeedbackInput {
+  midReply: String
+  endReply: String
 }

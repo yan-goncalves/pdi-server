@@ -6,12 +6,12 @@ export class UpdatePerformedFeedbackInput {
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  @MaxLength(5000)
+  @MaxLength(4000)
   midReply?: string
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  @MaxLength(5000)
+  @MaxLength(4000)
   endReply?: string
 }

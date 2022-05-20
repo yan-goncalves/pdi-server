@@ -39,7 +39,7 @@ export class EvaluationGoalModel {
   goal: GoalModel
 
   @Field(() => [EvaluationGoalKpiModel])
-  @OneToMany(() => EvaluationGoalKpiModel, (evaluationGoalKpi) => evaluationGoalKpi.kpi)
+  @OneToMany(() => EvaluationGoalKpiModel, (goalKpi) => goalKpi.evaluationGoal, { eager: true })
   @JoinColumn({ name: 'id_kpi' })
   kpis: EvaluationGoalKpiModel[]
 

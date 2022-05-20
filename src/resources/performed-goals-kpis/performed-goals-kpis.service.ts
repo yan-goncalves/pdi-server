@@ -3,10 +3,10 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
 import { CreatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/create-performed-goal-kpi.input'
+import { UpdatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/update-performed-goal-kpi.input'
 import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
 import { RatingsService } from '@ratings/ratings.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { UpdatePerformedGoalKpiInput } from './dto/update-performed-goal-kpi.input'
 
 @Injectable()
 export class PerformedGoalsKpisService {

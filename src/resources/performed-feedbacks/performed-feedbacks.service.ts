@@ -3,9 +3,9 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
 import { CreatePerformedFeedbackInput } from '@performed-feedbacks/dto/create-performed-feedback.input'
+import { UpdatePerformedFeedbackInput } from '@performed-feedbacks/dto/update-performed-feedback.input'
 import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { UpdatePerformedFeedbackInput } from './dto/update-performed-feedback.input'
 
 @Injectable()
 export class PerformedFeedbacksService {

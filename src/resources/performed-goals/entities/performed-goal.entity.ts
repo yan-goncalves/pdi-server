@@ -25,7 +25,7 @@ export class PerformedGoalModel {
   performed: PerformedEvaluationModel
 
   @Field(() => EvaluationGoalModel)
-  @ManyToOne(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.id)
+  @ManyToOne(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.id, { eager: true })
   @JoinColumn({ name: 'id_evaluation_goal' })
   evaluationGoal: EvaluationGoalModel
 

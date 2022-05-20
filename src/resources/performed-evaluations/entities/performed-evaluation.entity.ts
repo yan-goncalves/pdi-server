@@ -1,5 +1,7 @@
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
+import { PerformedGoalModel } from '@performed-goals/entities/performed-goal.entity'
 import { PerformedQuestionModel } from '@performed-questions/entities/performed-question.entity'
 import { PerformedSkillModel } from '@performed-skills/entities/performed-skill.entity'
 import { UserModel } from '@users/entities/user.entity'
@@ -52,4 +54,12 @@ export class PerformedEvaluationModel {
   @Field(() => [PerformedSkillModel])
   @OneToMany(() => PerformedSkillModel, (skill) => skill.performed, { eager: true })
   skills: PerformedSkillModel[]
+
+  @Field(() => [PerformedGoalModel])
+  @OneToMany(() => PerformedGoalModel, (goal) => goal.performed, { eager: true })
+  goals: PerformedGoalModel[]
+
+  @Field(() => [PerformedFeedbackModel])
+  @OneToMany(() => PerformedFeedbackModel, (feedback) => feedback.performed, { eager: true })
+  feedbacks: PerformedFeedbackModel[]
 }

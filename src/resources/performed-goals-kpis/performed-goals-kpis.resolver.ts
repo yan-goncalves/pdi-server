@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/create-performed-goal-kpi.input'
+import { UpdatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/update-performed-goal-kpi.input'
 import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
 import { PerformedGoalsKpisService } from '@performed-goals-kpis/performed-goals-kpis.service'
-import { UpdatePerformedGoalKpiInput } from './dto/update-performed-goal-kpi.input'
 
 @Resolver(() => PerformedGoalKpiModel)
 export class PerformedGoalsKpisResolver {
