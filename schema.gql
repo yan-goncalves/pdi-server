@@ -2,13 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type DepartmentModel {
+type UsersInfoModel {
   id: Int!
-  key: String!
+  user: UserModel!
   name: String!
+  lastname: String!
+  position: String
+  hiringDate: DateTime
+  badge: Int
+  costCenter: Int
   createdAt: DateTime!
   updatedAt: DateTime!
-  users: [UserModel!]
 }
 
 """
@@ -33,17 +37,13 @@ type UserModel {
   deletedAt: DateTime
 }
 
-type UsersInfoModel {
+type DepartmentModel {
   id: Int!
-  user: UserModel!
+  key: String!
   name: String!
-  lastname: String!
-  position: String
-  hiringDate: DateTime
-  badge: Int
-  costCenter: Int
   createdAt: DateTime!
   updatedAt: DateTime!
+  users: [UserModel!]
 }
 
 type JWT {
@@ -151,14 +151,6 @@ type EvaluationGoalKpiModel {
   deletedAt: DateTime
 }
 
-type PdiCompetenceCategoryModel {
-  id: Int!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type PerformedFeedbackModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -222,6 +214,23 @@ type PerformedEvaluationModel {
   feedbacks: [PerformedFeedbackModel!]!
 }
 
+type PdiCoachingModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: String!
+  action: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiCompetenceCategoryModel {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type PdiQualityModel {
   id: Int!
   performed: PerformedEvaluationModel!
@@ -241,15 +250,6 @@ type PerformedGoalKpiModel {
   midFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PdiCoachingModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  category: String!
-  action: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }

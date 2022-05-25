@@ -1,9 +1,9 @@
 import { LOCALES } from '@constants/locales'
 import { DepartmentI18nInput } from '@departments-i18n/dto/department-i18n.input'
 import { DepartmentLocaleModel } from '@departments-i18n/entities/department-i18n.entity'
+import { DepartmentModel } from '@departments/entities/department.entity'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { PDI_COACHING_CATEGORY } from '@constants/pdi'
 import faker from '@faker-js/faker'
+import { PdiCoachingModel } from '@pdi-coachings/entities/pdi-coaching.entity'
 import performedEvaluationMock from '@performed-evaluations/mock'
-import { PdiCoachingModel } from 'src/resources/core/pdi-coachings/entities/pdi-coaching.entity'
 
 const pdiCoachingMock: PdiCoachingModel = {
   id: 1,

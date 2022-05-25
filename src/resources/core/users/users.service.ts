@@ -1,4 +1,5 @@
 import { ROLES } from '@constants/roles'
+import { DepartmentsService } from '@departments/departments.service'
 import { LdapService } from '@ldap/ldap.service'
 import {
   BadRequestException,
@@ -9,13 +10,13 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersInfoService } from '@users-info/users-info.service'
 import { CreateUserInput } from '@users/dto/create-user.input'
 import { UpdateUserInput } from '@users/dto/update-user.input'
 import { UserModel } from '@users/entities/user.entity'
-import { compare } from 'bcrypt'
-import { DepartmentsService } from 'src/resources/core/departments/departments.service'
+import { compare, hash } from 'bcrypt'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 export type UserOptions = {
@@ -28,7 +29,8 @@ export class UsersService {
     @InjectRepository(UserModel) private readonly repo: Repository<UserModel>,
     @Inject(LdapService) private readonly ldapService: LdapService,
     @Inject(forwardRef(() => UsersInfoService)) private readonly usersInfoService: UsersInfoService,
-    @Inject(DepartmentsService) private readonly departmentsService: DepartmentsService
+    @Inject(DepartmentsService) private readonly departmentsService: DepartmentsService,
+    @Inject(ConfigService) private readonly configService: ConfigService
   ) {}
 
   async validate(identifier: string, password: string): Promise<UserModel> {
@@ -59,7 +61,11 @@ export class UsersService {
       return await this.repo.save(userFound)
     }
 
-    const user = await this.repo.save(this.repo.create({ email, username, role }))
+    const defaultPassword = this.configService.get<string>('DEFAULT_PASSWORD')
+    const salt = +this.configService.get<number>('SALT_GEN', { infer: true })
+    const password = await hash(defaultPassword, salt)
+
+    const user = await this.repo.save(this.repo.create({ email, username, role, password }))
     const ldapInfo = await this.ldapService.getByUsername(user.username)
     const info = await this.usersInfoService.create(user, ldapInfo)
 

@@ -10,6 +10,7 @@ import { UsersModule } from '@users/users.module'
 
 @Module({
   imports: [
+    ConfigModule,
     LdapModule,
     UsersModule,
     PassportModule,

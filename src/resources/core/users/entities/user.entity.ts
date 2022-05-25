@@ -1,10 +1,8 @@
 import { ROLES } from '@constants/roles'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UsersInfoModel } from '@users-info/entities/users-info.entity'
-import { hashSync } from 'bcrypt'
 import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -82,11 +80,4 @@ export class UserModel {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
-
-  @BeforeInsert()
-  setDefaultPassword = (): void => {
-    const password = process.env.DEFAULT_PASSWORD || '1@asdfg'
-    const salt = +process.env.SALT_GEN || 10
-    this.password = hashSync(password, salt)
-  }
 }

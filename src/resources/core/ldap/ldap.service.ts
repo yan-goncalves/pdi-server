@@ -1,6 +1,7 @@
 import { LDAPUser } from '@ldap/dto/user.dto'
 import { UserModelLDAP } from '@ldap/model/user.ldap.interface'
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Client, DN } from 'ldapts'
 import { Entry } from 'ldapts/messages'
 
@@ -16,12 +17,17 @@ export class LdapService {
   private readonly _CLIENT_: Client
   private readonly _BASE_DN_: DN
   private readonly _DN_: string
-  private readonly _URL_ = process.env.LDAP_URL
-  private readonly _DOMAIN_ = process.env.LDAP_DOMAIN
-  private readonly _ADM_USER_ = process.env.LDAP_ADMIN_CN
-  private readonly _ADM_PWD_ = process.env.LDAP_ADMIN_PWD
+  private readonly _URL_: string
+  private readonly _DOMAIN_: string
+  private readonly _ADM_USER_: string
+  private readonly _ADM_PWD_: string
 
-  constructor() {
+  constructor(@Inject(ConfigService) private readonly configService: ConfigService) {
+    this._URL_ = configService.get<string>('LDAP_URL')
+    this._DOMAIN_ = configService.get<string>('LDAP_DOMAIN')
+    this._ADM_USER_ = configService.get<string>('LDAP_ADMIN_CN')
+    this._ADM_PWD_ = configService.get<string>('LDAP_ADMIN_PWD')
+
     this._CLIENT_ = new Client({ url: this._URL_ })
 
     this._BASE_DN_ = new DN({

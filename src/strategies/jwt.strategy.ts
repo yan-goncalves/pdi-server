@@ -1,5 +1,6 @@
 import { ROLES } from '@constants/roles'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Field, ObjectType } from '@nestjs/graphql'
 import { PassportStrategy } from '@nestjs/passport'
 import { UserModel } from '@users/entities/user.entity'
@@ -21,9 +22,12 @@ export class JWT {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(@Inject(UsersService) private readonly userService: UsersService) {
+  constructor(
+    @Inject(UsersService) private readonly userService: UsersService,
+    @Inject(ConfigService) private readonly configService: ConfigService
+  ) {
     super({
-      secretOrKey: process.env.JWT_SECRET || '8VXWRVcPn5LO3DPQwQkgudbEG6EZ6Wc9L6dmJbxgSn4=',
+      secretOrKey: configService.get<string>('JWT_SECRET'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false
     })

@@ -1,5 +1,6 @@
 import { AuthModule } from '@auth/auth.module'
 import { AppDataSource } from '@data-source'
+import { DepartmentsModule } from '@departments/departments.module'
 import { EvaluationGoalsKpisModule } from '@evaluation-goals-kpis/evaluation-goals-kpis.module'
 import { EvaluationGoalsModule } from '@evaluation-goals/evaluation-goals.module'
 import { EvaluationsModule } from '@evaluations/evaluations.module'
@@ -9,9 +10,10 @@ import { KpisModule } from '@kpis/kpis.module'
 import { LdapModule } from '@ldap/ldap.module'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { PdiCoachingsModule } from '@pdi-coachings/pdi-coachings.module'
 import { PdiCompetencesCategoriesModule } from '@pdi-competences-categories/pdi-competences-categories.module'
 import { PdiQualitiesModule } from '@pdi-qualities/pdi-qualities.module'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
@@ -26,8 +28,6 @@ import { SectionsModule } from '@sections/sections.module'
 import { SkillsModule } from '@skills/skills.module'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
-import { DepartmentsModule } from 'src/resources/core/departments/departments.module'
-import { PdiCoachingsModule } from 'src/resources/core/pdi-coachings/pdi-coachings.module'
 
 @Module({
   imports: [
@@ -36,10 +36,14 @@ import { PdiCoachingsModule } from 'src/resources/core/pdi-coachings/pdi-coachin
       // ignoreEnvFile: process.env.NODE_ENV !== 'production'
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
-      playground: process.env.NODE_ENV !== 'production'
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        autoSchemaFile: 'schema.gql',
+        playground: configService.get<string>('NODE_ENV') !== 'production'
+      })
     }),
     LdapModule,
     AuthModule,
