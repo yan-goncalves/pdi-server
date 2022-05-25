@@ -28,9 +28,9 @@ export class AuthService {
         role: user.role
       }
 
-      return Promise.resolve({
+      return {
         jwt: this.jwtService.sign(payload)
-      })
+      }
     } catch (error) {
       throw new ForbiddenException(`User blocked or not created yet`)
     }
