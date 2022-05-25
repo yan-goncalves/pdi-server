@@ -1,9 +1,9 @@
-import { DepartmentsService } from '@departments/departments.service'
-import { CreateDepartmentInput } from '@departments/dto/create-department.input'
-import { UpdateDepartmentInput } from '@departments/dto/update-department.input'
-import { DepartmentModel } from '@departments/entities/department.entity'
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { DepartmentsService } from 'src/resources/core/departments/departments.service'
+import { CreateDepartmentInput } from 'src/resources/core/departments/dto/create-department.input'
+import { UpdateDepartmentInput } from 'src/resources/core/departments/dto/update-department.input'
+import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 
 @Resolver(() => DepartmentModel)
 export class DepartmentsResolver {

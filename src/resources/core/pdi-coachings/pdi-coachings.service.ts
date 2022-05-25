@@ -1,9 +1,9 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { CreatePdiCoachingInput } from '@pdi-coachings/dto/create-pdi-coaching.input'
-import { UpdatePdiCoachingInput } from '@pdi-coachings/dto/update-pdi-coaching.input'
-import { PdiCoachingModel } from '@pdi-coachings/entities/pdi-coaching.entity'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
+import { CreatePdiCoachingInput } from 'src/resources/core/pdi-coachings/dto/create-pdi-coaching.input'
+import { UpdatePdiCoachingInput } from 'src/resources/core/pdi-coachings/dto/update-pdi-coaching.input'
+import { PdiCoachingModel } from 'src/resources/core/pdi-coachings/entities/pdi-coaching.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()

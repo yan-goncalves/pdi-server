@@ -1,5 +1,5 @@
 import { LOCALES } from '@constants/locales'
-import { DepartmentModel } from '@departments/entities/department.entity'
+import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 import {
   Column,
   CreateDateColumn,

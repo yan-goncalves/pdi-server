@@ -1,5 +1,5 @@
-import { DepartmentsService } from '@departments/departments.service'
 import { Test, TestingModule } from '@nestjs/testing'
+import { DepartmentsService } from 'src/resources/core/departments/departments.service'
 
 describe('DepartmentsService', () => {
   let service: DepartmentsService

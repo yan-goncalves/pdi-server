@@ -1,11 +1,9 @@
-import { LOCALES } from '@constants/locales'
-import { Inject } from '@nestjs/common'
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreateFeedbackInput } from '@feedbacks/dto/create-feedback.input'
 import { UpdateFeedbackInput } from '@feedbacks/dto/update-feedback.input'
 import { FeedbackModel } from '@feedbacks/entities/feedback.entity'
 import { FeedbacksService } from '@feedbacks/feedbacks.service'
-import { FindOptionsRelations } from 'typeorm'
+import { Inject } from '@nestjs/common'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 @Resolver(() => FeedbackModel)
 export class FeedbacksResolver {

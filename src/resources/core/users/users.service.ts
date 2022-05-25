@@ -1,5 +1,4 @@
 import { ROLES } from '@constants/roles'
-import { DepartmentsService } from '@departments/departments.service'
 import { LdapService } from '@ldap/ldap.service'
 import {
   BadRequestException,
@@ -16,6 +15,7 @@ import { CreateUserInput } from '@users/dto/create-user.input'
 import { UpdateUserInput } from '@users/dto/update-user.input'
 import { UserModel } from '@users/entities/user.entity'
 import { compare } from 'bcrypt'
+import { DepartmentsService } from 'src/resources/core/departments/departments.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 export type UserOptions = {

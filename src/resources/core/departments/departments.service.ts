@@ -1,10 +1,10 @@
 import { LOCALES } from '@constants/locales'
 import { DepartmentsI18nService } from '@departments-i18n/departments-i18n.service'
-import { CreateDepartmentInput } from '@departments/dto/create-department.input'
-import { UpdateDepartmentInput } from '@departments/dto/update-department.input'
-import { DepartmentModel } from '@departments/entities/department.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CreateDepartmentInput } from 'src/resources/core/departments/dto/create-department.input'
+import { UpdateDepartmentInput } from 'src/resources/core/departments/dto/update-department.input'
+import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 import { Repository } from 'typeorm'
 
 @Injectable()

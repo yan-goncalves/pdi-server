@@ -6,5 +6,5 @@
 - [] Novos registros com internacionalização de acordo com locale passado pelo header (padrão: br)
 - [] Revisar lógica da função create em todos os services
 - [] Revisar relacionamento das tabelas 'performed-'
-- [] Mudar estrutura de arquivos. Segregar as páginas e módulos por single e collection types
+- [x] Mudar estrutura de arquivos. Segregar as páginas, módulos e componentes
 - [] Tratar upload de mídia

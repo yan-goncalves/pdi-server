@@ -1,8 +1,8 @@
 import { ROLES } from '@constants/roles'
-import { DepartmentModel } from '@departments/entities/department.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { UsersInfoModel } from '@users-info/entities/users-info.entity'
 import { hashSync } from 'bcrypt'
+import { DepartmentModel } from 'src/resources/core/departments/entities/department.entity'
 import {
   BeforeInsert,
   Column,

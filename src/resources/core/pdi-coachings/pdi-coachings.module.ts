@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { PdiCoachingModel } from '@pdi-coachings/entities/pdi-coaching.entity'
-import { PdiCoachingsResolver } from '@pdi-coachings/pdi-coachings.resolver'
-import { PdiCoachingsService } from '@pdi-coachings/pdi-coachings.service'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
+import { PdiCoachingModel } from 'src/resources/core/pdi-coachings/entities/pdi-coaching.entity'
+import { PdiCoachingsResolver } from 'src/resources/core/pdi-coachings/pdi-coachings.resolver'
+import { PdiCoachingsService } from 'src/resources/core/pdi-coachings/pdi-coachings.service'
 
 @Module({
   imports: [TypeOrmModule.forFeature([PdiCoachingModel]), PerformedEvaluationsModule],

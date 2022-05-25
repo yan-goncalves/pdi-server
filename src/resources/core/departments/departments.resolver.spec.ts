@@ -1,6 +1,6 @@
-import { DepartmentsResolver } from '@departments/departments.resolver'
-import { DepartmentsService } from '@departments/departments.service'
 import { Test, TestingModule } from '@nestjs/testing'
+import { DepartmentsResolver } from 'src/resources/core/departments/departments.resolver'
+import { DepartmentsService } from 'src/resources/core/departments/departments.service'
 
 describe('DepartmentsResolver', () => {
   let resolver: DepartmentsResolver
