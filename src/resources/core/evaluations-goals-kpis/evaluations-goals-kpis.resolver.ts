@@ -1,12 +1,14 @@
+import { CreateEvaluationGoalKpiInput } from '@evaluations-goals-kpis/dto/create-evaluation-goal-kpi.input'
+import { EvaluationGoalKpiModel } from '@evaluations-goals-kpis/entities/evaluation-goal-kpi.entity'
+import { EvaluationsGoalsKpisService } from '@evaluations-goals-kpis/evaluations-goals-kpis.service'
 import { Inject } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { CreateEvaluationGoalKpiInput } from '@evaluation-goals-kpis/dto/create-evaluation-goal-kpi.input'
-import { EvaluationGoalKpiModel } from '@evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
-import { EvaluationGoalsKpisService } from '@evaluation-goals-kpis/evaluation-goals-kpis.service'
 
 @Resolver(() => EvaluationGoalKpiModel)
-export class EvaluationGoalsKpisResolver {
-  constructor(@Inject(EvaluationGoalsKpisService) private readonly service: EvaluationGoalsKpisService) {}
+export class EvaluationsGoalsKpisResolver {
+  constructor(
+    @Inject(EvaluationsGoalsKpisService) private readonly service: EvaluationsGoalsKpisService
+  ) {}
 
   @Query(() => EvaluationGoalKpiModel, { name: 'evaluationGoalKpi' })
   async get(@Args('id', { type: () => Int }) id: number): Promise<EvaluationGoalKpiModel> {

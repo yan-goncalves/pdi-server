@@ -1,4 +1,4 @@
-import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
+import { EvaluationGoalModel } from '@evaluations-goals/entities/evaluation-goal.entity'
 import { KpiModel } from '@kpis/entities/kpi.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import {
@@ -14,7 +14,7 @@ import {
 } from 'typeorm'
 
 @ObjectType()
-@Entity('evaluation_goals_kpis')
+@Entity('evaluations_goals_kpis')
 @Index(['evaluationGoal', 'kpi'], { unique: true })
 export class EvaluationGoalKpiModel {
   @Field(() => Int)

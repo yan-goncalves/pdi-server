@@ -1,5 +1,5 @@
-import { EvaluationGoalKpiModel } from '@evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
-import evaluationGoalMock from '@evaluation-goals/mock'
+import { EvaluationGoalKpiModel } from '@evaluations-goals-kpis/entities/evaluation-goal-kpi.entity'
+import evaluationGoalMock from '@evaluations-goals/mock'
 import faker from '@faker-js/faker'
 import kpiMock from '@kpis/mock'
 

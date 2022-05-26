@@ -1,4 +1,4 @@
-import { EvaluationGoalsModule } from '@evaluation-goals/evaluation-goals.module'
+import { EvaluationGoalsModule } from '@evaluations-goals/evaluations-goals.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'

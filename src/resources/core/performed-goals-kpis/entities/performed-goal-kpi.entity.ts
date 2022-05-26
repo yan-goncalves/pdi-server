@@ -1,4 +1,4 @@
-import { EvaluationGoalKpiModel } from '@evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
+import { EvaluationGoalKpiModel } from '@evaluations-goals-kpis/entities/evaluation-goal-kpi.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import { RatingModel } from '@ratings/entities/rating.entity'

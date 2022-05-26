@@ -44,11 +44,13 @@ export class EvaluationModel {
     transformer: {
       to: (value: EvaluationDateModel) => JSON.stringify(value),
       from: (value: string) => {
-        const mid = JSON.parse(value)
-        const start = new Date(mid.start)
-        const deadline = new Date(mid.deadline)
+        if (typeof value === 'string') {
+          const mid = JSON.parse(value)
+          const start = new Date(mid.start)
+          const deadline = new Date(mid.deadline)
 
-        return { start, deadline }
+          return { start, deadline }
+        }
       }
     }
   })
@@ -61,11 +63,13 @@ export class EvaluationModel {
     transformer: {
       to: (value: EvaluationDateModel) => JSON.stringify(value),
       from: (value: string) => {
-        const end = JSON.parse(value)
-        const start = new Date(end.start)
-        const deadline = new Date(end.deadline)
+        if (typeof value === 'string') {
+          const end = JSON.parse(value)
+          const start = new Date(end.start)
+          const deadline = new Date(end.deadline)
 
-        return { start, deadline }
+          return { start, deadline }
+        }
       }
     }
   })

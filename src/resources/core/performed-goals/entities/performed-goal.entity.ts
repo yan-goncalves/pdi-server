@@ -1,4 +1,4 @@
-import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
+import { EvaluationGoalModel } from '@evaluations-goals/entities/evaluation-goal.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import {

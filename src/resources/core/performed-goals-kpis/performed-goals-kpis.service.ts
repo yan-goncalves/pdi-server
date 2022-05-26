@@ -1,4 +1,4 @@
-import { EvaluationGoalsKpisService } from '@evaluation-goals-kpis/evaluation-goals-kpis.service'
+import { EvaluationsGoalsKpisService } from '@evaluations-goals-kpis/evaluations-goals-kpis.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
@@ -15,8 +15,8 @@ export class PerformedGoalsKpisService {
     private readonly repo: Repository<PerformedGoalKpiModel>,
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
-    @Inject(EvaluationGoalsKpisService)
-    private readonly goalsKpisService: EvaluationGoalsKpisService,
+    @Inject(EvaluationsGoalsKpisService)
+    private readonly goalsKpisService: EvaluationsGoalsKpisService,
     @Inject(RatingsService) private readonly ratingsService: RatingsService
   ) {}
 

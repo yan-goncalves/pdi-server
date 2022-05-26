@@ -1,5 +1,5 @@
-import { EvaluationGoalInput } from '@evaluation-goals/dto/evaluation-goal.input'
-import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
+import { EvaluationGoalInput } from '@evaluations-goals/dto/evaluation-goal.input'
+import { EvaluationGoalModel } from '@evaluations-goals/entities/evaluation-goal.entity'
 import { EvaluationsService } from '@evaluations/evaluations.service'
 import { GoalsService } from '@goals/goals.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
@@ -8,7 +8,7 @@ import { UsersService } from '@users/users.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()
-export class EvaluationGoalsService {
+export class EvaluationsGoalsService {
   constructor(
     @InjectRepository(EvaluationGoalModel) private readonly repo: Repository<EvaluationGoalModel>,
     @Inject(EvaluationsService) private readonly evaluationsService: EvaluationsService,

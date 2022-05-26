@@ -1,4 +1,4 @@
-import { EvaluationGoalModel } from '@evaluation-goals/entities/evaluation-goal.entity'
+import { EvaluationGoalModel } from '@evaluations-goals/entities/evaluation-goal.entity'
 import evaluationMock from '@evaluations/mock'
 import faker from '@faker-js/faker'
 import goalMock from '@goals/mock'

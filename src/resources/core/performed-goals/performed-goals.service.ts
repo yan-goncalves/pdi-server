@@ -1,4 +1,4 @@
-import { EvaluationGoalsService } from '@evaluation-goals/evaluation-goals.service'
+import { EvaluationsGoalsService } from '@evaluations-goals/evaluations-goals.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
@@ -12,7 +12,8 @@ export class PerformedGoalsService {
     @InjectRepository(PerformedGoalModel) private readonly repo: Repository<PerformedGoalModel>,
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
-    @Inject(EvaluationGoalsService) private readonly evaluationGoalsService: EvaluationGoalsService
+    @Inject(EvaluationsGoalsService)
+    private readonly evaluationsGoalsService: EvaluationsGoalsService
   ) {}
 
   async get(id: number): Promise<PerformedGoalModel> {
@@ -40,7 +41,7 @@ export class PerformedGoalsService {
   async create({ idPerformed, idEvaluationGoal }: PerformedGoalInput): Promise<PerformedGoalModel> {
     try {
       const performed = await this.performedService.get(idPerformed)
-      const evaluationGoal = await this.evaluationGoalsService.getBy({ id: idEvaluationGoal })
+      const evaluationGoal = await this.evaluationsGoalsService.getBy({ id: idEvaluationGoal })
       return await this.repo.save(this.repo.create({ performed, evaluationGoal }))
     } catch (error) {
       if (error instanceof NotFoundException) {

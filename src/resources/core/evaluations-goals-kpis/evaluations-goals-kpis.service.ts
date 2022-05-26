@@ -1,17 +1,18 @@
-import { CreateEvaluationGoalKpiInput } from '@evaluation-goals-kpis/dto/create-evaluation-goal-kpi.input'
-import { EvaluationGoalKpiModel } from '@evaluation-goals-kpis/entities/evaluation-goal-kpi.entity'
-import { EvaluationGoalsService } from '@evaluation-goals/evaluation-goals.service'
+import { CreateEvaluationGoalKpiInput } from '@evaluations-goals-kpis/dto/create-evaluation-goal-kpi.input'
+import { EvaluationGoalKpiModel } from '@evaluations-goals-kpis/entities/evaluation-goal-kpi.entity'
+import { EvaluationsGoalsService } from '@evaluations-goals/evaluations-goals.service'
 import { KpisService } from '@kpis/kpis.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()
-export class EvaluationGoalsKpisService {
+export class EvaluationsGoalsKpisService {
   constructor(
     @InjectRepository(EvaluationGoalKpiModel)
     private readonly repo: Repository<EvaluationGoalKpiModel>,
-    @Inject(EvaluationGoalsService) private readonly evaluationGoalsService: EvaluationGoalsService,
+    @Inject(EvaluationsGoalsService)
+    private readonly evaluationsGoalsService: EvaluationsGoalsService,
     @Inject(KpisService) private readonly kpisService: KpisService
   ) {}
 
@@ -43,7 +44,7 @@ export class EvaluationGoalsKpisService {
     ...input
   }: CreateEvaluationGoalKpiInput): Promise<EvaluationGoalKpiModel> {
     try {
-      const evaluationGoal = await this.evaluationGoalsService.getBy({ id: idEvaluationGoal })
+      const evaluationGoal = await this.evaluationsGoalsService.getBy({ id: idEvaluationGoal })
       const kpi = await this.kpisService.getBy({ id: idKpi })
       return await this.repo.save(this.repo.create({ evaluationGoal, kpi, ...input }))
     } catch (error) {

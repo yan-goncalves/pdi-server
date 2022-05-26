@@ -1,4 +1,4 @@
-import { EvaluationGoalsKpisModule } from '@evaluation-goals-kpis/evaluation-goals-kpis.module'
+import { EvaluationGoalsKpisModule } from '@evaluations-goals-kpis/evaluations-goals-kpis.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'

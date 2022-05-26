@@ -1,4 +1,4 @@
-import evaluationGoalMock from '@evaluation-goals/mock'
+import evaluationGoalMock from '@evaluations-goals/mock'
 import faker from '@faker-js/faker'
 import performedEvaluationMock from '@performed-evaluations/mock'
 import { PerformedGoalModel } from '@performed-goals/entities/performed-goal.entity'
