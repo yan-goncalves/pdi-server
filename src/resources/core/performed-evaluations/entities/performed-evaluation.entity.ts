@@ -1,3 +1,6 @@
+import { PdiCoachingModel } from '@core/pdi-coachings/entities/pdi-coaching.entity'
+import { PdiCompetenceModel } from '@core/pdi-competences/entities/pdi-competence.entity'
+import { PdiQualityModel } from '@core/pdi-qualities/entities/pdi-quality.entity'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
@@ -39,6 +42,14 @@ export class PerformedEvaluationModel {
   @Column({ nullable: true })
   grade?: number
 
+  @Field(() => Boolean, { defaultValue: false })
+  @Column({ name: 'mid_finished', default: false })
+  midFinished: boolean
+
+  @Field(() => Boolean, { defaultValue: false })
+  @Column({ name: 'end_finished', default: false })
+  endFinished: boolean
+
   @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -62,4 +73,16 @@ export class PerformedEvaluationModel {
   @Field(() => [PerformedFeedbackModel])
   @OneToMany(() => PerformedFeedbackModel, (feedback) => feedback.performed, { eager: true })
   feedbacks: PerformedFeedbackModel[]
+
+  @Field(() => [PdiCoachingModel])
+  @OneToMany(() => PdiCoachingModel, (coaching) => coaching.performed, { eager: true })
+  pdiCoaching: PdiCoachingModel[]
+
+  @Field(() => [PdiCompetenceModel])
+  @OneToMany(() => PdiCompetenceModel, (competence) => competence.performed, { eager: true })
+  pdiCompetence: PdiCompetenceModel[]
+
+  @Field(() => [PdiQualityModel])
+  @OneToMany(() => PdiQualityModel, (quality) => quality.performed, { eager: true })
+  pdiQuality: PdiQualityModel[]
 }

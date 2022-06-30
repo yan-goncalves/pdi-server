@@ -13,6 +13,11 @@ export class PerformedGoalsResolver {
     return await this.service.get(id)
   }
 
+  @Query(() => PerformedGoalModel, { name: 'performedGoalByRelation' })
+  async getByRelation(@Args('input') input: PerformedGoalInput): Promise<PerformedGoalModel> {
+    return await this.service.getByRelation(input)
+  }
+
   @Query(() => [PerformedGoalModel], { name: 'performedGoals' })
   async list(): Promise<PerformedGoalModel[]> {
     return await this.service.list()

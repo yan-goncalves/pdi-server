@@ -1,3 +1,6 @@
+import pdiCoachingMock from '@core/pdi-coachings/mock'
+import pdiCompetenceMock from '@core/pdi-competences/mock'
+import pdiQualityMock from '@core/pdi-qualities/mock'
 import evaluationMock from '@evaluations/mock'
 import faker from '@faker-js/faker'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
@@ -11,12 +14,17 @@ const performedEvaluationMock: PerformedEvaluationModel = {
   id: 1,
   evaluation: evaluationMock,
   user: userMock(),
+  midFinished: false,
+  endFinished: false,
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1),
   questions: [performedQuestionMock],
   skills: [performedSkillMock],
   goals: [performedGoalMock],
-  feedbacks: [performedFeedbackMock]
+  feedbacks: [performedFeedbackMock],
+  pdiCoaching: [pdiCoachingMock],
+  pdiCompetence: [pdiCompetenceMock],
+  pdiQuality: [pdiQualityMock]
 }
 
 export default performedEvaluationMock

@@ -18,6 +18,8 @@ export type JwtPayload = {
 export class JWT {
   @Field()
   jwt: string
+  @Field()
+  user: UserModel
 }
 
 @Injectable()
@@ -35,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload): Promise<UserModel> {
     try {
-      return await this.userService.get(payload.sub)
+      return await this.userService.get({ id: payload.sub })
     } catch {
       throw new UnauthorizedException()
     }

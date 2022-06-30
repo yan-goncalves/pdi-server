@@ -2,7 +2,7 @@ import { EVALUATION_PERIOD } from '@constants/evaluations'
 import { CreateEvaluationDateInput } from '@evaluations/dto/create-evaluation-date.input'
 import { EvaluationDateModel } from '@evaluations/entities/evaluation.entity'
 import { Field, InputType, Int } from '@nestjs/graphql'
-import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator'
+import { IsEnum, IsInt, IsOptional } from 'class-validator'
 
 @InputType()
 export class UpdateEvaluationInput {
@@ -23,9 +23,4 @@ export class UpdateEvaluationInput {
   @IsOptional()
   @IsEnum(EVALUATION_PERIOD)
   period?: EVALUATION_PERIOD
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsBoolean()
-  finished?: boolean
 }

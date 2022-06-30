@@ -15,9 +15,12 @@ const userMock: (input?: CreateUserInput) => UserModel = (input?: CreateUserInpu
     role: input?.role ?? ROLES.USER,
     blocked: false,
     confirmed: false,
+    picture: null,
     createdAt: faker.date.past(1),
     updatedAt: faker.date.recent(1),
-    setDefaultPassword: () => ({}),
+    setDefaultPassword: (): void => {
+      /**/
+    },
     info: userInfoMock,
     department: departmentMock
   }

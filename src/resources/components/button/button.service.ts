@@ -3,7 +3,7 @@ import { CreateButtonInput } from '@components/button/dto/create-button.input'
 import { UpdateButtonInput } from '@components/button/dto/update-button.input'
 import { ButtonModel } from '@components/button/entities/button.entity'
 import { LOCALES } from '@constants/locales'
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
@@ -27,16 +27,21 @@ export class ButtonService {
   }
 
   async create({ label, loadingLabel }: CreateButtonInput): Promise<ButtonModel> {
-    try {
-      const button = await this.repo.save(this.repo.create())
-      const buttonLocale = await this.i18nService.create(button, { label, loadingLabel })
-
+    const buttonFound = await this.i18nService.getBy([{ label }, { loadingLabel }])
+    if (buttonFound) {
       return {
-        ...button,
-        label: buttonLocale.label
+        ...buttonFound.button,
+        label: buttonFound.label,
+        loadingLabel: buttonFound?.loadingLabel
       }
-    } catch {
-      throw new ConflictException('Button already exists')
+    }
+    const button = await this.repo.save(this.repo.create())
+    const buttonLocale = await this.i18nService.create(button, { label, loadingLabel })
+
+    return {
+      ...button,
+      label: buttonLocale.label,
+      loadingLabel: buttonLocale?.loadingLabel
     }
   }
 

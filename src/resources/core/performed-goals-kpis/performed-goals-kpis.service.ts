@@ -1,10 +1,10 @@
-import { EvaluationsGoalsKpisService } from '@evaluations-goals-kpis/evaluations-goals-kpis.service'
+import { KpisService } from '@kpis/kpis.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
 import { CreatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/create-performed-goal-kpi.input'
 import { UpdatePerformedGoalKpiInput } from '@performed-goals-kpis/dto/update-performed-goal-kpi.input'
 import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
+import { PerformedGoalsService } from '@performed-goals/performed-goals.service'
 import { RatingsService } from '@ratings/ratings.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
@@ -13,10 +13,10 @@ export class PerformedGoalsKpisService {
   constructor(
     @InjectRepository(PerformedGoalKpiModel)
     private readonly repo: Repository<PerformedGoalKpiModel>,
-    @Inject(PerformedEvaluationsService)
-    private readonly performedService: PerformedEvaluationsService,
-    @Inject(EvaluationsGoalsKpisService)
-    private readonly goalsKpisService: EvaluationsGoalsKpisService,
+    @Inject(PerformedGoalsService)
+    private readonly performedGoalsService: PerformedGoalsService,
+    @Inject(KpisService)
+    private readonly kpisService: KpisService,
     @Inject(RatingsService) private readonly ratingsService: RatingsService
   ) {}
 
@@ -43,20 +43,21 @@ export class PerformedGoalsKpisService {
   }
 
   async create({
-    idPerformed,
-    idEvaluationGoalKpi,
-    idRatingManager,
+    idPerformedGoal,
+    idKpi,
+    ratingManager,
     ...input
   }: CreatePerformedGoalKpiInput): Promise<PerformedGoalKpiModel> {
     try {
-      const performed = await this.performedService.get(idPerformed)
-      const evaluationGoalKpi = await this.goalsKpisService.get(idEvaluationGoalKpi)
-      const ratingManager = await this.ratingsService.get(idRatingManager)
+      const typeofRating = typeof ratingManager === 'number'
+      const ratinManagerFound = !typeofRating ? null : await this.ratingsService.get(ratingManager)
+      const performedGoal = await this.performedGoalsService.get(idPerformedGoal)
+      const kpi = await this.kpisService.get(idKpi, performedGoal.goal.manager.id)
       return await this.repo.save(
         this.repo.create({
-          performed,
-          evaluationGoalKpi,
-          ratingManager,
+          performedGoal,
+          kpi,
+          ratingManager: ratinManagerFound,
           ...input
         })
       )
@@ -70,15 +71,28 @@ export class PerformedGoalsKpisService {
 
   async update(
     id: number,
-    { idRatingManager, ...input }: UpdatePerformedGoalKpiInput
+    { ratingManager, ...input }: UpdatePerformedGoalKpiInput
   ): Promise<PerformedGoalKpiModel> {
     try {
       const performedGoalKpi = await this.get(id)
-      const ratingManager = await this.ratingsService.get(idRatingManager)
-      this.repo.merge(performedGoalKpi, { ratingManager, ...input })
-      return await this.repo.save(performedGoalKpi)
+      this.repo.merge(performedGoalKpi, { ...input })
+      await this.repo.save(performedGoalKpi)
+
+      if (typeof ratingManager === 'number') {
+        const ratingFound = ratingManager >= 0 ? await this.ratingsService.get(ratingManager) : null
+
+        await this.repo.update(
+          { id: performedGoalKpi.id },
+          {
+            ...input,
+            ratingManager: ratingFound
+          }
+        )
+      }
+
+      return await this.repo.findOneBy({ id: performedGoalKpi.id })
     } catch (error) {
-      throw error
+      throw new error()
     }
   }
 }

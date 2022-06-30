@@ -29,7 +29,8 @@ export class AuthService {
       }
 
       return {
-        jwt: this.jwtService.sign(payload)
+        jwt: this.jwtService.sign(payload),
+        user
       }
     } catch (error) {
       throw new ForbiddenException(`User blocked or not created yet`)

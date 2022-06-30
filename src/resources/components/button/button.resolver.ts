@@ -14,7 +14,7 @@ export class ButtonResolver {
     return await this.service.get(id)
   }
 
-  @Query(() => [ButtonModel], { name: 'button' })
+  @Query(() => [ButtonModel], { name: 'buttons' })
   async list(): Promise<ButtonModel[]> {
     return await this.service.list()
   }

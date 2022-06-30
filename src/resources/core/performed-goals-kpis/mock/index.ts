@@ -1,15 +1,15 @@
-import evaluationGoalKpiMock from '@evaluations-goals-kpis/mock'
 import faker from '@faker-js/faker'
-import performedEvaluationMock from '@performed-evaluations/mock'
+import kpiMock from '@kpis/mock'
 import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
+import performedGoalMock from '@performed-goals/mock'
 import ratingMock from '@ratings/mock'
 
 const performedGoalKpiMock: PerformedGoalKpiModel = {
   id: 1,
-  performed: performedEvaluationMock,
-  evaluationGoalKpi: evaluationGoalKpiMock,
+  performedGoal: performedGoalMock,
+  kpi: kpiMock,
   ratingManager: ratingMock,
-  achieved: 10,
+  achieved: 'meta alcançada',
   midFeedbackUser: 'mid feedback user',
   midFeedbackManager: 'mid feedback manager',
   endFeedbackManager: 'end feedback manager',

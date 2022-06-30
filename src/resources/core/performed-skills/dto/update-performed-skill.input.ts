@@ -6,25 +6,25 @@ export class UpdatePerformedSkillInput {
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsInt()
-  idRatingUser?: number
+  ratingUser?: number
 
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsInt()
-  idRatingManager?: number
+  ratingManager?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  endFeedbackUser?: string
+  midFeedbackManager?: string
 
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsString()
-  midFeedbackUser?: string
-
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   endFeedbackManager?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  endFeedbackUser?: string
 }

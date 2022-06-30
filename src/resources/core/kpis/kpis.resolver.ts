@@ -3,6 +3,7 @@ import { CurrentUser } from '@decorators/current-user.decorator'
 import { Roles } from '@decorators/roles.decorator'
 import { JwtAuthGuard } from '@guards/jwt.auth.guard'
 import { RolesGuard } from '@guards/roles.guard'
+import { CreateKpiInput } from '@kpis/dto/create-kpi.input'
 import { KpiInput } from '@kpis/dto/kpi.input'
 import { KpiModel } from '@kpis/entities/kpi.entity'
 import { KpisService } from '@kpis/kpis.service'
@@ -27,8 +28,8 @@ export class KpisResolver {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
   @Query(() => [KpiModel], { name: 'kpis' })
-  async list(@CurrentUser() { id, role }: UserModel): Promise<KpiModel[]> {
-    return await this.service.list(id, role === ROLES.DIRECTOR)
+  async list(@CurrentUser() { id }: UserModel): Promise<KpiModel[]> {
+    return await this.service.list(id)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -36,7 +37,7 @@ export class KpisResolver {
   @Mutation(() => KpiModel)
   async createKpi(
     @CurrentUser() { id }: UserModel,
-    @Args('input') input: KpiInput
+    @Args('input') input: CreateKpiInput
   ): Promise<KpiModel> {
     return await this.service.create(id, input)
   }

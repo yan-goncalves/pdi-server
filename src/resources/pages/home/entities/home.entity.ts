@@ -1,9 +1,9 @@
 import { ButtonModel } from '@components/button/entities/button.entity'
-import { MediaModel } from '@medias/entities/media.entity'
 import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { HomeLocaleModel } from '@pages/home-i18n/entities/home-i18n.entity'
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -15,7 +15,7 @@ import {
 } from 'typeorm'
 
 @ObjectType()
-@Entity('home')
+@Entity('pages_home')
 export class HomeModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
@@ -43,15 +43,14 @@ export class HomeModel {
   })
   description: string
 
-  @Field(() => MediaModel)
-  @OneToOne(() => MediaModel, (media) => media.id, { eager: true })
-  @JoinColumn({ name: 'id_media' })
-  hero: MediaModel
-
   @Field(() => ButtonModel)
   @OneToOne(() => ButtonModel, (button) => button.id, { eager: true })
   @JoinColumn({ name: 'id_button' })
   button: ButtonModel
+
+  @Field({ nullable: true })
+  @Column({ nullable: true, default: null })
+  hero: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

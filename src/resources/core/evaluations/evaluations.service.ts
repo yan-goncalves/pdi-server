@@ -42,7 +42,7 @@ export class EvaluationsService {
   }
 
   async list(): Promise<EvaluationModel[]> {
-    return await this.repo.find()
+    return await this.repo.find({ order: { year: 'DESC' } })
   }
 
   async create({ year, mid, end, period }: CreateEvaluationInput): Promise<EvaluationModel> {
@@ -127,11 +127,6 @@ export class EvaluationsService {
 
     if (input?.period) {
       this.repo.merge(evaluation, { period: input.period })
-      await this.repo.save(evaluation)
-    }
-
-    if (typeof input?.finished === 'boolean') {
-      this.repo.merge(evaluation, { finished: input.finished })
       await this.repo.save(evaluation)
     }
 

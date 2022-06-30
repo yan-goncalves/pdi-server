@@ -8,6 +8,7 @@ const pdiCompetenceMock: PdiCompetenceModel = {
   performed: performedEvaluationMock,
   category: pdiCompetenceCategoryMock,
   action: 'action',
+  deadline: faker.date.past(10),
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1)
 }

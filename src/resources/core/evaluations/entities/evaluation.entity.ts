@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -24,6 +25,7 @@ export class EvaluationDateModel {
 
 @ObjectType()
 @Entity('evaluations')
+@Index(['year'])
 export class EvaluationModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
@@ -34,7 +36,7 @@ export class EvaluationModel {
   year: number
 
   @Field({ defaultValue: EVALUATION_PERIOD.OUT })
-  @Column()
+  @Column({ default: EVALUATION_PERIOD.OUT })
   period: EVALUATION_PERIOD
 
   @Field(() => EvaluationDateModel)
@@ -74,10 +76,6 @@ export class EvaluationModel {
     }
   })
   endDate: EvaluationDateModel
-
-  @Field(() => Boolean, { defaultValue: false })
-  @Column({ default: false })
-  finished: boolean
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

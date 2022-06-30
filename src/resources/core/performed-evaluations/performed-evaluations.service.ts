@@ -7,7 +7,8 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { PerformedEvaluationInput } from '@performed-evaluations/dto/performed-evaluation.input'
+import { CreatePerformedEvaluationInput } from '@performed-evaluations/dto/create-performed-evaluation.input'
+import { UpdatePerformedEvaluationInput } from '@performed-evaluations/dto/update-performed-evaluation.input'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import { UsersService } from '@users/users.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
@@ -29,6 +30,16 @@ export class PerformedEvaluationsService {
     }
   }
 
+  async getByRelation({
+    idEvaluation,
+    idUser
+  }: CreatePerformedEvaluationInput): Promise<PerformedEvaluationModel> {
+    const evaluation = await this.evaluationsService.get(idEvaluation)
+    const user = await this.usersService.get({ id: idUser })
+
+    return await this.getBy({ evaluation: { id: evaluation.id }, user: { id: user.id } })
+  }
+
   async getBy(
     options:
       | FindOptionsWhere<PerformedEvaluationModel>
@@ -36,7 +47,7 @@ export class PerformedEvaluationsService {
   ): Promise<PerformedEvaluationModel> {
     try {
       return await this.repo.findOneByOrFail(options)
-    } catch {
+    } catch (err) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
   }
@@ -48,14 +59,33 @@ export class PerformedEvaluationsService {
   async create({
     idEvaluation,
     idUser
-  }: PerformedEvaluationInput): Promise<PerformedEvaluationModel> {
+  }: CreatePerformedEvaluationInput): Promise<PerformedEvaluationModel> {
     try {
       const evaluation = await this.evaluationsService.get(idEvaluation)
-      const user = await this.usersService.get(idUser)
+      const user = await this.usersService.get({ id: idUser })
       return await this.repo.save(this.repo.create({ evaluation, user }))
     } catch {
       throw new ConflictException('PerformedEvaluation already exists')
     }
+  }
+
+  async update(
+    id: number,
+    input: UpdatePerformedEvaluationInput
+  ): Promise<PerformedEvaluationModel> {
+    const performed = await this.get(id)
+
+    if (typeof input?.midFinished === 'boolean') {
+      this.repo.merge(performed, { midFinished: input.midFinished })
+      await this.repo.save(performed)
+    }
+
+    if (typeof input?.endFinished === 'boolean') {
+      this.repo.merge(performed, { endFinished: input.endFinished })
+      await this.repo.save(performed)
+    }
+
+    return performed
   }
 
   async delete(id: number): Promise<PerformedEvaluationModel> {

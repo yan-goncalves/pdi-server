@@ -1,19 +1,21 @@
-import { EvaluationGoalModel } from '@evaluations-goals/entities/evaluation-goal.entity'
+import { GoalModel } from '@goals/entities/goal.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
+import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
 import {
   CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 
 @ObjectType()
 @Entity('performed_goals')
-@Index(['performed', 'evaluationGoal'], { unique: true })
+@Index(['performed', 'goal'], { unique: true })
 export class PerformedGoalModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
@@ -24,10 +26,14 @@ export class PerformedGoalModel {
   @JoinColumn({ name: 'id_performed_evaluation' })
   performed: PerformedEvaluationModel
 
-  @Field(() => EvaluationGoalModel)
-  @ManyToOne(() => EvaluationGoalModel, (evaluationGoal) => evaluationGoal.id, { eager: true })
-  @JoinColumn({ name: 'id_evaluation_goal' })
-  evaluationGoal: EvaluationGoalModel
+  @Field(() => GoalModel)
+  @ManyToOne(() => GoalModel, (goal) => goal.id, {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  @JoinColumn({ name: 'id_goal' })
+  goal: GoalModel
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
@@ -36,4 +42,11 @@ export class PerformedGoalModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  @Field(() => [PerformedGoalKpiModel], { nullable: true })
+  @OneToMany(() => PerformedGoalKpiModel, (goalKpi) => goalKpi.performedGoal, {
+    nullable: true,
+    eager: true
+  })
+  performedKpis?: PerformedGoalKpiModel[]
 }

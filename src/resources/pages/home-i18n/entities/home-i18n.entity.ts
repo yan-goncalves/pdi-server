@@ -11,7 +11,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 
-@Entity('home_i18n')
+@Entity('pages_home_i18n')
 @Index(['locale', 'title'], { unique: true })
 export class HomeLocaleModel {
   @PrimaryGeneratedColumn()

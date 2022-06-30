@@ -35,6 +35,10 @@ export class PdiCompetenceModel {
   action: string
 
   @Field()
+  @Column()
+  deadline: Date
+
+  @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
 

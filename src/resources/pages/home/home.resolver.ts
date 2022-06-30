@@ -1,4 +1,7 @@
-import { Inject } from '@nestjs/common'
+import { ROLES } from '@constants/roles'
+import { Roles } from '@decorators/roles.decorator'
+import { JwtAuthGuard } from '@guards/jwt.auth.guard'
+import { Inject, UseGuards } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreateHomeInput } from '@pages/home/dto/create-home.input'
 import { UpdateHomeInput } from '@pages/home/dto/update-home.input'
@@ -9,21 +12,20 @@ import { HomeService } from '@pages/home/home.service'
 export class HomeResolver {
   constructor(@Inject(HomeService) private readonly service: HomeService) {}
 
-  @Query(() => HomeModel, { name: 'home' })
-  async get(@Args('id', { type: () => Int }) id: number): Promise<HomeModel> {
-    return await this.service.get(id)
+  @Query(() => HomeModel, { name: 'homePage' })
+  async get(): Promise<HomeModel> {
+    return await this.service.get()
   }
 
-  @Query(() => [HomeModel], { name: 'home' })
-  async list(): Promise<HomeModel[]> {
-    return await this.service.list()
-  }
-
+  @UseGuards(JwtAuthGuard)
+  @Roles(ROLES.ADMIN)
   @Mutation(() => HomeModel)
   async createHome(@Args('input') input: CreateHomeInput): Promise<HomeModel> {
     return await this.service.create(input)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Roles(ROLES.ADMIN)
   @Mutation(() => HomeModel)
   async updateHome(
     @Args('id', { type: () => Int }) id: number,

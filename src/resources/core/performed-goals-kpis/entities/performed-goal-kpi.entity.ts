@@ -1,6 +1,6 @@
-import { EvaluationGoalKpiModel } from '@evaluations-goals-kpis/entities/evaluation-goal-kpi.entity'
+import { KpiModel } from '@kpis/entities/kpi.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
-import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
+import { PerformedGoalModel } from '@performed-goals/entities/performed-goal.entity'
 import { RatingModel } from '@ratings/entities/rating.entity'
 import {
   Column,
@@ -19,35 +19,43 @@ export class PerformedGoalKpiModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field(() => PerformedEvaluationModel)
-  @ManyToOne(() => PerformedEvaluationModel, (performed) => performed.id)
-  @JoinColumn({ name: 'id_performed_evaluation' })
-  performed: PerformedEvaluationModel
+  @Field(() => PerformedGoalModel)
+  @ManyToOne(() => PerformedGoalModel, (performed) => performed.id)
+  @JoinColumn({ name: 'id_performed_goal' })
+  performedGoal: PerformedGoalModel
 
-  @Field(() => EvaluationGoalKpiModel)
-  @ManyToOne(() => EvaluationGoalKpiModel, (evaluationGoalKpi) => evaluationGoalKpi.id)
-  @JoinColumn({ name: 'id_evaluation_goal_kpi' })
-  evaluationGoalKpi: EvaluationGoalKpiModel
+  @Field(() => KpiModel)
+  @ManyToOne(() => KpiModel, (kpi) => kpi.id, {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  @JoinColumn({ name: 'id_kpi' })
+  kpi: KpiModel
 
-  @Field(() => RatingModel)
-  @ManyToOne(() => RatingModel, (rating) => rating.id)
+  @Field(() => RatingModel, { nullable: true })
+  @ManyToOne(() => RatingModel, (rating) => rating.id, { eager: true, nullable: true })
   @JoinColumn({ name: 'id_rating_manager' })
-  ratingManager: RatingModel
-
-  @Field(() => Int, { nullable: true })
-  @Column({ nullable: true })
-  achieved?: number
+  ratingManager?: RatingModel
 
   @Field({ nullable: true })
-  @Column({ length: 3000, nullable: true })
+  @Column({ length: 2000, nullable: true })
+  achieved?: string
+
+  @Field({ nullable: true })
+  @Column({ length: 3000, nullable: true, name: 'mid_feedback_user' })
   midFeedbackUser?: string
 
   @Field({ nullable: true })
-  @Column({ length: 3000, nullable: true })
+  @Column({ length: 3000, nullable: true, name: 'end_feedback_user' })
+  endFeedbackUser?: string
+
+  @Field({ nullable: true })
+  @Column({ length: 3000, nullable: true, name: 'mid_feedback_manager' })
   midFeedbackManager?: string
 
   @Field({ nullable: true })
-  @Column({ length: 3000, nullable: true })
+  @Column({ length: 3000, nullable: true, name: 'end_feedback_manager' })
   endFeedbackManager?: string
 
   @Field()

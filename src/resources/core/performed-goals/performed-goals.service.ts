@@ -1,4 +1,4 @@
-import { EvaluationsGoalsService } from '@evaluations-goals/evaluations-goals.service'
+import { GoalsService } from '@goals/goals.service'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
@@ -12,8 +12,8 @@ export class PerformedGoalsService {
     @InjectRepository(PerformedGoalModel) private readonly repo: Repository<PerformedGoalModel>,
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
-    @Inject(EvaluationsGoalsService)
-    private readonly evaluationsGoalsService: EvaluationsGoalsService
+    @Inject(GoalsService)
+    private readonly goalsService: GoalsService
   ) {}
 
   async get(id: number): Promise<PerformedGoalModel> {
@@ -34,15 +34,29 @@ export class PerformedGoalsService {
     }
   }
 
+  async getByRelation({ idPerformed, idGoal }: PerformedGoalInput): Promise<PerformedGoalModel> {
+    const performedEvaluation = await this.performedService.getBy({ id: idPerformed })
+    const goal = await this.goalsService.getBy({ id: idGoal })
+
+    try {
+      return await this.repo.findOneByOrFail({
+        performed: { id: performedEvaluation.id },
+        goal: { id: goal.id }
+      })
+    } catch {
+      throw new NotFoundException('PerformedGoal not found')
+    }
+  }
+
   async list(): Promise<PerformedGoalModel[]> {
     return await this.repo.find()
   }
 
-  async create({ idPerformed, idEvaluationGoal }: PerformedGoalInput): Promise<PerformedGoalModel> {
+  async create({ idPerformed, idGoal }: PerformedGoalInput): Promise<PerformedGoalModel> {
     try {
       const performed = await this.performedService.get(idPerformed)
-      const evaluationGoal = await this.evaluationsGoalsService.getBy({ id: idEvaluationGoal })
-      return await this.repo.save(this.repo.create({ performed, evaluationGoal }))
+      const goal = await this.goalsService.getBy({ id: idGoal })
+      return await this.repo.save(this.repo.create({ performed, goal }))
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error

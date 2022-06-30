@@ -36,10 +36,10 @@ export class HomeI18nService {
 
   async update(
     home: HomeModel,
-    { locale = LOCALES.BR, title }: HomeI18nInput
+    { locale = LOCALES.BR, title, description }: HomeI18nInput
   ): Promise<HomeLocaleModel> {
     const homeLocale = await this.getBy({ home: { id: home.id }, locale })
-    this.repo.merge(homeLocale, { title })
+    this.repo.merge(homeLocale, { title, description })
     return await this.repo.save(homeLocale)
   }
 }

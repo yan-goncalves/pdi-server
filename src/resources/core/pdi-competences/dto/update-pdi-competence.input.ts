@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
+import { IsDate, IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
 
 @InputType()
 export class UpdatePdiCompetenceInput {
@@ -13,4 +13,9 @@ export class UpdatePdiCompetenceInput {
   @IsString()
   @MaxLength(500)
   action?: string
+
+  @Field()
+  @IsOptional()
+  @IsDate()
+  deadline?: Date
 }

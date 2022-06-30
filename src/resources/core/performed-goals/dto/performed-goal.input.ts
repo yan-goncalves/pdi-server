@@ -11,5 +11,5 @@ export class PerformedGoalInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
-  idEvaluationGoal: number
+  idGoal: number
 }

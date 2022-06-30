@@ -1,14 +1,24 @@
+import { EvaluationsService } from '@evaluations/evaluations.service'
+import { CreateGoalInput } from '@goals/dto/create-goal.input'
 import { GoalInput } from '@goals/dto/goal.input'
 import { GoalModel } from '@goals/entities/goal.entity'
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersService } from '@users/users.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
+import { ListGoalInput } from './dto/list-goal.input'
 
 @Injectable()
 export class GoalsService {
   constructor(
     @InjectRepository(GoalModel) private readonly repo: Repository<GoalModel>,
+    @Inject(EvaluationsService) private readonly evaluationsService: EvaluationsService,
     @Inject(UsersService) private readonly usersService: UsersService
   ) {}
 
@@ -16,7 +26,7 @@ export class GoalsService {
     try {
       return await this.repo.findOneOrFail({
         where: { id, manager: { id: idManager } },
-        relations: !loadRelations ? undefined : ['manager']
+        relations: !loadRelations ? undefined : ['manager', 'user']
       })
     } catch {
       throw new NotFoundException('Goal not found')
@@ -33,58 +43,60 @@ export class GoalsService {
     }
   }
 
-  async list(idManager: number, isDirector = false): Promise<GoalModel[]> {
-    return await this.repo.find({
-      where: { manager: { id: !isDirector ? idManager : undefined } },
-      relations: !isDirector ? undefined : ['manager']
+  async list(idManager: number): Promise<GoalModel[]> {
+    const list = await this.repo.find({
+      where: { manager: { id: idManager } },
+      relations: ['manager']
+    })
+
+    return list.filter(
+      (value, index, self) => self.map((goal) => goal.name).indexOf(value.name) === index
+    )
+  }
+
+  async evaluationGoals({ idEvaluation, idUser }: ListGoalInput): Promise<GoalModel[]> {
+    const evaluation = await this.evaluationsService.get(idEvaluation)
+    const user = await this.usersService.get({ id: idUser }, { loadRelations: true })
+
+    return await this.repo.findBy({
+      evaluation: { id: evaluation.id },
+      manager: { id: user.manager.id },
+      user: { id: user.id }
     })
   }
 
-  async create(idManager: number, { name }: GoalInput): Promise<GoalModel> {
-    const manager = await this.usersService.get(idManager)
-    const goalFound = await this.repo.findOne({
-      where: { manager: { id: manager.id }, name },
-      withDeleted: true
-    })
+  async create(
+    idManager: number,
+    { idEvaluation, idUser, name }: CreateGoalInput
+  ): Promise<GoalModel> {
+    const evaluation = await this.evaluationsService.get(idEvaluation)
+    const manager = await this.usersService.get({ id: idManager })
+    const user = await this.usersService.get({ id: idUser }, { loadRelations: true })
 
-    if (goalFound) {
-      if (!goalFound?.deletedAt) {
-        throw new ConflictException('Goal already exists')
-      }
-      return await this.repo.save(this.repo.merge(goalFound, { deletedAt: null }))
+    if (manager.id !== user.manager.id) {
+      throw new ForbiddenException('You are not the manager of this user ')
     }
 
-    return await this.repo.save(this.repo.create({ manager, name }))
+    try {
+      return await this.repo.save(this.repo.create({ evaluation, manager, user, name }))
+    } catch {
+      throw new ConflictException('Goal already exists')
+    }
   }
 
   async update(id: number, idManager: number, { name }: GoalInput): Promise<GoalModel> {
-    const goalFound = await this.repo.findOneBy({ id, manager: { id: idManager } })
-    if (!goalFound) {
-      throw new NotFoundException('Goal not found')
-    }
+    const manager = await this.usersService.get({ id: idManager })
+    const goalFound = await this.getBy({ id, manager: { id: manager.id } })
 
     return await this.repo.save(this.repo.merge(goalFound, { name }))
   }
 
-  async setDeleted(id: number, idManager: number, deleted = true): Promise<GoalModel> {
-    const goalFound = await this.repo.findOne({
-      where: { id, manager: { id: idManager } },
-      withDeleted: true
-    })
+  async delete(id: number, idManager: number): Promise<GoalModel> {
+    const manager = await this.usersService.get({ id: idManager })
+    const goalFound = await this.getBy({ id, manager: { id: manager.id } })
 
-    if (!goalFound) {
-      throw new NotFoundException('Goal not found')
-    }
+    await this.repo.delete({ id: goalFound.id })
 
-    if (deleted === false) {
-      return await this.repo.save(this.repo.merge(goalFound, { deletedAt: null }))
-    }
-
-    await this.repo.softDelete({ id: goalFound.id })
-
-    return await this.repo.findOne({
-      where: { id: goalFound.id },
-      withDeleted: true
-    })
+    return goalFound
   }
 }

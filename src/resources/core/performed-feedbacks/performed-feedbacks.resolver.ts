@@ -29,6 +29,14 @@ export class PerformedFeedbacksResolver {
   }
 
   @Mutation(() => PerformedFeedbackModel)
+  async updatePerformedFeedback(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: UpdatePerformedFeedbackInput
+  ): Promise<PerformedFeedbackModel> {
+    return await this.service.update(id, input)
+  }
+
+  @Mutation(() => PerformedFeedbackModel)
   async removePerformedFeedback(
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdatePerformedFeedbackInput

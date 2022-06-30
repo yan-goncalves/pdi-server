@@ -1,4 +1,3 @@
-import { LOCALES } from '@constants/locales'
 import { ROLES } from '@constants/roles'
 import { Int } from '@nestjs/graphql'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -69,7 +68,7 @@ describe('UsersResolver', () => {
   })
 
   it('should list all users', async () => {
-    const users = await resolver.list(LOCALES.BR)
+    const users = await resolver.list()
 
     expect(users).toStrictEqual(expect.arrayContaining(users))
     expect(users).toHaveLength(1)

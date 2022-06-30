@@ -1,6 +1,7 @@
 import { ROLES } from '@constants/roles'
 import { CurrentUser } from '@decorators/current-user.decorator'
 import { Roles } from '@decorators/roles.decorator'
+import { CreateGoalInput } from '@goals/dto/create-goal.input'
 import { GoalInput } from '@goals/dto/goal.input'
 import { GoalModel } from '@goals/entities/goal.entity'
 import { GoalsService } from '@goals/goals.service'
@@ -9,6 +10,7 @@ import { RolesGuard } from '@guards/roles.guard'
 import { Inject, UseGuards } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { UserModel } from '@users/entities/user.entity'
+import { ListGoalInput } from './dto/list-goal.input'
 
 @Resolver(() => GoalModel)
 export class GoalsResolver {
@@ -26,10 +28,16 @@ export class GoalsResolver {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
+  @Roles(ROLES.ADMIN, ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
   @Query(() => [GoalModel], { name: 'goals' })
-  async list(@CurrentUser() { id, role }: UserModel): Promise<GoalModel[]> {
-    return await this.service.list(id, role === ROLES.DIRECTOR)
+  async list(@CurrentUser() { id }: UserModel): Promise<GoalModel[]> {
+    return await this.service.list(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [GoalModel], { name: 'evaluationGoals' })
+  async evaluationGoals(@Args('input') input: ListGoalInput): Promise<GoalModel[]> {
+    return await this.service.evaluationGoals(input)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -37,7 +45,7 @@ export class GoalsResolver {
   @Mutation(() => GoalModel)
   async createGoal(
     @CurrentUser() { id }: UserModel,
-    @Args('input') input: GoalInput
+    @Args('input') input: CreateGoalInput
   ): Promise<GoalModel> {
     return await this.service.create(id, input)
   }
@@ -60,6 +68,6 @@ export class GoalsResolver {
     @CurrentUser() { id: idManager }: UserModel,
     @Args('id', { type: () => Int }) id: number
   ): Promise<GoalModel> {
-    return await this.service.setDeleted(id, idManager)
+    return await this.service.delete(id, idManager)
   }
 }

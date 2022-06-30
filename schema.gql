@@ -2,6 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ButtonModel {
+  id: Int!
+  label: String!
+  loadingLabel: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type TextFieldModel {
+  id: Int!
+  labelPlaceholder: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type UsersInfoModel {
   id: Int!
   user: UserModel!
@@ -15,28 +36,6 @@ type UsersInfoModel {
   updatedAt: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type UserModel {
-  id: Int!
-  info: UsersInfoModel!
-  manager: UserModel
-  department: DepartmentModel
-  username: String!
-  email: String!
-  role: String!
-  resetPasswordToken: String
-  confirmationToken: String
-  confirmed: Boolean!
-  blocked: Boolean!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type DepartmentModel {
   id: Int!
   key: String!
@@ -46,8 +45,27 @@ type DepartmentModel {
   users: [UserModel!]
 }
 
+type UserModel {
+  id: Int!
+  info: UsersInfoModel
+  manager: UserModel
+  department: DepartmentModel
+  username: String!
+  email: String!
+  role: String!
+  resetPasswordToken: String
+  confirmationToken: String
+  confirmed: Boolean!
+  blocked: Boolean!
+  picture: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type JWT {
   jwt: String!
+  user: UserModel!
 }
 
 type FeedbackModel {
@@ -104,7 +122,6 @@ type EvaluationModel {
   period: String!
   midDate: EvaluationDateModel!
   endDate: EvaluationDateModel!
-  finished: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -112,40 +129,59 @@ type EvaluationModel {
   feedbacks: [FeedbackModel!]
 }
 
-type GoalModel {
-  id: Int!
-  manager: UserModel!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type EvaluationGoalModel {
-  id: Int!
-  evaluation: EvaluationModel!
-  user: UserModel!
-  goal: GoalModel!
-  kpis: [EvaluationGoalKpiModel!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
 type KpiModel {
   id: Int!
+  goal: GoalModel!
   manager: UserModel!
   name: String!
+  target: String!
+  weight: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-type EvaluationGoalKpiModel {
+type GoalModel {
   id: Int!
-  evaluationGoal: EvaluationGoalModel!
-  kpi: KpiModel!
-  target: String!
-  weight: Int!
+  evaluation: EvaluationModel!
+  manager: UserModel!
+  user: UserModel!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  kpis: [KpiModel!]
+}
+
+type MediaModel {
+  id: Int!
+  filename: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiCompetenceCategoryModel {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type PdiCompetenceModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: PdiCompetenceCategoryModel!
+  action: String!
+  deadline: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiQualityModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: String!
+  description: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -161,12 +197,36 @@ type PerformedFeedbackModel {
   updatedAt: DateTime!
 }
 
+type RatingModel {
+  id: Int!
+  description: String!
+  value: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type PerformedGoalKpiModel {
+  id: Int!
+  performedGoal: PerformedGoalModel!
+  kpi: KpiModel!
+  ratingManager: RatingModel
+  achieved: String
+  midFeedbackUser: String
+  endFeedbackUser: String
+  midFeedbackManager: String
+  endFeedbackManager: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type PerformedGoalModel {
   id: Int!
   performed: PerformedEvaluationModel!
-  evaluationGoal: EvaluationGoalModel!
+  goal: GoalModel!
   createdAt: DateTime!
   updatedAt: DateTime!
+  performedKpis: [PerformedGoalKpiModel!]
 }
 
 type PerformedQuestionModel {
@@ -177,15 +237,6 @@ type PerformedQuestionModel {
   justification: String
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-type RatingModel {
-  id: Int!
-  description: String!
-  value: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
 }
 
 type PerformedSkillModel {
@@ -206,12 +257,17 @@ type PerformedEvaluationModel {
   evaluation: EvaluationModel!
   user: UserModel!
   grade: Int
+  midFinished: Boolean!
+  endFinished: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   questions: [PerformedQuestionModel!]!
   skills: [PerformedSkillModel!]!
   goals: [PerformedGoalModel!]!
   feedbacks: [PerformedFeedbackModel!]!
+  pdiCoaching: [PdiCoachingModel!]!
+  pdiCompetence: [PdiCompetenceModel!]!
+  pdiQuality: [PdiQualityModel!]!
 }
 
 type PdiCoachingModel {
@@ -223,56 +279,57 @@ type PdiCoachingModel {
   updatedAt: DateTime!
 }
 
-type PdiCompetenceCategoryModel {
+type HomeModel {
   id: Int!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type PdiQualityModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  category: String!
+  title: String!
   description: String!
+  button: ButtonModel!
+  hero: String
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
 }
 
-type PerformedGoalKpiModel {
+type SignInModel {
   id: Int!
-  performed: PerformedEvaluationModel!
-  evaluationGoalKpi: EvaluationGoalKpiModel!
-  ratingManager: RatingModel!
-  achieved: Int
-  midFeedbackUser: String
-  midFeedbackManager: String
-  endFeedbackManager: String
+  title: String!
+  caption: String!
+  logo: String
+  usernameTextField: TextFieldModel!
+  passwordTextField: TextFieldModel!
+  button: ButtonModel!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
-type ButtonModel {
+type EvaluationGoalModel {
   id: Int!
-  label: String!
-  loadingLabel: String
+  evaluation: EvaluationModel!
+  user: UserModel!
+  goal: GoalModel!
+  kpis: [EvaluationGoalKpiModel!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
-type MediaModel {
+type EvaluationGoalKpiModel {
   id: Int!
-  filename: String!
+  evaluationGoal: EvaluationGoalModel!
+  kpi: KpiModel!
+  target: String!
+  weight: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 type Query {
   me: UserModel!
-  user(id: Int!): UserModel!
+  user(input: GetUserInput!): UserModel!
   users: [UserModel!]!
+  team(id: Int): [UserModel!]!
   usersInfo(id: Int!): UsersInfoModel!
   department(id: Int!): DepartmentModel!
   departments: [DepartmentModel!]!
@@ -289,16 +346,16 @@ type Query {
   evaluations: [EvaluationModel!]!
   goal(id: Int!, loadRelations: Boolean = false): GoalModel!
   goals: [GoalModel!]!
+  evaluationGoals(input: ListGoalInput!): [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!
-  evaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
-  evaluationGoals: [EvaluationGoalModel!]!
-  evaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
-  evaluationGoalsKpis: [EvaluationGoalKpiModel!]!
   pdiCoaching(id: Int!): PdiCoachingModel!
   pdiCoachings: [PdiCoachingModel!]!
   performedEvaluation(id: Int!): PerformedEvaluationModel!
+  performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
+  pdiCompetence(id: Int!): PdiCompetenceModel!
+  pdiCompetences: [PdiCompetenceModel!]!
   pdiCompetenceCategory(id: Int!): PdiCompetenceCategoryModel!
   pdiCompetencesCategories: [PdiCompetenceCategoryModel!]!
   pdiQuality(id: Int!): PdiQualityModel!
@@ -310,22 +367,45 @@ type Query {
   performedSkill(id: Int!): PerformedSkillModel!
   performedSkills: [PerformedSkillModel!]!
   performedGoal(id: Int!): PerformedGoalModel!
+  performedGoalByRelation(input: PerformedGoalInput!): PerformedGoalModel!
   performedGoals: [PerformedGoalModel!]!
   performedGoalKpi(id: Int!): PerformedGoalKpiModel!
   performedGoalsKpis: [PerformedGoalKpiModel!]!
   performedFeedback(id: Int!): PerformedFeedbackModel!
   performedFeedbacks: [PerformedFeedbackModel!]!
+  media: [MediaModel!]!
+  button(id: Int!): ButtonModel!
+  buttons: [ButtonModel!]!
+  textField: [TextFieldModel!]!
+  homePage: HomeModel!
+  signInPage: SignInModel!
 }
 
-input EvaluationGoalInput {
+input GetUserInput {
+  id: Int
+  username: String
+  loadRelations: Boolean
+}
+
+input ListGoalInput {
   idEvaluation: Int!
   idUser: Int!
+}
+
+input CreatePerformedEvaluationInput {
+  idEvaluation: Int!
+  idUser: Int!
+}
+
+input PerformedGoalInput {
+  idPerformed: Int!
   idGoal: Int!
 }
 
 type Mutation {
   signin(input: SignInInput!): JWT!
   createUser(input: CreateUserInput!): UserModel!
+  createUserAdmin(input: CreateUserAdminInput!): UserModel!
   updateUser(id: Int!, input: UpdateUserInput!): UserModel!
   removeUser(id: Int!): UserModel!
   populate: [UserModel!]!
@@ -349,21 +429,21 @@ type Mutation {
   addEvaluationFeedback(id: Int!, idFeedback: Int!): EvaluationModel!
   updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
   removeEvaluation(id: Int!): EvaluationModel!
-  createGoal(input: GoalInput!): GoalModel!
+  createGoal(input: CreateGoalInput!): GoalModel!
   updateGoal(id: Int!, input: GoalInput!): GoalModel!
   removeGoal(id: Int!): GoalModel!
-  createKpi(input: KpiInput!): KpiModel!
+  createKpi(input: CreateKpiInput!): KpiModel!
   updateKpi(id: Int!, input: KpiInput!): KpiModel!
   removeKpi(id: Int!): KpiModel!
-  createEvaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
-  removeEvaluationGoal(input: EvaluationGoalInput!): EvaluationGoalModel!
-  createEvaluationGoalKpi(input: CreateEvaluationGoalKpiInput!): EvaluationGoalKpiModel!
-  removeEvaluationGoalKpi(id: Int!): EvaluationGoalKpiModel!
   createPdiCoaching(input: CreatePdiCoachingInput!): PdiCoachingModel!
   updatePdiCoaching(id: Int!, input: UpdatePdiCoachingInput!): PdiCoachingModel!
   removePdiCoaching(id: Int!): PdiCoachingModel!
-  createPerformedEvaluation(input: PerformedEvaluationInput!): PerformedEvaluationModel!
+  createPerformedEvaluation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
+  updatePerformedEvaluation(id: Int!, input: UpdatePerformedEvaluationInput!): PerformedEvaluationModel!
   removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
+  createPdiCompetence(input: CreatePdiCompetenceInput!): PdiCompetenceModel!
+  updatePdiCompetence(id: Int!, input: UpdatePdiCompetenceInput!): PdiCompetenceModel!
+  removePdiCompetence(id: Int!): PdiCompetenceModel!
   createPdiCompetenceCategory(input: CreatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
   updatePdiCompetenceCategory(id: Int!, input: UpdatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
   createPdiQuality(input: CreatePdiQualityInput!): PdiQualityModel!
@@ -379,7 +459,18 @@ type Mutation {
   createPerformedGoalKpi(input: CreatePerformedGoalKpiInput!): PerformedGoalKpiModel!
   updatePerformedGoalKpi(id: Int!, input: UpdatePerformedGoalKpiInput!): PerformedGoalKpiModel!
   createPerformedFeedback(input: CreatePerformedFeedbackInput!): PerformedFeedbackModel!
+  updatePerformedFeedback(id: Int!, input: UpdatePerformedFeedbackInput!): PerformedFeedbackModel!
   removePerformedFeedback(id: Int!, input: UpdatePerformedFeedbackInput!): PerformedFeedbackModel!
+  createMedia(input: MediaInput!): MediaModel!
+  removeMedia(id: Int!): MediaModel!
+  createButton(input: CreateButtonInput!): ButtonModel!
+  updateButton(id: Int!, input: UpdateButtonInput!): ButtonModel!
+  createTextField(input: CreateTextFieldInput!): TextFieldModel!
+  updateTextField(id: Int!, input: UpdateTextFieldInput!): TextFieldModel!
+  createHome(input: CreateHomeInput!): HomeModel!
+  updateHome(id: Int!, input: UpdateHomeInput!): HomeModel!
+  createSignIn(input: CreateSignInInput!): SignInModel!
+  updateSignIn(id: Int!, input: UpdateSignInInput!): SignInModel!
 }
 
 input SignInInput {
@@ -391,6 +482,12 @@ input CreateUserInput {
   username: String!
   email: String!
   role: String = "USER"
+}
+
+input CreateUserAdminInput {
+  username: String!
+  email: String!
+  password: String!
 }
 
 input UpdateUserInput {
@@ -492,20 +589,27 @@ input UpdateEvaluationInput {
   mid: CreateEvaluationDateInput
   end: CreateEvaluationDateInput
   period: String
-  finished: Boolean
+}
+
+input CreateGoalInput {
+  name: String!
+  idEvaluation: Int!
+  idUser: Int!
 }
 
 input GoalInput {
   name: String!
 }
 
-input KpiInput {
+input CreateKpiInput {
   name: String!
+  target: String!
+  weight: Int!
+  idGoal: Int!
 }
 
-input CreateEvaluationGoalKpiInput {
-  idEvaluationGoal: Int!
-  idKpi: Int!
+input KpiInput {
+  name: String!
   target: String!
   weight: Int!
 }
@@ -521,9 +625,22 @@ input UpdatePdiCoachingInput {
   action: String
 }
 
-input PerformedEvaluationInput {
-  idEvaluation: Int!
-  idUser: Int!
+input UpdatePerformedEvaluationInput {
+  midFinished: Boolean
+  endFinished: Boolean
+}
+
+input CreatePdiCompetenceInput {
+  idPerformed: Int!
+  idCategory: Int!
+  action: String!
+  deadline: DateTime!
+}
+
+input UpdatePdiCompetenceInput {
+  idCategory: Float
+  action: String
+  deadline: DateTime!
 }
 
 input CreatePdiCompetenceCategoryInput {
@@ -570,42 +687,39 @@ input UpdatePerformedQuestionInput {
 }
 
 input CreatePerformedSkillInput {
-  idRatingUser: Int
-  idRatingManager: Int
-  endFeedbackUser: Int
-  midFeedbackUser: Int
-  endFeedbackManager: Int
+  ratingUser: Int
+  ratingManager: Int
+  midFeedbackManager: String
+  endFeedbackManager: String
+  endFeedbackUser: String
   idPerformed: Int!
   idSkill: Int!
 }
 
 input UpdatePerformedSkillInput {
-  idRatingUser: Int
-  idRatingManager: Int
-  endFeedbackUser: Int
-  midFeedbackUser: Int
-  endFeedbackManager: Int
-}
-
-input PerformedGoalInput {
-  idPerformed: Int!
-  idEvaluationGoal: Int!
+  ratingUser: Int
+  ratingManager: Int
+  midFeedbackManager: String
+  endFeedbackManager: String
+  endFeedbackUser: String
 }
 
 input CreatePerformedGoalKpiInput {
-  idRatingManager: Int
-  achieved: Int
+  ratingManager: Int
+  achieved: String
   midFeedbackUser: String
+  endFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
-  idPerformed: Int!
-  idEvaluationGoalKpi: Int!
+  idPerformedGoal: Int!
+  idKpi: Int!
 }
 
 input UpdatePerformedGoalKpiInput {
-  idRatingManager: Int
-  achieved: Int
+  ratingManager: Int
+  achieved: String
   midFeedbackUser: String
+  endFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
 }
@@ -620,4 +734,58 @@ input CreatePerformedFeedbackInput {
 input UpdatePerformedFeedbackInput {
   midReply: String
   endReply: String
+}
+
+input MediaInput {
+  filename: String!
+}
+
+input CreateButtonInput {
+  label: String!
+  loadingLabel: String
+}
+
+input UpdateButtonInput {
+  label: String!
+  loadingLabel: String
+  locale: String!
+}
+
+input CreateTextFieldInput {
+  labelPlaceholder: String!
+}
+
+input UpdateTextFieldInput {
+  labelPlaceholder: String!
+  locale: String!
+}
+
+input CreateHomeInput {
+  title: String!
+  description: String!
+  button: CreateButtonInput!
+}
+
+input UpdateHomeInput {
+  title: String!
+  description: String!
+  button: CreateButtonInput!
+  locale: String!
+}
+
+input CreateSignInInput {
+  title: String!
+  caption: String!
+  usernameTextField: CreateTextFieldInput!
+  passwordTextField: CreateTextFieldInput!
+  button: CreateButtonInput!
+}
+
+input UpdateSignInInput {
+  title: String!
+  caption: String!
+  usernameTextField: CreateTextFieldInput!
+  passwordTextField: CreateTextFieldInput!
+  button: CreateButtonInput!
+  locale: String!
 }

@@ -6,18 +6,24 @@ export class UpdatePerformedGoalKpiInput {
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsInt()
-  idRatingManager?: number
+  ratingManager?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   @IsOptional()
   @IsInt()
-  achieved?: number
+  achieved?: string
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
   @MaxLength(3000)
   midFeedbackUser?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(3000)
+  endFeedbackUser?: string
 
   @Field({ nullable: true })
   @IsOptional()

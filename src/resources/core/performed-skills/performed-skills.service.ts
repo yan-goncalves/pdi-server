@@ -43,16 +43,18 @@ export class PerformedSkillsService {
   async create({
     idPerformed,
     idSkill,
-    idRatingUser,
-    idRatingManager,
+    ratingUser,
+    ratingManager,
     ...input
   }: CreatePerformedSkillInput): Promise<PerformedSkillModel> {
     try {
-      const typeofUser = typeof idRatingUser === 'number'
-      const ratingUser = !typeofUser ? null : await this.ratingsService.get(idRatingUser)
+      const typeofUser = typeof ratingUser === 'number'
+      const ratingUserFound = !typeofUser ? null : await this.ratingsService.get(ratingUser)
 
-      const typeofManager = typeof idRatingManager === 'number'
-      const ratingManager = !typeofManager ? null : await this.ratingsService.get(idRatingManager)
+      const typeofManager = typeof ratingManager === 'number'
+      const ratingManagerFound = !typeofManager
+        ? null
+        : await this.ratingsService.get(ratingManager)
 
       const performed = await this.performedService.get(idPerformed)
       const skill = await this.skillsService.get(idSkill)
@@ -61,8 +63,8 @@ export class PerformedSkillsService {
         this.repo.create({
           performed,
           skill,
-          ratingUser,
-          ratingManager,
+          ratingUser: ratingUserFound,
+          ratingManager: ratingManagerFound,
           ...input
         })
       )
@@ -74,18 +76,47 @@ export class PerformedSkillsService {
     }
   }
 
+  private isValidRating(rating?: number): boolean {
+    return typeof rating === 'number'
+  }
+
   async update(
     id: number,
-    { idRatingUser, idRatingManager, ...input }: UpdatePerformedSkillInput
+    { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput
   ): Promise<PerformedSkillModel> {
     try {
       const performedSkill = await this.get(id)
-      const ratingUser = await this.ratingsService.get(idRatingUser)
-      const ratingManager = await this.ratingsService.get(idRatingManager)
-      this.repo.merge(performedSkill, { ratingUser, ratingManager, ...input })
-      return await this.repo.save(performedSkill)
+      this.repo.merge(performedSkill, { ...input })
+      await this.repo.save(performedSkill)
+
+      if (this.isValidRating(ratingUser)) {
+        const ratingUserFound = ratingUser >= 0 ? await this.ratingsService.get(ratingUser) : null
+
+        await this.repo.update(
+          { id: performedSkill.id },
+          {
+            ...input,
+            ratingUser: ratingUserFound
+          }
+        )
+      }
+
+      if (this.isValidRating(ratingManager)) {
+        const ratingManagerFound =
+          ratingManager >= 0 ? await this.ratingsService.get(ratingManager) : null
+
+        await this.repo.update(
+          { id: performedSkill.id },
+          {
+            ...input,
+            ratingManager: ratingManagerFound
+          }
+        )
+      }
+
+      return await this.repo.findOneBy({ id: performedSkill.id })
     } catch (error) {
-      throw error
+      throw new error()
     }
   }
 }

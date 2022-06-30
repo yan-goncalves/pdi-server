@@ -1,6 +1,7 @@
 import { LOCALES } from '@constants/locales'
 import { AppDataSource } from '@data-source'
 import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql'
+import { EntitySchema } from 'typeorm'
 
 type TranslationType = {
   field: string
@@ -9,9 +10,9 @@ type TranslationType = {
 }
 
 const translation = ({ field, inverseField, i18nModel }: TranslationType): FieldMiddleware => {
-  return async (ctx: MiddlewareContext) => {
+  return async (ctx: MiddlewareContext): Promise<EntitySchema> => {
     const id = +ctx.source?.id
-    const locale = ctx.context?.req?.headers?.locale.toUpperCase() || LOCALES.BR
+    const locale = ctx.context?.req?.headers?.locale?.toUpperCase() || LOCALES.BR
     const i18nRepo = AppDataSource.getRepository(i18nModel)
     const foundI18N = await i18nRepo.findOneBy({ [inverseField]: { id }, locale })
 

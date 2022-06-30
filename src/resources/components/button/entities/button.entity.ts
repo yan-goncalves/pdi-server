@@ -10,7 +10,7 @@ import {
 } from 'typeorm'
 
 @ObjectType()
-@Entity('button')
+@Entity('components_button')
 export class ButtonModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

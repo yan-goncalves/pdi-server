@@ -1,4 +1,4 @@
-import { EvaluationGoalsModule } from '@evaluations-goals/evaluations-goals.module'
+import { GoalsModule } from '@goals/goals.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
@@ -10,7 +10,7 @@ import { PerformedGoalsService } from '@performed-goals/performed-goals.service'
   imports: [
     TypeOrmModule.forFeature([PerformedGoalModel]),
     PerformedEvaluationsModule,
-    EvaluationGoalsModule
+    GoalsModule
   ],
   providers: [PerformedGoalsResolver, PerformedGoalsService],
   exports: [PerformedGoalsService]

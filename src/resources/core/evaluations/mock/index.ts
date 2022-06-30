@@ -14,7 +14,6 @@ const evaluationMock: EvaluationModel = {
     start: new Date(),
     deadline: new Date()
   },
-  finished: false,
   createdAt: faker.date.past(1),
   updatedAt: faker.date.recent(1)
 }

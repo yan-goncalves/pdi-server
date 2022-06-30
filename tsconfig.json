@@ -19,6 +19,9 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@data-source": ["src/data-source"],
+      "@core/*": ["src/resources/core/*"],
+      "@components/*": ["src/resources/components/*"],
+      "@pages/*": ["src/resources/pages/*"],
       "@appModule": ["src/app.module"],
       "@decorators/*": ["src/decorators/*"],
       "@guards/*": ["src/guards/*"],
@@ -62,8 +65,6 @@
       "@performed-goals-kpis/*": ["src/resources/core/performed-goals-kpis/*"],
       "@performed-feedbacks/*": ["src/resources/core/performed-feedbacks/*"],
       "@medias/*": ["src/resources/core/medias/*"],
-      "@pages/*": ["src/resources/pages/*"],
-      "@components/*": ["src/resources/components/*"]
     }
   }
 }

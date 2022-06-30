@@ -1,5 +1,3 @@
-import { UpdateButtonInput } from '@components/button/dto/update-button.input'
-import { ButtonModel } from '@components/button/entities/button.entity'
 import { LOCALES } from '@constants/locales'
 import { Field, InputType } from '@nestjs/graphql'
 import { CreateHomeInput } from '@pages/home/dto/create-home.input'
@@ -11,8 +9,4 @@ export class UpdateHomeInput extends CreateHomeInput {
   @IsNotEmpty()
   @IsEnum(LOCALES)
   locale: LOCALES
-
-  @Field(() => UpdateButtonInput)
-  @IsNotEmpty()
-  button: ButtonModel
 }

@@ -29,7 +29,7 @@ export class UsersInfoService {
   }
 
   async create(user: UserModel | number, input: CreateUserInfoInput): Promise<UsersInfoModel> {
-    const userFound = user instanceof UserModel ? user : await this.usersService.get(user)
+    const userFound = user instanceof UserModel ? user : await this.usersService.get({ id: user })
     const info = await this.repo.findOneBy({ user: { id: userFound.id } })
 
     if (info) {

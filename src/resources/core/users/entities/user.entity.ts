@@ -23,8 +23,8 @@ export class UserModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field(() => UsersInfoModel)
-  @OneToOne(() => UsersInfoModel, (info) => info.user, { eager: true })
+  @Field(() => UsersInfoModel, { nullable: true })
+  @OneToOne(() => UsersInfoModel, (info) => info.user, { nullable: true, eager: true })
   @JoinColumn({ name: 'id_info' })
   info: UsersInfoModel
 
@@ -68,6 +68,10 @@ export class UserModel {
   @Field()
   @Column({ default: false })
   blocked: boolean
+
+  @Field({ nullable: true })
+  @Column({ nullable: true, default: null })
+  picture: string
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

@@ -13,28 +13,42 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersInfoService } from '@users-info/users-info.service'
+import { CreateUserAdminInput } from '@users/dto/create-user-admin.input'
 import { CreateUserInput } from '@users/dto/create-user.input'
+import { GetUserInput } from '@users/dto/get-user.input'
 import { UpdateUserInput } from '@users/dto/update-user.input'
 import { UserModel } from '@users/entities/user.entity'
 import { compare, hash } from 'bcrypt'
+import { readdirSync, unlinkSync } from 'fs'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 export type UserOptions = {
   withDeleted?: boolean
+  loadRelations?: boolean
 }
 
 @Injectable()
 export class UsersService {
+  private admin: UserModel
+
   constructor(
     @InjectRepository(UserModel) private readonly repo: Repository<UserModel>,
     @Inject(LdapService) private readonly ldapService: LdapService,
     @Inject(forwardRef(() => UsersInfoService)) private readonly usersInfoService: UsersInfoService,
     @Inject(DepartmentsService) private readonly departmentsService: DepartmentsService,
     @Inject(ConfigService) private readonly configService: ConfigService
-  ) {}
+  ) {
+    this.repo
+      .findOneBy({ role: ROLES.ADMIN })
+      .then((admin) => (this.admin = admin))
+      .catch(() => (this.admin = null))
+  }
 
   async validate(identifier: string, password: string): Promise<UserModel> {
-    const user = await this.repo.findOneBy([{ username: identifier }, { email: identifier }])
+    const user = await this.repo.findOne({
+      where: [{ username: identifier }, { email: identifier }],
+      relations: ['manager']
+    })
 
     if (!user) {
       throw new BadRequestException('Username/email or password incorrect')
@@ -73,16 +87,34 @@ export class UsersService {
     return await this.repo.save(user)
   }
 
-  async get(id: number, options?: UserOptions): Promise<UserModel> {
-    const { withDeleted = false } = options || {}
+  async createAdmin({ username, email, password }: CreateUserAdminInput): Promise<UserModel> {
+    if (!this.admin) {
+      const salt = +this.configService.get<number>('SALT_GEN', { infer: true })
+      const hashedPassword = await hash(password, salt)
+      const user = this.repo.create({
+        username,
+        email,
+        password: hashedPassword,
+        role: ROLES.ADMIN
+      })
 
-    const user = await this.repo.findOneOrFail({ where: { id }, withDeleted })
-    if (!user) {
-      throw new NotFoundException(`User with id '${id}' not found`)
+      return await this.repo.save(user)
     }
-    const department = await this.departmentsService.get(user.department?.id)
 
-    return !department ? user : { ...user, department }
+    return this.admin
+  }
+
+  async get({ id, username }: GetUserInput, options?: UserOptions): Promise<UserModel> {
+    try {
+      const { withDeleted = false, loadRelations = false } = options || {}
+      return await this.repo.findOneOrFail({
+        where: [{ id }, { username }],
+        withDeleted,
+        relations: !loadRelations ? undefined : ['manager']
+      })
+    } catch {
+      throw new NotFoundException('User not found')
+    }
   }
 
   async getBy(
@@ -93,6 +125,10 @@ export class UsersService {
     } catch {
       throw new NotFoundException('User not found')
     }
+  }
+
+  async team(id: number): Promise<UserModel[]> {
+    return await this.repo.findBy({ manager: { id } })
   }
 
   async list(): Promise<UserModel[]> {
@@ -125,15 +161,15 @@ export class UsersService {
         await this.setDeleted(id, input.deleted)
       }
 
-      return await this.get(id, { withDeleted: true })
+      return await this.get({ id }, { withDeleted: true })
     } catch (error) {
       throw error
     }
   }
 
   private async setManager(idUser: number, idManager: number): Promise<UserModel> {
-    const user = await this.get(idUser)
-    const manager = await this.get(idManager)
+    const user = await this.get({ id: idUser })
+    const manager = await this.get({ id: idManager })
 
     if (manager.role === ROLES.USER) {
       throw new ForbiddenException('Entered manager has USER role')
@@ -143,24 +179,24 @@ export class UsersService {
   }
 
   private async setDepartment(idUser: number, idDepartment: number): Promise<UserModel> {
-    const user = await this.get(idUser)
+    const user = await this.get({ id: idUser })
     const department = await this.departmentsService.get(idDepartment)
 
     return await this.repo.save(this.repo.merge(user, { department }))
   }
 
   private async setRole(id: number, role: ROLES): Promise<UserModel> {
-    const user = await this.get(id)
+    const user = await this.get({ id })
     return await this.repo.save(this.repo.merge(user, { role }))
   }
 
   private async setConfirmed(id: number, confirmed: boolean): Promise<UserModel> {
-    const user = await this.get(id)
+    const user = await this.get({ id })
     return await this.repo.save(this.repo.merge(user, { confirmed }))
   }
 
   private async setBlock(id: number, blocked = true): Promise<UserModel> {
-    const user = await this.get(id)
+    const user = await this.get({ id })
     return await this.repo.save(this.repo.merge(user, { blocked }))
   }
 
@@ -202,5 +238,24 @@ export class UsersService {
     }
 
     return await this.list()
+  }
+
+  async setHasPicture(id: number, filename: string): Promise<void> {
+    const user = await this.get({ id })
+    await this.repo.update(user.id, { picture: filename })
+  }
+
+  async removePicture(id: number): Promise<boolean> {
+    const user = await this.get({ id })
+    const dir = this.configService.get<string>('MULTER_DEST')
+    const file = readdirSync(dir).find((file) => file.includes(user.username))
+
+    if (!file) {
+      return Promise.reject(false)
+    }
+
+    unlinkSync(`${dir}/${file}`)
+    await this.repo.update(user.id, { picture: null })
+    return Promise.resolve(true)
   }
 }

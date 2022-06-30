@@ -1,5 +1,5 @@
-import { Field, InputType } from '@nestjs/graphql'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { Field, InputType, Int } from '@nestjs/graphql'
+import { IsInt, IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
 export class KpiInput {
@@ -7,4 +7,14 @@ export class KpiInput {
   @IsNotEmpty()
   @IsString()
   name: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  target: string
+
+  @Field(() => Int)
+  @IsNotEmpty()
+  @IsInt()
+  weight: number
 }

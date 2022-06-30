@@ -11,7 +11,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 
-@Entity('button_i18n')
+@Entity('components_button_i18n')
 @Index(['locale', 'label', 'loadingLabel'], { unique: true })
 export class ButtonLocaleModel {
   @PrimaryGeneratedColumn()
@@ -20,7 +20,7 @@ export class ButtonLocaleModel {
   @Column({ enum: LOCALES, default: LOCALES.BR })
   locale: LOCALES
 
-  @ManyToOne(() => ButtonModel, (button) => button.id)
+  @ManyToOne(() => ButtonModel, (button) => button.id, { eager: true })
   @JoinColumn({ name: 'id_button' })
   button: ButtonModel
 

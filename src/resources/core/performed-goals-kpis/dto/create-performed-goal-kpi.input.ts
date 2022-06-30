@@ -7,10 +7,10 @@ export class CreatePerformedGoalKpiInput extends UpdatePerformedGoalKpiInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
-  idPerformed: number
+  idPerformedGoal: number
 
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
-  idEvaluationGoalKpi: number
+  idKpi: number
 }

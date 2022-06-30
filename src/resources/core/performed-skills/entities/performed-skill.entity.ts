@@ -32,12 +32,12 @@ export class PerformedSkillModel {
   skill: SkillModel
 
   @Field(() => RatingModel, { nullable: true })
-  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true })
+  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true, eager: true })
   @JoinColumn({ name: 'id_rating_user' })
   ratingUser?: RatingModel
 
   @Field(() => RatingModel, { nullable: true })
-  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true })
+  @ManyToOne(() => RatingModel, (rating) => rating.id, { nullable: true, eager: true })
   @JoinColumn({ name: 'id_rating_manager' })
   ratingManager?: RatingModel
 
