@@ -22,6 +22,7 @@ import { SectionsModule } from '@sections/sections.module'
 import { SkillsModule } from '@skills/skills.module'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
+import { EvaluationResultConceptsModule } from './evaluation-result-concepts/evaluation-result-concepts.module'
 import { PdiCompetencesModule } from './pdi-competences/pdi-competences.module'
 
 @Module({
@@ -49,7 +50,8 @@ import { PdiCompetencesModule } from './pdi-competences/pdi-competences.module'
     PerformedGoalsModule,
     PerformedGoalsKpisModule,
     PerformedFeedbacksModule,
-    MediaModule
+    MediaModule,
+    EvaluationResultConceptsModule
   ]
 })
 export class CoreModule {}

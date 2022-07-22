@@ -3,11 +3,11 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 @InputType()
-export class PdiCompetenceCategoryI18nInput {
+export class EvaluationResultConceptI18nInput {
   @Field()
   @IsNotEmpty()
   @IsString()
-  name: string
+  description: string
 
   @Field({ nullable: true, defaultValue: LOCALES.BR })
   @IsOptional()

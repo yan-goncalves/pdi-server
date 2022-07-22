@@ -171,6 +171,7 @@ type PdiCompetenceModel {
   id: Int!
   performed: PerformedEvaluationModel!
   category: PdiCompetenceCategoryModel!
+  name: String!
   action: String!
   deadline: DateTime!
   createdAt: DateTime!
@@ -279,6 +280,18 @@ type PdiCoachingModel {
   updatedAt: DateTime!
 }
 
+type EvaluationResultConceptModel {
+  id: Int!
+  concept: String!
+  description: String!
+  color: String!
+  min: Float!
+  max: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type HomeModel {
   id: Int!
   title: String!
@@ -298,28 +311,6 @@ type SignInModel {
   usernameTextField: TextFieldModel!
   passwordTextField: TextFieldModel!
   button: ButtonModel!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type EvaluationGoalModel {
-  id: Int!
-  evaluation: EvaluationModel!
-  user: UserModel!
-  goal: GoalModel!
-  kpis: [EvaluationGoalKpiModel!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type EvaluationGoalKpiModel {
-  id: Int!
-  evaluationGoal: EvaluationGoalModel!
-  kpi: KpiModel!
-  target: String!
-  weight: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -374,6 +365,8 @@ type Query {
   performedFeedback(id: Int!): PerformedFeedbackModel!
   performedFeedbacks: [PerformedFeedbackModel!]!
   media: [MediaModel!]!
+  evaluationResultConcept(id: Int!): EvaluationResultConceptModel!
+  evaluationResultConcepts: [EvaluationResultConceptModel!]!
   button(id: Int!): ButtonModel!
   buttons: [ButtonModel!]!
   textField: [TextFieldModel!]!
@@ -445,7 +438,7 @@ type Mutation {
   updatePdiCompetence(id: Int!, input: UpdatePdiCompetenceInput!): PdiCompetenceModel!
   removePdiCompetence(id: Int!): PdiCompetenceModel!
   createPdiCompetenceCategory(input: CreatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
-  updatePdiCompetenceCategory(id: Int!, input: UpdatePdiCompetenceCategoryInput!): PdiCompetenceCategoryModel!
+  removePdiCompetenceCategory(id: Int!): PdiCompetenceCategoryModel!
   createPdiQuality(input: CreatePdiQualityInput!): PdiQualityModel!
   updatePdiQuality(id: Int!, input: UpdatePdiQualityInput!): PdiQualityModel!
   removePdiQuality(id: Int!): PdiQualityModel!
@@ -463,6 +456,8 @@ type Mutation {
   removePerformedFeedback(id: Int!, input: UpdatePerformedFeedbackInput!): PerformedFeedbackModel!
   createMedia(input: MediaInput!): MediaModel!
   removeMedia(id: Int!): MediaModel!
+  createEvaluationResultConcept(input: CreateEvaluationResultConceptInput!): EvaluationResultConceptModel!
+  updateEvaluationResultConcept(id: Int!, input: UpdateEvaluationResultConceptInput!): EvaluationResultConceptModel!
   createButton(input: CreateButtonInput!): ButtonModel!
   updateButton(id: Int!, input: UpdateButtonInput!): ButtonModel!
   createTextField(input: CreateTextFieldInput!): TextFieldModel!
@@ -633,23 +628,20 @@ input UpdatePerformedEvaluationInput {
 input CreatePdiCompetenceInput {
   idPerformed: Int!
   idCategory: Int!
+  name: String!
   action: String!
   deadline: DateTime!
 }
 
 input UpdatePdiCompetenceInput {
-  idCategory: Float
+  idCategory: Int
+  name: String
   action: String
-  deadline: DateTime!
+  deadline: DateTime
 }
 
 input CreatePdiCompetenceCategoryInput {
   name: String!
-}
-
-input UpdatePdiCompetenceCategoryInput {
-  name: String!
-  locale: String!
 }
 
 input CreatePdiQualityInput {
@@ -738,6 +730,23 @@ input UpdatePerformedFeedbackInput {
 
 input MediaInput {
   filename: String!
+}
+
+input CreateEvaluationResultConceptInput {
+  concept: String!
+  description: String!
+  color: String!
+  min: Float!
+  max: Float!
+}
+
+input UpdateEvaluationResultConceptInput {
+  concept: String
+  description: String
+  color: String
+  min: Float
+  max: Float
+  locale: String!
 }
 
 input CreateButtonInput {

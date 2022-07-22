@@ -17,6 +17,12 @@ export class CreatePdiCompetenceInput {
   @IsNotEmpty()
   @IsString()
   @MaxLength(500)
+  name: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(500)
   action: string
 
   @Field()

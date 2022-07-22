@@ -25,7 +25,7 @@ export class PerformedEvaluationsService {
   async get(id: number): Promise<PerformedEvaluationModel> {
     try {
       return await this.repo.findOneByOrFail({ id })
-    } catch {
+    } catch (err) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
   }

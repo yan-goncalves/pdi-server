@@ -65,6 +65,8 @@
       "@performed-goals-kpis/*": ["src/resources/core/performed-goals-kpis/*"],
       "@performed-feedbacks/*": ["src/resources/core/performed-feedbacks/*"],
       "@medias/*": ["src/resources/core/medias/*"],
+      "@evaluation-result-concepts/*": ["src/resources/core/evaluation-result-concepts/*"],
+      "@evaluation-result-concepts-i18n/*": ["src/resources/core/evaluation-result-concepts-i18n/*"],
     }
   }
 }

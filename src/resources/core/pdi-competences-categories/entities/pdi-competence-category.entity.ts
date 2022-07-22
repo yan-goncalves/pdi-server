@@ -1,11 +1,9 @@
-import translation from '@middlewares/i18n'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
-import { PdiCompetenceCategoryLocaleModel } from '@pdi-competences-categories-i18n/entities/pdi-competence-category-i18n.entity'
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -17,15 +15,8 @@ export class PdiCompetenceCategoryModel {
   @PrimaryGeneratedColumn()
   readonly id: number
 
-  @Field({
-    middleware: [
-      translation({
-        field: 'name',
-        inverseField: 'pdiCompetenceCategory',
-        i18nModel: 'PdiCompetenceCategoryLocaleModel'
-      })
-    ]
-  })
+  @Field()
+  @Column({ unique: true })
   name: string
 
   @Field()
@@ -39,10 +30,4 @@ export class PdiCompetenceCategoryModel {
   @Field({ nullable: true })
   @DeleteDateColumn({ nullable: true, name: 'deleted_at', default: null })
   deletedAt?: Date
-
-  @OneToMany(
-    () => PdiCompetenceCategoryLocaleModel,
-    (pdiCompetenceCategoryLocale) => pdiCompetenceCategoryLocale.pdiCompetenceCategory
-  )
-  locale: PdiCompetenceCategoryLocaleModel
 }

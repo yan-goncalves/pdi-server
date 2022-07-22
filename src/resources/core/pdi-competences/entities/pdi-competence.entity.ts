@@ -14,7 +14,7 @@ import {
 
 @ObjectType()
 @Entity('pdi_competences')
-@Index(['performed', 'category', 'action'], { unique: true })
+@Index(['performed', 'name', 'category', 'action'], { unique: true })
 export class PdiCompetenceModel {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
@@ -26,9 +26,13 @@ export class PdiCompetenceModel {
   performed: PerformedEvaluationModel
 
   @Field(() => PdiCompetenceCategoryModel)
-  @ManyToOne(() => PdiCompetenceCategoryModel, (category) => category.id)
+  @ManyToOne(() => PdiCompetenceCategoryModel, (category) => category.id, { eager: true })
   @JoinColumn({ name: 'id_category' })
   category: PdiCompetenceCategoryModel
+
+  @Field()
+  @Column({ length: 500 })
+  name: string
 
   @Field()
   @Column({ length: 500 })

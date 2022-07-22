@@ -14,7 +14,7 @@ export class PdiCompetencesService {
     private readonly repo: Repository<PdiCompetenceModel>,
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
-    @Inject(PerformedEvaluationsService)
+    @Inject(PdiCompetencesCategoriesService)
     private readonly categoryService: PdiCompetencesCategoriesService
   ) {}
 
@@ -43,27 +43,30 @@ export class PdiCompetencesService {
   async create({
     idPerformed,
     idCategory,
-    action
+    name,
+    action,
+    deadline
   }: CreatePdiCompetenceInput): Promise<PdiCompetenceModel> {
     try {
       const performed = await this.performedService.get(idPerformed)
       const category = await this.categoryService.get(idCategory)
-      return await this.repo.save(this.repo.create({ performed, category, action }))
+      return await this.repo.save(this.repo.create({ performed, category, name, action, deadline }))
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error
       }
+
       throw new ConflictException('PdiCompetence already exists')
     }
   }
 
   async update(
     id: number,
-    { idCategory, action }: UpdatePdiCompetenceInput
+    { idCategory, name, action, deadline }: UpdatePdiCompetenceInput
   ): Promise<PdiCompetenceModel> {
     const pdiCompetenceFound = await this.get(id)
     const category = await this.categoryService.get(idCategory)
-    this.repo.merge(pdiCompetenceFound, { category, action })
+    this.repo.merge(pdiCompetenceFound, { category, name, action, deadline })
     return await this.repo.save(pdiCompetenceFound)
   }
 
