@@ -2,7 +2,7 @@ import { PdiCoachingModel } from '@core/pdi-coachings/entities/pdi-coaching.enti
 import { PdiCompetenceModel } from '@core/pdi-competences/entities/pdi-competence.entity'
 import { PdiQualityModel } from '@core/pdi-qualities/entities/pdi-quality.entity'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
 import { PerformedGoalModel } from '@performed-goals/entities/performed-goal.entity'
 import { PerformedQuestionModel } from '@performed-questions/entities/performed-question.entity'
@@ -38,8 +38,8 @@ export class PerformedEvaluationModel {
   @JoinColumn({ name: 'id_user' })
   user: UserModel
 
-  @Field(() => Int, { nullable: true })
-  @Column({ nullable: true })
+  @Field(() => Float, { nullable: true })
+  @Column({ nullable: true, type: 'float' })
   grade?: number
 
   @Field(() => Boolean, { defaultValue: false })

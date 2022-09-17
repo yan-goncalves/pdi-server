@@ -25,7 +25,7 @@ export class PerformedEvaluationsService {
   async get(id: number): Promise<PerformedEvaluationModel> {
     try {
       return await this.repo.findOneByOrFail({ id })
-    } catch (err) {
+    } catch (error) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
   }
@@ -47,7 +47,18 @@ export class PerformedEvaluationsService {
   ): Promise<PerformedEvaluationModel> {
     try {
       return await this.repo.findOneByOrFail(options)
-    } catch (err) {
+    } catch (error) {
+      throw new NotFoundException('PerformedEvaluation not found')
+    }
+  }
+
+  async getGrade(id: number): Promise<PerformedEvaluationModel> {
+    try {
+      return await this.repo.findOne({
+        where: { id },
+        loadEagerRelations: false
+      })
+    } catch (error) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
   }

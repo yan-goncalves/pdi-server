@@ -16,6 +16,11 @@ export class PerformedEvaluationsResolver {
     return await this.service.get(id)
   }
 
+  @Query(() => PerformedEvaluationModel, { name: 'performedEvaluationGrade' })
+  async getGrade(@Args('id', { type: () => Int }) id: number): Promise<PerformedEvaluationModel> {
+    return await this.service.getGrade(id)
+  }
+
   @Query(() => PerformedEvaluationModel, { name: 'performedEvaluationRelation' })
   async getByRelation(
     @Args('input') input: CreatePerformedEvaluationInput

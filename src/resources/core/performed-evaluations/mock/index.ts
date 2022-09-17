@@ -14,6 +14,7 @@ const performedEvaluationMock: PerformedEvaluationModel = {
   id: 1,
   evaluation: evaluationMock,
   user: userMock(),
+  grade: 2.11,
   midFinished: false,
   endFinished: false,
   createdAt: faker.date.past(1),
