@@ -14,7 +14,6 @@ export const AppDataSource = new DataSource({
     encrypt: false,
     enableArithAbort: true
   },
-  // logging: process.env.NODE_ENV !== 'production',
   logging: false,
   synchronize: process.env.NODE_ENV !== 'production',
   migrationsRun: process.env.NODE_ENV === 'production',

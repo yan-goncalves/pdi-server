@@ -46,7 +46,9 @@ export class PerformedGoalModel {
   @Field(() => [PerformedGoalKpiModel], { nullable: true })
   @OneToMany(() => PerformedGoalKpiModel, (goalKpi) => goalKpi.performedGoal, {
     nullable: true,
-    eager: true
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   performedKpis?: PerformedGoalKpiModel[]
 }

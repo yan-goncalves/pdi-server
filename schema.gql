@@ -257,7 +257,7 @@ type PerformedEvaluationModel {
   id: Int!
   evaluation: EvaluationModel!
   user: UserModel!
-  grade: Int
+  grade: Float
   midFinished: Boolean!
   endFinished: Boolean!
   createdAt: DateTime!
@@ -343,6 +343,7 @@ type Query {
   pdiCoaching(id: Int!): PdiCoachingModel!
   pdiCoachings: [PdiCoachingModel!]!
   performedEvaluation(id: Int!): PerformedEvaluationModel!
+  performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
   performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
   pdiCompetence(id: Int!): PdiCompetenceModel!
