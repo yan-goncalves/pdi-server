@@ -3,7 +3,7 @@ import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerCo
 
 export const AppDataSource = new DataSource({
   type: 'mssql',
-  host: process.env.TYPEORM_HOST || 'localhost',
+  host: process.env.TYPEORM_HOST || 'localhost\\MSSQLSERVER14',
   database: process.env.TYPEORM_DATABASE || 'PDI',
   username: process.env.TYPEORM_USERNAME || 'pdi',
   password: process.env.TYPEORM_PASSWORD || '1@asdfgPDI',
@@ -16,6 +16,6 @@ export const AppDataSource = new DataSource({
   },
   logging: false,
   synchronize: process.env.NODE_ENV !== 'production',
-  migrationsRun: process.env.NODE_ENV === 'production',
+  migrationsRun: process.env.NODE_ENV !== 'production',
   migrations: [__dirname + '/migrations/*.{ts,js}']
 } as SqlServerConnectionOptions)
