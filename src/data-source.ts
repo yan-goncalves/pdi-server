@@ -19,3 +19,5 @@ export const AppDataSource = new DataSource({
   migrationsRun: process.env.NODE_ENV !== 'production',
   migrations: [__dirname + '/migrations/*.{ts,js}']
 } as SqlServerConnectionOptions)
+
+export const AppDataSourceManager = AppDataSource.manager
