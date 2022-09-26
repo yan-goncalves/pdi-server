@@ -16,9 +16,9 @@ export class PerformedGoalsService {
     private readonly goalsService: GoalsService
   ) {}
 
-  async get(id: number): Promise<PerformedGoalModel> {
+  async get(id: number, relations?: string[]): Promise<PerformedGoalModel> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      return await this.repo.findOneOrFail({ where: { id }, relations })
     } catch {
       throw new NotFoundException('PerformedGoal not found')
     }

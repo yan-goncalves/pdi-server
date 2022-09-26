@@ -20,9 +20,9 @@ export class PerformedGoalsKpisService {
     @Inject(RatingsService) private readonly ratingsService: RatingsService
   ) {}
 
-  async get(id: number): Promise<PerformedGoalKpiModel> {
+  async get(id: number, relations?: string[]): Promise<PerformedGoalKpiModel> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      return await this.repo.findOneOrFail({ where: { id }, relations })
     } catch {
       throw new NotFoundException('PerformedGoalKpi not found')
     }
@@ -51,7 +51,7 @@ export class PerformedGoalsKpisService {
     try {
       const typeofRating = typeof ratingManager === 'number'
       const ratinManagerFound = !typeofRating ? null : await this.ratingsService.get(ratingManager)
-      const performedGoal = await this.performedGoalsService.get(idPerformedGoal)
+      const performedGoal = await this.performedGoalsService.get(idPerformedGoal, ['performed'])
       const kpi = await this.kpisService.get(idKpi, performedGoal.goal.manager.id)
       return await this.repo.save(
         this.repo.create({
@@ -62,10 +62,10 @@ export class PerformedGoalsKpisService {
         })
       )
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error
+      if (error instanceof ConflictException) {
+        throw new ConflictException('PerformedGoalKpi already exists')
       }
-      throw new ConflictException('PerformedGoalKpi already exists')
+      throw error
     }
   }
 
@@ -74,7 +74,7 @@ export class PerformedGoalsKpisService {
     { ratingManager, ...input }: UpdatePerformedGoalKpiInput
   ): Promise<PerformedGoalKpiModel> {
     try {
-      const performedGoalKpi = await this.get(id)
+      const performedGoalKpi = await this.get(id, ['performedGoal', 'performedGoal.performed'])
       this.repo.merge(performedGoalKpi, { ...input })
       await this.repo.save(performedGoalKpi)
 
@@ -88,6 +88,9 @@ export class PerformedGoalsKpisService {
             ratingManager: ratingFound
           }
         )
+
+        const idPerformed = performedGoalKpi.performedGoal.performed.id
+        this.repo.query(`EXEC CalcGrade @PERFORMED = ${idPerformed}`)
       }
 
       return await this.repo.findOneBy({ id: performedGoalKpi.id })

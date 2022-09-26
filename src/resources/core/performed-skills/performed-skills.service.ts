@@ -18,9 +18,9 @@ export class PerformedSkillsService {
     @Inject(RatingsService) private readonly ratingsService: RatingsService
   ) {}
 
-  async get(id: number): Promise<PerformedSkillModel> {
+  async get(id: number, relations?: string[]): Promise<PerformedSkillModel> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      return await this.repo.findOneOrFail({ where: { id }, relations })
     } catch {
       throw new NotFoundException('PerformedSkill not found')
     }
@@ -69,10 +69,10 @@ export class PerformedSkillsService {
         })
       )
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error
+      if (error instanceof ConflictException) {
+        throw new ConflictException('PerformedSkill already exists')
       }
-      throw new ConflictException('PerformedSkill already exists')
+      throw error
     }
   }
 
@@ -85,7 +85,7 @@ export class PerformedSkillsService {
     { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput
   ): Promise<PerformedSkillModel> {
     try {
-      const performedSkill = await this.get(id)
+      const performedSkill = await this.get(id, ['performed'])
       this.repo.merge(performedSkill, { ...input })
       await this.repo.save(performedSkill)
 
@@ -114,9 +114,11 @@ export class PerformedSkillsService {
         )
       }
 
+      this.repo.query(`EXEC CalcGrade @PERFORMED = ${performedSkill.performed.id}`)
+
       return await this.repo.findOneBy({ id: performedSkill.id })
     } catch (error) {
-      throw new error()
+      throw error
     }
   }
 }
