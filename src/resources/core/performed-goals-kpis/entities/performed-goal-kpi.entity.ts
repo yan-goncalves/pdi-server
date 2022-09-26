@@ -1,8 +1,10 @@
+import { AppDataSourceManager } from '@data-source'
 import { KpiModel } from '@kpis/entities/kpi.entity'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedGoalModel } from '@performed-goals/entities/performed-goal.entity'
 import { RatingModel } from '@ratings/entities/rating.entity'
 import {
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -65,4 +67,9 @@ export class PerformedGoalKpiModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  @AfterInsert()
+  calcGrade(): void {
+    AppDataSourceManager.query(`EXEC CalcGrade @PERFORMED = ${this.performedGoal.performed.id}`)
+  }
 }

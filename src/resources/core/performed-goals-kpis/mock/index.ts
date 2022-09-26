@@ -14,7 +14,10 @@ const performedGoalKpiMock: PerformedGoalKpiModel = {
   midFeedbackManager: 'mid feedback manager',
   endFeedbackManager: 'end feedback manager',
   createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  updatedAt: faker.date.recent(1),
+  calcGrade() {
+    return
+  }
 }
 
 export default performedGoalKpiMock

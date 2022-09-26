@@ -1,8 +1,10 @@
+import { AppDataSourceManager } from '@data-source'
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import { RatingModel } from '@ratings/entities/rating.entity'
 import { SkillModel } from '@skills/entities/skill.entity'
 import {
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -60,4 +62,9 @@ export class PerformedSkillModel {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  @AfterInsert()
+  calcGrade(): void {
+    AppDataSourceManager.query(`EXEC CalcGrade @PERFORMED = ${this.performed.id}`)
+  }
 }
