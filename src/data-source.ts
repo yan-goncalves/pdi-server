@@ -1,5 +1,7 @@
+import * as dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions'
+dotenv.config({ path: process.env.NODE_ENV === 'production' ? '.env' : '.env.local' })
 
 export const AppDataSource = new DataSource({
   type: 'mssql',

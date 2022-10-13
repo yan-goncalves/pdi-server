@@ -11,8 +11,7 @@ import { PagesModule } from '@pages/pages.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env.local'
-      // ignoreEnvFile: process.env.NODE_ENV !== 'production'
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env' : '.env.local'
     }),
     TypeOrmModule.forRoot(AppDataSource.options),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
