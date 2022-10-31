@@ -132,7 +132,15 @@ export class UsersService {
   }
 
   async list(): Promise<UserModel[]> {
-    return await this.repo.find()
+    return await this.repo.find({
+      relations: {
+        manager: {
+          info: {
+            user: false
+          }
+        }
+      }
+    })
   }
 
   async update(id: number, input: UpdateUserInput): Promise<UserModel> {
