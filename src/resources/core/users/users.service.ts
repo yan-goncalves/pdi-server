@@ -250,7 +250,8 @@ export class UsersService {
 
   async setHasPicture(id: number, filename: string): Promise<void> {
     const user = await this.get({ id })
-    await this.repo.update(user.id, { picture: filename })
+    const dir = this.configService.get<string>('MULTER_DEST')
+    await this.repo.update(user.id, { picture: `${dir}/users/picture/${filename}` })
   }
 
   async removePicture(id: number): Promise<boolean> {

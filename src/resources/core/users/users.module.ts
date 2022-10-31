@@ -24,7 +24,7 @@ import { extname } from 'path'
       useFactory: (configService: ConfigService) => ({
         storage: diskStorage({
           destination(_, __, callback) {
-            const destination = configService.get<string>('MULTER_DEST') + '/core/users/picture'
+            const destination = configService.get<string>('MULTER_DEST') + '/users/picture'
             try {
               readdirSync(destination).map((file) => unlinkSync(`${destination}/${file}`))
             } catch {
