@@ -24,6 +24,7 @@ import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
 import { EvaluationResultConceptsModule } from './evaluation-result-concepts/evaluation-result-concepts.module'
 import { PdiCompetencesModule } from './pdi-competences/pdi-competences.module'
+import { ReportsModule } from './reports/reports.module'
 
 @Module({
   imports: [
@@ -51,7 +52,8 @@ import { PdiCompetencesModule } from './pdi-competences/pdi-competences.module'
     PerformedGoalsKpisModule,
     PerformedFeedbacksModule,
     MediaModule,
-    EvaluationResultConceptsModule
+    EvaluationResultConceptsModule,
+    ReportsModule
   ]
 })
 export class CoreModule {}
