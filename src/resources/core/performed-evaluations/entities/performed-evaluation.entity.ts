@@ -59,30 +59,30 @@ export class PerformedEvaluationModel {
   updatedAt: Date
 
   @Field(() => [PerformedQuestionModel])
-  @OneToMany(() => PerformedQuestionModel, (question) => question.performed, { eager: true })
+  @OneToMany(() => PerformedQuestionModel, (question) => question.performed)
   questions: PerformedQuestionModel[]
 
   @Field(() => [PerformedSkillModel])
-  @OneToMany(() => PerformedSkillModel, (skill) => skill.performed, { eager: true })
+  @OneToMany(() => PerformedSkillModel, (skill) => skill.performed)
   skills: PerformedSkillModel[]
 
   @Field(() => [PerformedGoalModel])
-  @OneToMany(() => PerformedGoalModel, (goal) => goal.performed, { eager: true })
+  @OneToMany(() => PerformedGoalModel, (goal) => goal.performed)
   goals: PerformedGoalModel[]
 
   @Field(() => [PerformedFeedbackModel])
-  @OneToMany(() => PerformedFeedbackModel, (feedback) => feedback.performed, { eager: true })
+  @OneToMany(() => PerformedFeedbackModel, (feedback) => feedback.performed)
   feedbacks: PerformedFeedbackModel[]
 
   @Field(() => [PdiCoachingModel])
-  @OneToMany(() => PdiCoachingModel, (coaching) => coaching.performed, { eager: true })
+  @OneToMany(() => PdiCoachingModel, (coaching) => coaching.performed)
   pdiCoaching: PdiCoachingModel[]
 
   @Field(() => [PdiCompetenceModel])
-  @OneToMany(() => PdiCompetenceModel, (competence) => competence.performed, { eager: true })
+  @OneToMany(() => PdiCompetenceModel, (competence) => competence.performed)
   pdiCompetence: PdiCompetenceModel[]
 
   @Field(() => [PdiQualityModel])
-  @OneToMany(() => PdiQualityModel, (quality) => quality.performed, { eager: true })
+  @OneToMany(() => PdiQualityModel, (quality) => quality.performed)
   pdiQuality: PdiQualityModel[]
 }
