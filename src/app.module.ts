@@ -5,6 +5,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
+import { ScheduleModule } from '@nestjs/schedule'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PagesModule } from '@pages/pages.module'
 
@@ -23,6 +24,7 @@ import { PagesModule } from '@pages/pages.module'
         playground: configService.get<string>('NODE_ENV') !== 'production'
       })
     }),
+    ScheduleModule.forRoot(),
     CoreModule,
     ComponentsModule,
     PagesModule
