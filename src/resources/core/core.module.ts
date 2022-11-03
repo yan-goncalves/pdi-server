@@ -22,12 +22,14 @@ import { SectionsModule } from '@sections/sections.module'
 import { SkillsModule } from '@skills/skills.module'
 import { UsersInfoModule } from '@users-info/users-info.module'
 import { UsersModule } from '@users/users.module'
+import { CronsModule } from './crons/crons.module'
 import { EvaluationResultConceptsModule } from './evaluation-result-concepts/evaluation-result-concepts.module'
 import { PdiCompetencesModule } from './pdi-competences/pdi-competences.module'
 import { ReportsModule } from './reports/reports.module'
 
 @Module({
   imports: [
+    CronsModule,
     LdapModule,
     AuthModule,
     UsersModule,
