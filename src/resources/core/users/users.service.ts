@@ -110,7 +110,15 @@ export class UsersService {
       return await this.repo.findOneOrFail({
         where: [{ id }, { username }],
         withDeleted,
-        relations: !loadRelations ? undefined : ['manager']
+        relations: !loadRelations
+          ? undefined
+          : {
+              manager: {
+                info: {
+                  user: false
+                }
+              }
+            }
       })
     } catch {
       throw new NotFoundException('User not found')
