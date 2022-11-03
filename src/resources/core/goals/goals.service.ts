@@ -60,7 +60,7 @@ export class GoalsService {
 
     return await this.repo.findBy({
       evaluation: { id: evaluation.id },
-      manager: { id: user.manager.id },
+      manager: { id: user?.manager?.id },
       user: { id: user.id }
     })
   }
