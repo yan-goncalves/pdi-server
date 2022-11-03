@@ -46,7 +46,39 @@ export class PerformedEvaluationsService {
       | FindOptionsWhere<PerformedEvaluationModel>[]
   ): Promise<PerformedEvaluationModel> {
     try {
-      return await this.repo.findOneByOrFail(options)
+      return await this.repo.findOneOrFail({
+        where: options,
+        relations: {
+          questions: {
+            performed: false
+          },
+
+          skills: {
+            performed: false
+          },
+
+          goals: {
+            performed: false,
+            performedKpis: true
+          },
+
+          feedbacks: {
+            performed: false
+          },
+
+          pdiCoaching: {
+            performed: false
+          },
+
+          pdiCompetence: {
+            performed: false
+          },
+
+          pdiQuality: {
+            performed: false
+          }
+        }
+      })
     } catch (error) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
