@@ -10,7 +10,7 @@ export class UpdatePerformedGoalKpiInput {
 
   @Field({ nullable: true })
   @IsOptional()
-  @IsInt()
+  @IsString()
   achieved?: string
 
   @Field({ nullable: true })
