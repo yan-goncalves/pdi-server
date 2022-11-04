@@ -22,9 +22,13 @@ export class DepartmentsI18nService {
   }
 
   async getBy(
-    options: FindOptionsWhere<DepartmentLocaleModel> | FindOptionsWhere<DepartmentLocaleModel>[]
+    options: FindOptionsWhere<DepartmentLocaleModel> | FindOptionsWhere<DepartmentLocaleModel>[],
+    { relations } = { relations: false }
   ): Promise<DepartmentLocaleModel> {
-    return await this.repo.findOneBy(options)
+    return await this.repo.findOne({
+      where: options,
+      ...(relations && { relations: ['department'] })
+    })
   }
 
   async create(

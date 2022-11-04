@@ -397,7 +397,6 @@ input PerformedGoalInput {
 }
 
 type Mutation {
-  signin(input: SignInInput!): JWT!
   createUser(input: CreateUserInput!): UserModel!
   createUserAdmin(input: CreateUserAdminInput!): UserModel!
   updateUser(id: Int!, input: UpdateUserInput!): UserModel!
@@ -408,6 +407,7 @@ type Mutation {
   removeUsersInfo(id: Int!): UsersInfoModel!
   createDepartment(input: CreateDepartmentInput!): DepartmentModel!
   updateDepartment(id: Int!, input: UpdateDepartmentInput!): DepartmentModel!
+  signin(input: SignInInput!): JWT!
   createSection(input: CreateSectionInput!): SectionModel!
   updateSection(id: Int!, input: UpdateSectionInput!): SectionModel!
   addSectionQuestion(id: Int!, idQuestion: Int!): SectionModel!
@@ -469,11 +469,6 @@ type Mutation {
   updateSignIn(id: Int!, input: UpdateSignInInput!): SignInModel!
 }
 
-input SignInInput {
-  identifier: String!
-  password: String!
-}
-
 input CreateUserInput {
   username: String!
   email: String!
@@ -519,6 +514,11 @@ input CreateDepartmentInput {
 input UpdateDepartmentInput {
   name: String!
   locale: String!
+}
+
+input SignInInput {
+  identifier: String!
+  password: String!
 }
 
 input CreateSectionInput {

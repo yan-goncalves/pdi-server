@@ -4,4 +4,6 @@ export interface UserModelLDAP {
   readonly lastname: string
   readonly position: string
   readonly department: string
+  readonly manager: string
+  readonly directReports: string
 }

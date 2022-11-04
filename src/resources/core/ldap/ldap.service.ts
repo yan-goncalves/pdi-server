@@ -44,7 +44,15 @@ export class LdapService {
     const users = await this._CLIENT_.search(this._BASE_DN_, {
       scope: 'one',
       filter: `(&(objectClass=person)${this.excludeServiceUsers}`,
-      attributes: ['sAMAccountName', 'mail', 'displayName', 'department', 'title']
+      attributes: [
+        'sAMAccountName',
+        'mail',
+        'displayName',
+        'department',
+        'title',
+        'manager',
+        'directReports'
+      ]
     })
 
     // const { readFileSync } = await import('fs')
@@ -88,13 +96,46 @@ export class LdapService {
     return foundUser
   }
 
+  async getByRaw(filter: string): Promise<UserModelLDAP> {
+    await this._CLIENT_.bind(this._DN_, this._ADM_PWD_)
+
+    const result = await this._CLIENT_.search(this._BASE_DN_, {
+      scope: 'one',
+      sizeLimit: 1,
+      attributes: [
+        'sAMAccountName',
+        'mail',
+        'displayName',
+        'department',
+        'title',
+        'manager',
+        'directReports'
+      ],
+      filter: `CN=${filter.split(',')[0].split('CN=')[1]}`
+    })
+
+    if (result.searchEntries.length < 1) {
+      return undefined
+    }
+
+    return this.sanitize(result.searchEntries[0])
+  }
+
   async getByUsername(username: string): Promise<UserModelLDAP> {
     await this._CLIENT_.bind(this._DN_, this._ADM_PWD_)
 
     const result = await this._CLIENT_.search(this._BASE_DN_, {
       scope: 'one',
       sizeLimit: 1,
-      attributes: ['sAMAccountName', 'mail', 'displayName', 'department', 'title'],
+      attributes: [
+        'sAMAccountName',
+        'mail',
+        'displayName',
+        'department',
+        'title',
+        'manager',
+        'directReports'
+      ],
       filter: `(&(sAMAccountName=${username})${this.excludeServiceUsers})`
     })
 
@@ -110,13 +151,17 @@ export class LdapService {
     const [name, ...lastname] = entry.displayName.toString().split(this.whitespace)
     const department = entry.department.toString().trim()
     const position = entry.title.toString().trim()
+    const manager = entry.manager?.toString()
+    const directReports = entry.directReports?.toString()
 
     return {
       username,
       name,
       lastname: lastname.join(' '),
       department,
-      position
+      position,
+      manager,
+      directReports
     }
   }
 }
