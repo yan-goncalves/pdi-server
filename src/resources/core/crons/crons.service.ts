@@ -50,8 +50,8 @@ export class CronsService {
     const users = await this.usersService.list()
     for (let i = 0; i < users.length; i++) {
       const user = users[i]
-      if (user.role !== ROLES.ADMIN) {
-        const userLdap = await this.ldapService.getByUsername(user.username)
+      const userLdap = await this.ldapService.getByUsername(user.username)
+      if (user.role !== ROLES.ADMIN && userLdap?.department) {
         const departmentI18N = await this.departmentsI18nService.getBy(
           {
             name: userLdap.department
