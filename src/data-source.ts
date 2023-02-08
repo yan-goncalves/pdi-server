@@ -7,8 +7,8 @@ export const AppDataSource = new DataSource({
   type: 'mssql',
   host: process.env.TYPEORM_HOST || 'localhost\\MSSQLSERVER14',
   database: process.env.TYPEORM_DATABASE || 'PDI',
-  username: process.env.TYPEORM_USERNAME || 'pdi',
-  password: process.env.TYPEORM_PASSWORD || '1@asdfgPDI',
+  username: process.env.TYPEORM_USERNAME || 'sa',
+  password: process.env.TYPEORM_PASSWORD || '1@asdfgsa',
   entities: [__dirname + '/**/*.entity.{ts,js}'],
   requestTimeout: 60 * 1000,
   autoLoadEntities: true,
@@ -17,7 +17,6 @@ export const AppDataSource = new DataSource({
     enableArithAbort: true
   },
   logging: false,
-  synchronize: process.env.NODE_ENV !== 'production',
   migrationsRun: process.env.NODE_ENV !== 'production',
   migrations: [__dirname + '/migrations/*.{ts,js}']
 } as SqlServerConnectionOptions)

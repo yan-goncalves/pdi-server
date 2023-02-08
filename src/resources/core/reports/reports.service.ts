@@ -129,7 +129,7 @@ export class ReportsService {
         vertical: 'middle'
       }
     }
-    console.log('USER MANAGER', user?.manager)
+    
     const sheet = workbook.addWorksheet(user.username, { views: [{ showGridLines: false }] })
     sheet.getColumn(1).width = 2
     sheet.getColumn(2).width = 25

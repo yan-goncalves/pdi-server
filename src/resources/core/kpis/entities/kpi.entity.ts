@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -21,10 +22,12 @@ export class KpiModel {
 
   @Field(() => GoalModel)
   @ManyToOne(() => GoalModel, (goal) => goal.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'id_goal' })
   goal: GoalModel
 
   @Field(() => UserModel)
   @ManyToOne(() => UserModel, (user) => user.id, { eager: true })
+  @JoinColumn({ name: 'id_manager' })
   manager: UserModel
 
   @Field()
