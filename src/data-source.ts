@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
     enableArithAbort: true
   },
   logging: false,
-  migrationsRun: process.env.NODE_ENV !== 'production',
+  migrationsRun: false,
   migrations: [__dirname + '/migrations/*.{ts,js}']
 } as SqlServerConnectionOptions)
 
