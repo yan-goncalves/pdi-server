@@ -12,6 +12,7 @@ import { UpdatePerformedEvaluationInput } from '@performed-evaluations/dto/updat
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import { UsersService } from '@users/users.service'
 import { FindOptionsWhere, Repository } from 'typeorm'
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
 @Injectable()
 export class PerformedEvaluationsService {
@@ -129,6 +130,13 @@ export class PerformedEvaluationsService {
     }
 
     return performed
+  }
+
+  async updateMany(
+    options: FindOptionsWhere<PerformedEvaluationModel>,
+    partialEntity: QueryDeepPartialEntity<PerformedEvaluationModel>
+  ): Promise<void> {
+    await this.repo.update(options, partialEntity)
   }
 
   async delete(id: number): Promise<PerformedEvaluationModel> {
