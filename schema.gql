@@ -246,6 +246,7 @@ type PerformedSkillModel {
   skill: SkillModel!
   ratingUser: RatingModel
   ratingManager: RatingModel
+  midFeedbackUser: String
   endFeedbackUser: String
   midFeedbackManager: String
   endFeedbackManager: String
@@ -324,6 +325,9 @@ type Query {
   usersInfo(id: Int!): UsersInfoModel!
   department(id: Int!): DepartmentModel!
   departments: [DepartmentModel!]!
+  evaluation(id: Int!): EvaluationModel!
+  evaluationByYear(year: Int!): EvaluationModel!
+  evaluations: [EvaluationModel!]!
   section(id: Int!): SectionModel!
   sections: [SectionModel!]!
   question(id: Int!): QuestionModel!
@@ -332,9 +336,10 @@ type Query {
   skills: [SkillModel!]!
   feedback(id: Int!): FeedbackModel!
   feedbacks: [FeedbackModel!]!
-  evaluation(id: Int!): EvaluationModel!
-  evaluationByYear(year: Int!): EvaluationModel!
-  evaluations: [EvaluationModel!]!
+  performedEvaluation(id: Int!): PerformedEvaluationModel!
+  performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
+  performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
+  performedEvaluations: [PerformedEvaluationModel!]!
   goal(id: Int!, loadRelations: Boolean = false): GoalModel!
   goals: [GoalModel!]!
   evaluationGoals(input: ListGoalInput!): [GoalModel!]!
@@ -342,10 +347,6 @@ type Query {
   kpis: [KpiModel!]!
   pdiCoaching(id: Int!): PdiCoachingModel!
   pdiCoachings: [PdiCoachingModel!]!
-  performedEvaluation(id: Int!): PerformedEvaluationModel!
-  performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
-  performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
-  performedEvaluations: [PerformedEvaluationModel!]!
   pdiCompetence(id: Int!): PdiCompetenceModel!
   pdiCompetences: [PdiCompetenceModel!]!
   pdiCompetenceCategory(id: Int!): PdiCompetenceCategoryModel!
@@ -381,12 +382,12 @@ input GetUserInput {
   loadRelations: Boolean
 }
 
-input ListGoalInput {
+input CreatePerformedEvaluationInput {
   idEvaluation: Int!
   idUser: Int!
 }
 
-input CreatePerformedEvaluationInput {
+input ListGoalInput {
   idEvaluation: Int!
   idUser: Int!
 }
@@ -407,7 +408,11 @@ type Mutation {
   removeUsersInfo(id: Int!): UsersInfoModel!
   createDepartment(input: CreateDepartmentInput!): DepartmentModel!
   updateDepartment(id: Int!, input: UpdateDepartmentInput!): DepartmentModel!
-  signin(input: SignInInput!): JWT!
+  createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
+  addEvaluationSection(id: Int!, idSection: Int!): EvaluationModel!
+  addEvaluationFeedback(id: Int!, idFeedback: Int!): EvaluationModel!
+  updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
+  removeEvaluation(id: Int!): EvaluationModel!
   createSection(input: CreateSectionInput!): SectionModel!
   updateSection(id: Int!, input: UpdateSectionInput!): SectionModel!
   addSectionQuestion(id: Int!, idQuestion: Int!): SectionModel!
@@ -418,11 +423,10 @@ type Mutation {
   updateSkill(id: Int!, input: UpdateSkillInput!): SkillModel!
   createFeedback(input: CreateFeedbackInput!): FeedbackModel!
   updateFeedback(id: Int!, input: UpdateFeedbackInput!): FeedbackModel!
-  createEvaluation(input: CreateEvaluationInput!): EvaluationModel!
-  addEvaluationSection(id: Int!, idSection: Int!): EvaluationModel!
-  addEvaluationFeedback(id: Int!, idFeedback: Int!): EvaluationModel!
-  updateEvaluation(id: Int!, input: UpdateEvaluationInput!): EvaluationModel!
-  removeEvaluation(id: Int!): EvaluationModel!
+  createPerformedEvaluation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
+  updatePerformedEvaluation(id: Int!, input: UpdatePerformedEvaluationInput!): PerformedEvaluationModel!
+  removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
+  signin(input: SignInInput!): JWT!
   createGoal(input: CreateGoalInput!): GoalModel!
   updateGoal(id: Int!, input: GoalInput!): GoalModel!
   removeGoal(id: Int!): GoalModel!
@@ -432,9 +436,6 @@ type Mutation {
   createPdiCoaching(input: CreatePdiCoachingInput!): PdiCoachingModel!
   updatePdiCoaching(id: Int!, input: UpdatePdiCoachingInput!): PdiCoachingModel!
   removePdiCoaching(id: Int!): PdiCoachingModel!
-  createPerformedEvaluation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
-  updatePerformedEvaluation(id: Int!, input: UpdatePerformedEvaluationInput!): PerformedEvaluationModel!
-  removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
   createPdiCompetence(input: CreatePdiCompetenceInput!): PdiCompetenceModel!
   updatePdiCompetence(id: Int!, input: UpdatePdiCompetenceInput!): PdiCompetenceModel!
   removePdiCompetence(id: Int!): PdiCompetenceModel!
@@ -516,9 +517,23 @@ input UpdateDepartmentInput {
   locale: String!
 }
 
-input SignInInput {
-  identifier: String!
-  password: String!
+input CreateEvaluationInput {
+  year: Int!
+  mid: CreateEvaluationDateInput!
+  end: CreateEvaluationDateInput!
+  period: String = "OUT"
+}
+
+input CreateEvaluationDateInput {
+  start: DateTime!
+  deadline: DateTime!
+}
+
+input UpdateEvaluationInput {
+  year: Int
+  mid: CreateEvaluationDateInput
+  end: CreateEvaluationDateInput
+  period: String
 }
 
 input CreateSectionInput {
@@ -568,23 +583,14 @@ input UpdateFeedbackInput {
   locale: String!
 }
 
-input CreateEvaluationInput {
-  year: Int!
-  mid: CreateEvaluationDateInput!
-  end: CreateEvaluationDateInput!
-  period: String = "OUT"
+input UpdatePerformedEvaluationInput {
+  midFinished: Boolean
+  endFinished: Boolean
 }
 
-input CreateEvaluationDateInput {
-  start: DateTime!
-  deadline: DateTime!
-}
-
-input UpdateEvaluationInput {
-  year: Int
-  mid: CreateEvaluationDateInput
-  end: CreateEvaluationDateInput
-  period: String
+input SignInInput {
+  identifier: String!
+  password: String!
 }
 
 input CreateGoalInput {
@@ -619,11 +625,6 @@ input CreatePdiCoachingInput {
 input UpdatePdiCoachingInput {
   category: String
   action: String
-}
-
-input UpdatePerformedEvaluationInput {
-  midFinished: Boolean
-  endFinished: Boolean
 }
 
 input CreatePdiCompetenceInput {
@@ -685,6 +686,7 @@ input CreatePerformedSkillInput {
   midFeedbackManager: String
   endFeedbackManager: String
   endFeedbackUser: String
+  midFeedbackUser: String
   idPerformed: Int!
   idSkill: Int!
 }
@@ -695,6 +697,7 @@ input UpdatePerformedSkillInput {
   midFeedbackManager: String
   endFeedbackManager: String
   endFeedbackUser: String
+  midFeedbackUser: String
 }
 
 input CreatePerformedGoalKpiInput {

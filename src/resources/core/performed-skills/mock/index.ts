@@ -10,6 +10,7 @@ const performedSkillMock: PerformedSkillModel = {
   skill: skillMock,
   ratingUser: ratingMock,
   ratingManager: ratingMock,
+  midFeedbackUser: 'mid feedback user',
   endFeedbackUser: 'end feedback user',
   midFeedbackManager: 'mid feedback manager',
   endFeedbackManager: 'end feedback manager',

@@ -27,4 +27,9 @@ export class UpdatePerformedSkillInput {
   @IsOptional()
   @IsString()
   endFeedbackUser?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  midFeedbackUser?: string
 }

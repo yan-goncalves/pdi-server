@@ -44,6 +44,10 @@ export class PerformedSkillModel {
   ratingManager?: RatingModel
 
   @Field({ nullable: true })
+  @Column({ name: 'mid_feedback_user', length: 3000, nullable: true })
+  midFeedbackUser?: string
+
+  @Field({ nullable: true })
   @Column({ name: 'end_feedback_user', length: 3000, nullable: true })
   endFeedbackUser?: string
 
