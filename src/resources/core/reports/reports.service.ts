@@ -129,7 +129,7 @@ export class ReportsService {
         vertical: 'middle'
       }
     }
-    
+
     const sheet = workbook.addWorksheet(user.username, { views: [{ showGridLines: false }] })
     sheet.getColumn(1).width = 2
     sheet.getColumn(2).width = 25
@@ -233,24 +233,35 @@ export class ReportsService {
       }
       sheet.getCell(startGoalRowCount, 3).value = goal.name
 
-      goal?.kpis.forEach((kpi) => {
-        const performedKpi = performedGoal?.performedKpis.find((k) => k.kpi.id === kpi.id)
-        sheet.getCell(startGoalRowCount, 4).value = kpi?.target ?? ''
+      if (!goal?.kpis.length) {
+        sheet.getCell(startGoalRowCount, 4).value = ''
         sheet.getCell(startGoalRowCount, 4).style = contentJustifyStyle
-
-        sheet.getCell(startGoalRowCount, 5).value = kpi?.name ?? ''
+        sheet.getCell(startGoalRowCount, 5).value = ''
         sheet.getCell(startGoalRowCount, 5).style = contentJustifyStyle
-
-        sheet.getCell(startGoalRowCount, 6).value = performedKpi?.achieved ?? ''
+        sheet.getCell(startGoalRowCount, 6).value = ''
         sheet.getCell(startGoalRowCount, 6).style = contentJustifyStyle
-
-        sheet.getCell(startGoalRowCount, 7).value = performedKpi?.ratingManager?.value ?? ''
+        sheet.getCell(startGoalRowCount, 7).value = ''
         sheet.getCell(startGoalRowCount, 7).style = contentCenterStyle
+      } else {
+        goal?.kpis.forEach((kpi) => {
+          const performedKpi = performedGoal?.performedKpis.find((k) => k.kpi.id === kpi.id)
+          sheet.getCell(startGoalRowCount, 4).value = kpi?.target ?? ''
+          sheet.getCell(startGoalRowCount, 4).style = contentJustifyStyle
 
-        if (goal?.kpis.length > 1) {
-          startGoalRowCount++
-        }
-      })
+          sheet.getCell(startGoalRowCount, 5).value = kpi?.name ?? ''
+          sheet.getCell(startGoalRowCount, 5).style = contentJustifyStyle
+
+          sheet.getCell(startGoalRowCount, 6).value = performedKpi?.achieved ?? ''
+          sheet.getCell(startGoalRowCount, 6).style = contentJustifyStyle
+
+          sheet.getCell(startGoalRowCount, 7).value = performedKpi?.ratingManager?.value ?? ''
+          sheet.getCell(startGoalRowCount, 7).style = contentCenterStyle
+
+          if (goal?.kpis.length > 1) {
+            startGoalRowCount++
+          }
+        })
+      }
       startGoalRowCount++
     })
 
