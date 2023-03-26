@@ -83,6 +83,14 @@ export class UsersService {
     const ldapInfo = await this.ldapService.getByUsername(user.username)
     const info = await this.usersInfoService.create(user, ldapInfo)
 
+    if (ldapInfo?.manager) {
+      const managerLdap = await this.ldapService.getByRaw(ldapInfo?.manager)
+      const manager = await this.getBy({ username: managerLdap.username })
+
+      await this.update(manager.id, { role: ROLES.MANAGER })
+      await this.update(user.id, { idManager: manager.id, department: manager.department?.id })
+    }
+
     this.repo.merge(user, { info })
     return await this.repo.save(user)
   }
@@ -236,20 +244,14 @@ export class UsersService {
 
   async populate(): Promise<UserModel[]> {
     const users = await this.ldapService.getAll()
-    const departments = await this.departmentsService.list({ loadName: true })
 
-    for (const i in users) {
-      const user = users[i]
-
+    for (const user of users) {
       if (!(await this.repo.findOneBy({ username: user.username }))) {
-        const created = await this.create({
+        await this.create({
           username: user.username,
           email: `${user.username}@slworld.com`,
           role: ROLES.USER
         })
-
-        const department = departments.find((d) => d.name === user.department)
-        if (department) await this.update(created.id, { department: department.id })
       }
     }
 

@@ -22,6 +22,25 @@ export class DepartmentsService {
     }
   }
 
+  async getByName(name: string): Promise<DepartmentModel> {
+    const departmentI18nFound = await this.i18nService.getBy(
+      { name, locale: LOCALES.BR },
+      { relations: true }
+    )
+    if (!departmentI18nFound) {
+      throw new NotFoundException(`Department with name '${name}' not found`)
+    }
+
+    return {
+      id: departmentI18nFound.department.id,
+      key: departmentI18nFound.department.key,
+      name: departmentI18nFound.name,
+      locale: departmentI18nFound.department.locale,
+      createdAt: departmentI18nFound.department.createdAt,
+      updatedAt: departmentI18nFound.department.updatedAt
+    }
+  }
+
   async list({ loadName } = { loadName: false }): Promise<DepartmentModel[]> {
     const departments = await this.repo.find()
 
