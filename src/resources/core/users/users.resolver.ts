@@ -71,8 +71,6 @@ export class UsersResolver {
     return await this.service.setDeleted(id)
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(ROLES.ADMIN, ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
   @Mutation(UserModelReturnTypeArray)
   async populate(): Promise<UserModel[]> {
     return await this.service.populate()
