@@ -342,6 +342,7 @@ type Query {
   performedEvaluations: [PerformedEvaluationModel!]!
   goal(id: Int!, loadRelations: Boolean = false): GoalModel!
   goals: [GoalModel!]!
+  previousYearGoals: [GoalModel!]!
   evaluationGoals(input: ListGoalInput!): [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!

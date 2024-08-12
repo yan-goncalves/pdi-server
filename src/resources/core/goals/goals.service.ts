@@ -54,6 +54,18 @@ export class GoalsService {
     )
   }
 
+  async listPreviousYear(idManager: number): Promise<GoalModel[]> {
+    const evaluation = await this.evaluationsService.getBy({ year: new Date().getFullYear() - 1 })
+    const list = await this.repo.find({
+      where: { manager: { id: idManager }, evaluation: { id: evaluation.id } },
+      relations: ['manager']
+    })
+
+    return list.filter(
+      (value, index, self) => self.map((goal) => goal.name).indexOf(value.name) === index
+    )
+  }
+
   async evaluationGoals({ idEvaluation, idUser }: ListGoalInput): Promise<GoalModel[]> {
     const evaluation = await this.evaluationsService.get(idEvaluation)
     const user = await this.usersService.get({ id: idUser }, { loadRelations: true })
