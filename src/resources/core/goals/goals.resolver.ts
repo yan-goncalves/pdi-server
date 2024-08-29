@@ -37,8 +37,11 @@ export class GoalsResolver {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLES.ADMIN, ROLES.MANAGER, ROLES.COORDINATOR, ROLES.DIRECTOR)
   @Query(() => [GoalModel], { name: 'previousYearGoals' })
-  async listPreviousYear(@CurrentUser() { id }: UserModel): Promise<GoalModel[]> {
-    return await this.service.listPreviousYear(id)
+  async listPreviousYear(
+    @CurrentUser() { id }: UserModel,
+    @Args('idUser', { type: () => Int }) idUser: number
+  ): Promise<GoalModel[]> {
+    return await this.service.listPreviousYear(id, idUser)
   }
 
   @UseGuards(JwtAuthGuard)

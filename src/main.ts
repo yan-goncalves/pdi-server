@@ -10,6 +10,7 @@ async function bootstrap(): Promise<void> {
   const logger = new Logger()
   const app = await NestFactory.create<NestApplication>(AppModule)
   const configService = app.get(ConfigService)
+
   app.enableCors()
   app.useStaticAssets(configService.get<string>('MULTER_DEST'), {
     index: false,
