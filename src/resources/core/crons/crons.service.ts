@@ -30,24 +30,28 @@ export class CronsService {
   @Cron('* 01 * * *')
   async createDepartments(): Promise<void> {
     const users = await this.usersService.list()
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i]
-      const userLdap = await this.ldapService.getByUsername(user.username)
 
-      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
-        const name = userLdap?.department
+    for (const user of users) {
+      try {
+        const userLdap = await this.ldapService.getByUsername(user.username)
 
-        const departmentI18N = await this.departmentsI18nService.getBy({ name })
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
+          const name = userLdap?.department
 
-        if (!departmentI18N) {
-          const key = name
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[\s/_]+/g, '_')
+          const departmentI18N = await this.departmentsI18nService.getBy({ name })
 
-          await this.departmentsService.create({ key, name })
+          if (!departmentI18N) {
+            const key = name
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/[\s/_]+/g, '_')
+
+            await this.departmentsService.create({ key, name })
+          }
         }
+      } catch {
+        continue
       }
     }
   }
@@ -55,22 +59,25 @@ export class CronsService {
   @Cron('* 02 * * *')
   async updateUsersManager(): Promise<void> {
     const users = await this.usersService.list()
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i]
-      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
-        const userLdap = await this.ldapService.getByUsername(user.username)
+    for (const user of users) {
+      try {
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
+          const userLdap = await this.ldapService.getByUsername(user.username)
 
-        const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
-        if (managerLdap) {
-          const manager = await this.usersService.getBy({ username: managerLdap.username })
+          const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
+          if (managerLdap) {
+            const manager = await this.usersService.getBy({ username: managerLdap.username })
 
-          await this.usersService.update(manager.id, { role: ROLES.MANAGER })
-          await this.usersService.update(user.id, { idManager: manager.id })
+            await this.usersService.update(manager.id, { role: ROLES.MANAGER })
+            await this.usersService.update(user.id, { idManager: manager.id })
+          }
+
+          if (!userLdap.directReports.length) {
+            await this.usersService.update(user.id, { role: ROLES.USER })
+          }
         }
-
-        if (!userLdap.directReports.length) {
-          await this.usersService.update(user.id, { role: ROLES.USER })
-        }
+      } catch {
+        continue
       }
     }
   }
@@ -78,21 +85,24 @@ export class CronsService {
   @Cron('* 03 * * *')
   async updateUserDepartment(): Promise<void> {
     const users = await this.usersService.list()
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i]
-      const userLdap = await this.ldapService.getByUsername(user.username)
-      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
-        const departmentI18N = await this.departmentsI18nService.getBy(
-          {
-            name: userLdap.department
-          },
-          { relations: true }
-        )
+    for (const user of users) {
+      try {
+        const userLdap = await this.ldapService.getByUsername(user.username)
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
+          const departmentI18N = await this.departmentsI18nService.getBy(
+            {
+              name: userLdap.department
+            },
+            { relations: true }
+          )
 
-        if (departmentI18N) {
-          const department = await this.departmentsService.get(departmentI18N.department.id)
-          await this.usersService.update(user.id, { department: department.id })
+          if (departmentI18N) {
+            const department = await this.departmentsService.get(departmentI18N.department.id)
+            await this.usersService.update(user.id, { department: department.id })
+          }
         }
+      } catch {
+        continue
       }
     }
   }
