@@ -28,6 +28,31 @@ export class CronsService {
   }
 
   @Cron('* 01 * * *')
+  async createDepartments(): Promise<void> {
+    const users = await this.usersService.list()
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i]
+      const userLdap = await this.ldapService.getByUsername(user.username)
+
+      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
+        const name = userLdap?.department
+
+        const departmentI18N = await this.departmentsI18nService.getBy({ name })
+
+        if (!departmentI18N) {
+          const key = name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[\s/_]+/g, '_')
+
+          await this.departmentsService.create({ key, name })
+        }
+      }
+    }
+  }
+
+  @Cron('* 02 * * *')
   async updateUsersManager(): Promise<void> {
     const users = await this.usersService.list()
     for (let i = 0; i < users.length; i++) {
@@ -50,7 +75,7 @@ export class CronsService {
     }
   }
 
-  @Cron('* 02 * * *')
+  @Cron('* 03 * * *')
   async updateUserDepartment(): Promise<void> {
     const users = await this.usersService.list()
     for (let i = 0; i < users.length; i++) {
@@ -72,7 +97,7 @@ export class CronsService {
     }
   }
 
-  @Cron('* 03 * * *')
+  @Cron('* 04 * * *')
   async normalizePeriodEvaluations(): Promise<void> {
     const evaluations = await this.evaluationsService.list()
 
