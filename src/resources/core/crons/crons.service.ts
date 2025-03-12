@@ -63,35 +63,6 @@ export class CronsService {
   }
 
   @Cron('* 02 * * *')
-  async updateUsersManager(): Promise<void> {
-    const users = await this.usersService.list()
-
-    console.log('updating users manager...')
-    for (const user of users) {
-      try {
-        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
-          const userLdap = await this.ldapService.getByUsername(user.username)
-
-          const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
-          if (managerLdap) {
-            const manager = await this.usersService.getBy({ username: managerLdap.username })
-
-            await this.usersService.update(manager.id, { role: ROLES.MANAGER })
-            await this.usersService.update(user.id, { idManager: manager.id })
-          }
-
-          if (!userLdap.directReports.length) {
-            await this.usersService.update(user.id, { role: ROLES.USER })
-          }
-        }
-      } catch {
-        continue
-      }
-    }
-    console.log('finished update users manager!')
-  }
-
-  @Cron('* 03 * * *')
   async updateUserDepartment(): Promise<void> {
     const users = await this.usersService.list()
     for (const user of users) {
@@ -122,6 +93,35 @@ export class CronsService {
         continue
       }
     }
+  }
+
+  @Cron('* 03 * * *')
+  async updateUsersManager(): Promise<void> {
+    const users = await this.usersService.list()
+
+    console.log('updating users manager...')
+    for (const user of users) {
+      try {
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
+          const userLdap = await this.ldapService.getByUsername(user.username)
+
+          const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
+          if (managerLdap) {
+            const manager = await this.usersService.getBy({ username: managerLdap.username })
+
+            await this.usersService.update(manager.id, { role: ROLES.MANAGER })
+            await this.usersService.update(user.id, { idManager: manager.id })
+          }
+
+          if (!userLdap.directReports.length) {
+            await this.usersService.update(user.id, { role: ROLES.USER })
+          }
+        }
+      } catch {
+        continue
+      }
+    }
+    console.log('finished update users manager!')
   }
 
   @Cron('* 04 * * *')
