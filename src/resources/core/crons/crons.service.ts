@@ -109,7 +109,9 @@ export class CronsService {
           if (managerLdap) {
             const manager = await this.usersService.getBy({ username: managerLdap.username })
 
-            await this.usersService.update(manager.id, { role: ROLES.MANAGER })
+            if (manager.role !== ROLES.DIRECTOR) {
+              await this.usersService.update(manager.id, { role: ROLES.MANAGER })
+            }
             await this.usersService.update(user.id, { idManager: manager.id })
           }
 
