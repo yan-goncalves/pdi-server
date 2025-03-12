@@ -47,7 +47,13 @@ export class CronsService {
               .replace(/[\u0300-\u036f]/g, '')
               .replace(/[\s/_]+/g, '_')
 
-            await this.departmentsService.create({ key, name })
+            console.log(`creating department... ${key}: ${name}`)
+
+            try {
+              await this.departmentsService.create({ key, name })
+            } catch {
+              console.log(`could not create department... ${key}: ${name}`)
+            }
           }
         }
       } catch {
@@ -59,6 +65,8 @@ export class CronsService {
   @Cron('* 02 * * *')
   async updateUsersManager(): Promise<void> {
     const users = await this.usersService.list()
+
+    console.log('updating users manager...')
     for (const user of users) {
       try {
         if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
@@ -80,6 +88,7 @@ export class CronsService {
         continue
       }
     }
+    console.log('finished update users manager!')
   }
 
   @Cron('* 03 * * *')
@@ -97,8 +106,16 @@ export class CronsService {
           )
 
           if (departmentI18N) {
-            const department = await this.departmentsService.get(departmentI18N.department.id)
-            await this.usersService.update(user.id, { department: department.id })
+            console.log(`updating user department... ${departmentI18N.name}: ${user.username}`)
+
+            try {
+              const department = await this.departmentsService.get(departmentI18N.department.id)
+              await this.usersService.update(user.id, { department: department.id })
+            } catch {
+              console.log(
+                `could not update user department... ${departmentI18N.name}: ${user.username}`
+              )
+            }
           }
         }
       } catch {
