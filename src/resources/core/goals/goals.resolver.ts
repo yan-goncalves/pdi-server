@@ -39,9 +39,10 @@ export class GoalsResolver {
   @Query(() => [GoalModel], { name: 'previousYearGoals' })
   async listPreviousYear(
     @CurrentUser() { id }: UserModel,
-    @Args('idUser', { type: () => Int }) idUser: number
+    @Args('idUser', { type: () => Int }) idUser: number,
+    @Args('year', { type: () => Int, nullable: true }) year?: number
   ): Promise<GoalModel[]> {
-    return await this.service.listPreviousYear(id, idUser)
+    return await this.service.listPreviousYear(id, idUser, year)
   }
 
   @UseGuards(JwtAuthGuard)

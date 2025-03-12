@@ -54,8 +54,10 @@ export class GoalsService {
     )
   }
 
-  async listPreviousYear(idManager: number, idUser: number): Promise<GoalModel[]> {
-    const evaluation = await this.evaluationsService.getBy({ year: new Date().getFullYear() - 1 })
+  async listPreviousYear(idManager: number, idUser: number, year?: number): Promise<GoalModel[]> {
+    const previousYear = year || new Date().getFullYear() - 1
+    const evaluation = await this.evaluationsService.getBy({ year: previousYear })
+
     const list = await this.repo.find({
       where: {
         manager: { id: idManager },
