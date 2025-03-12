@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -12,7 +11,6 @@ import {
 } from 'typeorm'
 
 @Entity('departments_i18n')
-@Index(['locale', 'name'], { unique: true })
 export class DepartmentLocaleModel {
   @PrimaryGeneratedColumn()
   readonly id: number
@@ -24,7 +22,7 @@ export class DepartmentLocaleModel {
   @JoinColumn({ name: 'id_department' })
   department: DepartmentModel
 
-  @Column({ unique: true })
+  @Column()
   name: string
 
   @CreateDateColumn({ name: 'created_at' })
