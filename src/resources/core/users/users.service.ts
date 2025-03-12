@@ -44,23 +44,18 @@ export class UsersService {
       .catch(() => (this.admin = null))
   }
 
-  async validate(identifier: string, password: string): Promise<UserModel> {
+  async validate(identifier: string, password: string): Promise<boolean> {
     const user = await this.repo.findOne({
-      where: [{ username: identifier }, { email: identifier }],
-      relations: ['manager']
+      where: [{ username: identifier }, { email: identifier }]
     })
 
     if (!user) {
       throw new BadRequestException('Username/email or password incorrect')
     }
 
-    const valid = await compare(password, user.password)
+    const isValid = await compare(password, user.password)
 
-    if (!valid) {
-      throw new BadRequestException('Username/email or password incorrect')
-    }
-
-    return user
+    return isValid
   }
 
   async create({ email, username, role }: CreateUserInput): Promise<UserModel> {
