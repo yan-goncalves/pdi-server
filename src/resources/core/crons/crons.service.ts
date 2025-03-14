@@ -28,24 +28,36 @@ export class CronsService {
   }
 
   @Cron('* 01 * * *')
-  async updateUsersManager(): Promise<void> {
+  async createDepartments(): Promise<void> {
     const users = await this.usersService.list()
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i]
-      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
+
+    for (const user of users) {
+      try {
         const userLdap = await this.ldapService.getByUsername(user.username)
 
-        const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
-        if (managerLdap) {
-          const manager = await this.usersService.getBy({ username: managerLdap.username })
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
+          const name = userLdap?.department
 
-          await this.usersService.update(manager.id, { role: ROLES.MANAGER })
-          await this.usersService.update(user.id, { idManager: manager.id })
-        }
+          const departmentI18N = await this.departmentsI18nService.getBy({ name })
 
-        if (!userLdap.directReports.length) {
-          await this.usersService.update(user.id, { role: ROLES.USER })
+          if (!departmentI18N) {
+            const key = name
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/[\s/_]+/g, '_')
+
+            console.log(`creating department... ${key}: ${name}`)
+
+            try {
+              await this.departmentsService.create({ key, name })
+            } catch {
+              console.log(`could not create department... ${key}: ${name}`)
+            }
+          }
         }
+      } catch {
+        continue
       }
     }
   }
@@ -53,26 +65,68 @@ export class CronsService {
   @Cron('* 02 * * *')
   async updateUserDepartment(): Promise<void> {
     const users = await this.usersService.list()
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i]
-      const userLdap = await this.ldapService.getByUsername(user.username)
-      if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
-        const departmentI18N = await this.departmentsI18nService.getBy(
-          {
-            name: userLdap.department
-          },
-          { relations: true }
-        )
+    for (const user of users) {
+      try {
+        const userLdap = await this.ldapService.getByUsername(user.username)
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role) && userLdap?.department) {
+          const departmentI18N = await this.departmentsI18nService.getBy(
+            {
+              name: userLdap.department
+            },
+            { relations: true }
+          )
 
-        if (departmentI18N) {
-          const department = await this.departmentsService.get(departmentI18N.department.id)
-          await this.usersService.update(user.id, { department: department.id })
+          if (departmentI18N) {
+            console.log(`updating user department... ${departmentI18N.name}: ${user.username}`)
+
+            try {
+              const department = await this.departmentsService.get(departmentI18N.department.id)
+              await this.usersService.update(user.id, { department: department.id })
+            } catch {
+              console.log(
+                `could not update user department... ${departmentI18N.name}: ${user.username}`
+              )
+            }
+          }
         }
+      } catch {
+        continue
       }
     }
   }
 
   @Cron('* 03 * * *')
+  async updateUsersManager(): Promise<void> {
+    const users = await this.usersService.list()
+
+    console.log('updating users manager...')
+    for (const user of users) {
+      try {
+        if (![ROLES.ADMIN, ROLES.DIRECTOR].includes(user.role)) {
+          const userLdap = await this.ldapService.getByUsername(user.username)
+
+          const managerLdap = await this.ldapService.getByRaw(userLdap.manager)
+          if (managerLdap) {
+            const manager = await this.usersService.getBy({ username: managerLdap.username })
+
+            if (manager.role !== ROLES.DIRECTOR) {
+              await this.usersService.update(manager.id, { role: ROLES.MANAGER })
+            }
+            await this.usersService.update(user.id, { idManager: manager.id })
+          }
+
+          if (!userLdap.directReports.length) {
+            await this.usersService.update(user.id, { role: ROLES.USER })
+          }
+        }
+      } catch {
+        continue
+      }
+    }
+    console.log('finished update users manager!')
+  }
+
+  @Cron('* 04 * * *')
   async normalizePeriodEvaluations(): Promise<void> {
     const evaluations = await this.evaluationsService.list()
 

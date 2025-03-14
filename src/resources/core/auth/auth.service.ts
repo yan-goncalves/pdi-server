@@ -14,11 +14,19 @@ export class AuthService {
   ) {}
 
   async signin({ identifier, password }: SignInInput): Promise<JWT> {
-    await this.ldapService.auth({ username: identifier, password }).catch(() => {
-      throw new BadRequestException('Username/email or password incorrect')
-    })
+    if (process.env.NODE_ENV === 'production') {
+      await this.ldapService.auth({ username: identifier, password }).catch(() => {
+        throw new BadRequestException('Username/email or password incorrect')
+      })
+    }
 
     const user = await this.userService.get({ username: identifier }, { loadRelations: true })
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      !(await this.userService.validate(identifier, password))
+    ) {
+      throw new BadRequestException('Username/email or password incorrect')
+    }
 
     try {
       const payload: JwtPayload = {

@@ -66,11 +66,18 @@ export class DepartmentsService {
   async create({ key, name }: CreateDepartmentInput): Promise<DepartmentModel> {
     try {
       const department = await this.repo.save(this.repo.create({ key }))
-      const departmentLocale = await this.i18nService.create(department, { name })
+      const departmentLocaleBR = await this.i18nService.create(department, {
+        name,
+        locale: LOCALES.BR
+      })
+      const departmentLocaleEN = await this.i18nService.create(department, {
+        name,
+        locale: LOCALES.EN
+      })
 
       return {
         ...department,
-        name: departmentLocale.name
+        name: departmentLocaleBR.name
       }
     } catch {
       throw new ConflictException('Department key already exists')
