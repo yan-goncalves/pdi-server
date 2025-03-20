@@ -4,7 +4,7 @@ import { FeedbackLocaleModel } from '@feedbacks-i18n/entities/feedback-i18n.enti
 import { FeedbackModel } from '@feedbacks/entities/feedback.entity'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { FindOptionsWhere, In, Repository } from 'typeorm'
 
 @Injectable()
 export class FeedbacksI18nService {
@@ -25,6 +25,10 @@ export class FeedbacksI18nService {
     options: FindOptionsWhere<FeedbackLocaleModel> | FindOptionsWhere<FeedbackLocaleModel>[]
   ): Promise<FeedbackLocaleModel> {
     return await this.repo.findOneBy(options)
+  }
+
+  listByFeedbacksIds(feedbacksIds: number[], locale: LOCALES): Promise<FeedbackLocaleModel[]> {
+    return this.repo.find({ where: { feedback: { id: In(feedbacksIds) }, locale } })
   }
 
   async create(
