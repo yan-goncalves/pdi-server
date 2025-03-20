@@ -1,18 +1,18 @@
-import { EvaluationModel } from '@core/evaluations/entities/evaluation.entity'
-import { GoalModel } from '@core/goals/entities/goal.entity'
-import { UserModel } from '@core/users/entities/user.entity'
-import { ArrayNotEmpty, IsNotEmpty, ValidateNested } from 'class-validator'
+import { LOCALES } from '@constants/locales'
+import { Type } from 'class-transformer'
+import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsNumber } from 'class-validator'
 
 export class ReportDto {
   @ArrayNotEmpty()
-  @ValidateNested()
-  users: UserModel[]
+  @IsArray()
+  @Type(() => Number)
+  usersIds: number[]
 
   @IsNotEmpty()
-  @ValidateNested()
-  evaluation: EvaluationModel
+  @IsNumber()
+  evaluationId: number
 
   @IsNotEmpty()
-  @ValidateNested()
-  usersEvaluationGoals: { [key in number]: GoalModel[] }
+  @IsEnum(LOCALES)
+  locale: LOCALES
 }

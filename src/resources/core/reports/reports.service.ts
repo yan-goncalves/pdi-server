@@ -1,12 +1,14 @@
-import { EvaluationModel } from '@core/evaluations/entities/evaluation.entity'
-import { GoalModel } from '@core/goals/entities/goal.entity'
+import { LOCALES } from '@constants/locales'
+import { EvaluationsService } from '@core/evaluations/evaluations.service'
+import { FeedbacksI18nService } from '@core/feedbacks-i18n/feedbacks-i18n.service'
+import { GoalsService } from '@core/goals/goals.service'
 import { KpiModel } from '@core/kpis/entities/kpi.entity'
 import { PdiQualityModel } from '@core/pdi-qualities/entities/pdi-quality.entity'
 import { PerformedEvaluationModel } from '@core/performed-evaluations/entities/performed-evaluation.entity'
 import { PerformedEvaluationsService } from '@core/performed-evaluations/performed-evaluations.service'
-import { QuestionModel } from '@core/questions/entities/question.entity'
-import { SkillModel } from '@core/skills/entities/skill.entity'
-import { UserModel } from '@core/users/entities/user.entity'
+import { QuestionsI18nService } from '@core/questions-i18n/questions-i18n.service'
+import { SkillsI18nService } from '@core/skills-i18n/skills-i18n.service'
+import { UsersService } from '@core/users/users.service'
 import { Injectable, StreamableFile } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import * as ExcelModule from 'exceljs'
@@ -15,26 +17,30 @@ import { ReportDto } from './dto/report.dto'
 
 @Injectable()
 export class ReportsService {
-  constructor(private readonly performedService: PerformedEvaluationsService) {}
+  constructor(
+    private readonly performedService: PerformedEvaluationsService,
+    private readonly goalsService: GoalsService,
+    private readonly usersService: UsersService,
+    private readonly evaluationsService: EvaluationsService,
+    private readonly questionsI18nService: QuestionsI18nService,
+    private readonly skillsI18nService: SkillsI18nService,
+    private readonly feedbacksI18nService: FeedbacksI18nService
+  ) {}
 
   async download(uuid: string): Promise<StreamableFile> {
     const file = createReadStream(`downloads/reports/${uuid}.xlsx`)
     return new StreamableFile(file)
   }
 
-  async generate({
-    users,
-    evaluation,
-    usersEvaluationGoals
-  }: ReportDto): Promise<{ uuid: string }> {
+  async generate({ usersIds, evaluationId, locale }: ReportDto): Promise<{ uuid: string }> {
     const filePath = 'downloads/reports'
     if (!existsSync(filePath)) {
       mkdirSync(filePath, { recursive: true })
     }
 
     const workbook = new ExcelModule.Workbook()
-    for (const user of users) {
-      await this.generateUserReport(user, workbook, evaluation, usersEvaluationGoals[user.id])
+    for (const userId of usersIds) {
+      await this.generateUserReport(userId, evaluationId, locale, workbook)
     }
     const uuid = randomUUID()
     await workbook.xlsx.writeFile(`downloads/reports/${uuid}.xlsx`)
@@ -43,22 +49,27 @@ export class ReportsService {
   }
 
   private async generateUserReport(
-    user: UserModel,
-    workbook: ExcelModule.Workbook,
-    evaluation: EvaluationModel,
-    evaluationGoals: GoalModel[]
+    userId: number,
+    evaluationId: number,
+    locale: LOCALES,
+    workbook: ExcelModule.Workbook
   ): Promise<void> {
-    const sections = evaluation.sections?.filter(
-      (section) => section.visibility[user.role] === true
-    )
+    const user = await this.usersService.get({ id: userId }, { loadRelations: true })
+    const evaluation = await this.evaluationsService.getBy({ id: evaluationId })
 
-    const questions: QuestionModel[] = []
-    sections.map((s) => s?.questions.length && questions.push(...s.questions))
+    const sections = evaluation.sections?.filter((section) => section.visibility[user.role])
+
+    const questionIds = sections.flatMap((s) => s.questions.map((q) => q.id))
+    const questions = await this.questionsI18nService.listByQuestionsIds(questionIds, locale)
     const questionsCount = questions.length
 
-    const skills: SkillModel[] = []
-    sections.map((s) => s?.skills.length && skills.push(...s.skills))
+    const skillsIds = sections.flatMap((s) => s.skills.map((k) => k.id))
+    const skills = await this.skillsI18nService.listBySkillsIds(skillsIds, locale)
     const skillsCount = skills.length
+
+    const feedbacksIds = evaluation.feedbacks.map((f) => f.id)
+    const feedbacks = await this.feedbacksI18nService.listByFeedbacksIds(feedbacksIds, locale)
+    const feedbacksCount = feedbacks.length
 
     let performed: PerformedEvaluationModel
     try {
@@ -81,18 +92,21 @@ export class ReportsService {
       performed.pdiQuality = []
     }
 
+    const evaluationGoals = await this.goalsService.evaluationGoals({
+      idEvaluation: evaluation.id,
+      idUser: user.id
+    })
     const kpis: KpiModel[] = []
+
     evaluationGoals.map((g) => g?.kpis.length && kpis.push(...g.kpis))
     const kpisCount = kpis.length
-
-    const feedbacks = evaluation.feedbacks
-    const feedbacksCount = feedbacks.length
 
     const pdiStrength: PdiQualityModel[] = []
     const pdiWeakness: PdiQualityModel[] = []
     performed.pdiQuality.forEach((q) =>
       q.category === 'WEAKNESS' ? pdiWeakness.push(q) : pdiStrength.push(q)
     )
+
     const pdiStrengthCount = pdiStrength.length || 1
     const pdiWeaknessCount = pdiWeakness.length || 1
 
@@ -147,18 +161,23 @@ export class ReportsService {
     sheet.mergeCells(4, 3, 4, 7)
     sheet.mergeCells(5, 3, 5, 7)
 
-    sheet.getRow(2).getCell(2).value = 'Período'
-    sheet.getRow(2).getCell(3).value = 'Fechamento de Ano'
+    const periodTitle = locale === LOCALES.BR ? 'Período' : 'Period'
+    const periodDescription = locale === LOCALES.BR ? 'Fechamento de Ano' : 'End-Year'
+    sheet.getRow(2).getCell(2).value = periodTitle
+    sheet.getRow(2).getCell(3).value = periodDescription
 
-    sheet.getRow(3).getCell(2).value = 'Ano'
+    const yearTitle = locale === LOCALES.BR ? 'Ano' : 'Year'
+    sheet.getRow(3).getCell(2).value = yearTitle
     sheet.getRow(3).getCell(3).value = evaluation.year
 
-    sheet.getRow(4).getCell(2).value = 'Nome do(a) Usuário(a)'
+    const userNameTitle = locale === LOCALES.BR ? 'Nome do(a) Usuário(a)' : 'User Name'
+    sheet.getRow(4).getCell(2).value = userNameTitle
     sheet.getRow(4).getCell(3).value = !user?.info
       ? user.username
       : `${user.info.name} ${user.info.lastname}`
 
-    sheet.getRow(5).getCell(2).value = 'Nome do(a) Gestor(a)'
+    const managerTitle = locale === LOCALES.BR ? 'Nome do(a) Gestor(a)' : 'Manager Name'
+    sheet.getRow(5).getCell(2).value = managerTitle
     sheet.getRow(5).getCell(3).value = !user?.manager
       ? ''
       : !user.manager?.info
@@ -168,23 +187,24 @@ export class ReportsService {
     /**
      * @PERFIL_DE_COMPETÊNCIAS
      */
+    const skillsTitle = locale === LOCALES.BR ? 'PERFIL DE COMPETÊNCIAS' : 'SKILLS PROFILE'
     sheet.mergeCells(startRowCount, 2, startRowCount + questionsCount + skillsCount, 2)
-    sheet.getCell(startRowCount, 2).value = 'PERFIL DE COMPETÊNCIAS'
+    sheet.getCell(startRowCount, 2).value = skillsTitle
 
     sheet.getCell(startRowCount, 3).alignment = { horizontal: 'center', vertical: 'middle' }
     sheet.getCell(startRowCount, 3).value = 'Item'
     sheet.mergeCells(startRowCount, 4, startRowCount, 6)
     sheet.getCell(startRowCount, 5).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(startRowCount, 5).value = 'Comentário'
+    sheet.getCell(startRowCount, 5).value = locale === LOCALES.BR ? 'Comentário' : 'Comment'
     sheet.getCell(startRowCount, 7).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(startRowCount, 7).value = 'Nota'
+    sheet.getCell(startRowCount, 7).value = locale === LOCALES.BR ? 'Nota' : 'Rating'
 
     let startQuestionRowCount = startRowCount + 1
     questions.forEach((question) => {
-      const performedQuesiton = performed.questions.find((q) => q.question.id === question.id)
+      const performedQuestion = performed.questions.find((q) => q.question.id === question.id)
       sheet.mergeCells(startQuestionRowCount, 4, startQuestionRowCount, 6)
       sheet.getCell(startQuestionRowCount, 3).value = question.ask
-      sheet.getCell(startQuestionRowCount, 4).value = performedQuesiton?.reply ?? ''
+      sheet.getCell(startQuestionRowCount, 4).value = performedQuestion?.reply ?? ''
       sheet.getCell(startQuestionRowCount, 4).style = contentJustifyStyle
       sheet.getCell(startQuestionRowCount, 7).style = contentCenterStyle
       startQuestionRowCount++
@@ -210,19 +230,23 @@ export class ReportsService {
      */
     const startGoalsRowCount = startRowCount + questionsCount + skillsCount + 1
     const endGoalsRowCount = startGoalsRowCount + (kpisCount || 1)
+
+    const goalsTitle = locale === LOCALES.BR ? 'OBJETIVOS' : 'GOALS'
     sheet.mergeCells(startGoalsRowCount, 2, endGoalsRowCount, 2)
-    sheet.getCell(startGoalsRowCount, 2).value = 'OBJETIVOS'
+    sheet.getCell(startGoalsRowCount, 2).value = goalsTitle
 
     sheet.getCell(startGoalsRowCount, 3).alignment = { horizontal: 'center', vertical: 'middle' }
     sheet.getCell(startGoalsRowCount, 3).value = 'Item'
     sheet.getCell(startGoalsRowCount, 4).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(startGoalsRowCount, 4).value = 'Meta do Ano'
+    sheet.getCell(startGoalsRowCount, 4).value =
+      locale === LOCALES.BR ? 'Meta do Ano' : 'Annual Goal'
     sheet.getCell(startGoalsRowCount, 5).alignment = { horizontal: 'center', vertical: 'middle' }
     sheet.getCell(startGoalsRowCount, 5).value = 'KPI'
     sheet.getCell(startGoalsRowCount, 6).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(startGoalsRowCount, 6).value = 'Performance Alcançada'
+    sheet.getCell(startGoalsRowCount, 6).value =
+      locale === LOCALES.BR ? 'Performance Alcançada' : 'Achieved Performance'
     sheet.getCell(startGoalsRowCount, 7).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(startGoalsRowCount, 7).value = 'Nota'
+    sheet.getCell(startGoalsRowCount, 7).value = locale === LOCALES.BR ? 'Nota' : 'Rating'
 
     let startGoalRowCount = startGoalsRowCount + 1
     evaluationGoals.forEach((goal) => {
@@ -280,10 +304,11 @@ export class ReportsService {
     /**
      * @FEEDBACK_COMPLEMENTAR
      */
-    const startFeedbacksRowCount = endGoalsRowCount + 1
-    const endFeedbacksRowCount = startFeedbacksRowCount + feedbacksCount - 1
+    const startFeedbacksRowCount = Math.max(endGoalsRowCount + 1, 0)
+    const endFeedbacksRowCount = startFeedbacksRowCount + Math.max(feedbacksCount - 1, 0)
     sheet.mergeCells(startFeedbacksRowCount, 2, endFeedbacksRowCount, 2)
-    sheet.getCell(startFeedbacksRowCount, 2).value = 'FEEDBACK COMPLEMENTAR'
+    const feedbackTitle = locale === LOCALES.BR ? 'FEEDBACK COMPLEMENTAR' : 'ADDITIONAL FEEDBACK'
+    sheet.getCell(startFeedbacksRowCount, 2).value = feedbackTitle
 
     let startFeedbackRowCount = startFeedbacksRowCount
     feedbacks.forEach((feedback) => {
@@ -307,7 +332,9 @@ export class ReportsService {
     if (pdiStrengthCount > 1) {
       sheet.mergeCells(pdiQualityRowCount, 3, pdiQualityRowCount + pdiStrength.length - 1, 3)
     }
-    sheet.getCell(pdiQualityRowCount, 3).value = 'Pontos Fortes'
+    const pdiStrengthTitle = locale === LOCALES.BR ? 'Pontos Fortes' : 'Strong Points'
+    sheet.getCell(pdiQualityRowCount, 3).value = pdiStrengthTitle
+
     pdiStrength.forEach((strength) => {
       sheet.mergeCells(pdiQualityRowCount, 4, pdiQualityRowCount, 7)
       sheet.getCell(pdiQualityRowCount, 4).value = strength?.description || ''
@@ -324,7 +351,10 @@ export class ReportsService {
     if (pdiWeaknessCount > 1) {
       sheet.mergeCells(pdiQualityRowCount, 3, pdiQualityRowCount + pdiWeakness.length - 1, 3)
     }
-    sheet.getCell(pdiQualityRowCount, 3).value = 'Áreas a serem desenvolvidas'
+    const pdiWeaknessTitle =
+      locale === LOCALES.BR ? 'Áreas a serem desenvolvidas' : 'Competences to be developed'
+    sheet.getCell(pdiQualityRowCount, 3).value = pdiWeaknessTitle
+
     pdiWeakness.forEach((weakness) => {
       sheet.mergeCells(pdiQualityRowCount, 4, pdiQualityRowCount, 7)
       sheet.getCell(pdiQualityRowCount, 4).value = weakness?.description || ''
@@ -340,14 +370,17 @@ export class ReportsService {
 
     let pdiCompetenceRowCount = pdiQualityRowCount
     sheet.mergeCells(pdiCompetenceRowCount, 3, pdiCompetenceRowCount + pdiCompetenceCount, 3)
-    sheet.getCell(pdiCompetenceRowCount, 3).value = 'Desenvolvimento de Competências'
-    sheet.getCell(pdiCompetenceRowCount, 4).value = 'Descrição'
+    const competenceTitle =
+      locale === LOCALES.BR ? 'Desenvolvimento de Competências' : 'Competency Development'
+    sheet.getCell(pdiCompetenceRowCount, 3).value = competenceTitle
+    sheet.getCell(pdiCompetenceRowCount, 4).value =
+      locale === LOCALES.BR ? 'Descrição' : 'Description'
     sheet.getCell(pdiCompetenceRowCount, 4).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(pdiCompetenceRowCount, 5).value = 'Categoria'
+    sheet.getCell(pdiCompetenceRowCount, 5).value = locale === LOCALES.BR ? 'Categoria' : 'Category'
     sheet.getCell(pdiCompetenceRowCount, 5).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(pdiCompetenceRowCount, 6).value = 'Ação'
+    sheet.getCell(pdiCompetenceRowCount, 6).value = locale === LOCALES.BR ? 'Ação' : 'Action'
     sheet.getCell(pdiCompetenceRowCount, 6).alignment = { horizontal: 'center', vertical: 'middle' }
-    sheet.getCell(pdiCompetenceRowCount, 7).value = 'Prazo'
+    sheet.getCell(pdiCompetenceRowCount, 7).value = locale === LOCALES.BR ? 'Prazo' : 'Deadline'
     sheet.getCell(pdiCompetenceRowCount, 7).alignment = { horizontal: 'center', vertical: 'middle' }
 
     ++pdiCompetenceRowCount
@@ -378,7 +411,8 @@ export class ReportsService {
     if (pdiCoachingCount > 1) {
       sheet.mergeCells(pdiCoachingRowCount, 3, pdiCoachingRowCount + pdiCoachingCount - 1, 3)
     }
-    sheet.getCell(pdiCoachingRowCount, 3).value = 'Coaching de Carreira'
+    const pdiCoachingTitle = locale === LOCALES.BR ? 'Coaching de Carreira' : 'Career Coaching'
+    sheet.getCell(pdiCoachingRowCount, 3).value = pdiCoachingTitle
     pdiCoaching.forEach((coaching) => {
       sheet.mergeCells(pdiCoachingRowCount, 4, pdiCoachingRowCount, 7)
       sheet.getCell(pdiCoachingRowCount, 4).value = coaching.action || ''
@@ -395,17 +429,18 @@ export class ReportsService {
     /**
      * @NOTA_FINAL
      */
-    const finalGradeRow = endPdiRowCount
-    const finalGradeCellTitle = sheet.getCell(finalGradeRow, 2)
-    finalGradeCellTitle.style = { font: { bold: true } }
-    finalGradeCellTitle.value = 'NOTA FINAL'
-    sheet.mergeCells(finalGradeRow, 3, finalGradeRow, 7)
-    const finalGradeCell = sheet.getCell(finalGradeRow, 3)
-    finalGradeCell.style = {
+    const finalRatingRow = endPdiRowCount
+    const finalRatingCellTitle = sheet.getCell(finalRatingRow, 2)
+    finalRatingCellTitle.style = { font: { bold: true } }
+    finalRatingCellTitle.value = locale === LOCALES.BR ? 'NOTA FINAL' : 'FINAL RATING'
+    sheet.mergeCells(finalRatingRow, 3, finalRatingRow, 7)
+    const finalRatingCell = sheet.getCell(finalRatingRow, 3)
+    finalRatingCell.style = {
       font: { bold: true },
       alignment: { horizontal: 'center', vertical: 'middle' }
     }
-    finalGradeCell.value = performed.grade || 'Sem nota atribuída'
+    const notRatedTitle = locale === LOCALES.BR ? 'Sem nota atribuída' : 'Not rated'
+    finalRatingCell.value = performed.grade || notRatedTitle
 
     /**
      * @SET_BORDER
