@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async signin({ identifier, password }: SignInInput): Promise<JWT> {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && identifier !== 'admin') {
       await this.ldapService.auth({ username: identifier, password }).catch(() => {
         throw new BadRequestException('Username/email or password incorrect')
       })
@@ -22,7 +22,7 @@ export class AuthService {
 
     const user = await this.userService.get({ username: identifier }, { loadRelations: true })
     if (
-      process.env.NODE_ENV !== 'production' &&
+      (identifier === 'admin' || process.env.NODE_ENV !== 'production') &&
       !(await this.userService.validate(identifier, password))
     ) {
       throw new BadRequestException('Username/email or password incorrect')
