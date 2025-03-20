@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { SkillI18nInput } from '@skills-i18n/dto/skill-i18n.input'
 import { SkillLocaleModel } from '@skills-i18n/entities/skill-18n.entity'
 import { SkillModel } from '@skills/entities/skill.entity'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { FindOptionsWhere, In, Repository } from 'typeorm'
 
 @Injectable()
 export class SkillsI18nService {
@@ -25,6 +25,10 @@ export class SkillsI18nService {
     options: FindOptionsWhere<SkillLocaleModel> | FindOptionsWhere<SkillLocaleModel>[]
   ): Promise<SkillLocaleModel> {
     return await this.repo.findOneBy(options)
+  }
+
+  listBySkillsIds(skillsIds: number[], locale: LOCALES): Promise<SkillLocaleModel[]> {
+    return this.repo.find({ where: { skill: { id: In(skillsIds) }, locale } })
   }
 
   async create(
