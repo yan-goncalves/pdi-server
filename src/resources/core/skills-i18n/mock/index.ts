@@ -1,5 +1,5 @@
 import { LOCALES } from '@constants/locales'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { SkillLocaleModel } from '@skills-i18n/entities/skill-18n.entity'
 import skillsMock from '@skills/mock'
 
@@ -9,8 +9,8 @@ const skillsLocaleMock: SkillLocaleModel = {
   title: 'Qualidade',
   description: 'Por favor avalie o grau de perfeição com que você executa suas funções',
   locale: LOCALES.BR,
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 })
 }
 
 export default skillsLocaleMock

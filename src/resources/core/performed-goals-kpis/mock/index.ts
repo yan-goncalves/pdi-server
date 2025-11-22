@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import kpiMock from '@kpis/mock'
 import { PerformedGoalKpiModel } from '@performed-goals-kpis/entities/performed-goal-kpi.entity'
 import performedGoalMock from '@performed-goals/mock'
@@ -13,8 +13,8 @@ const performedGoalKpiMock: PerformedGoalKpiModel = {
   midFeedbackUser: 'mid feedback user',
   midFeedbackManager: 'mid feedback manager',
   endFeedbackManager: 'end feedback manager',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   calcGrade() {
     return
   }

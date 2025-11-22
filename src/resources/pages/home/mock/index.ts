@@ -1,5 +1,5 @@
 import buttonMock from '@components/button/mock'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import homeLocaleMock from '@pages/home-i18n/mock'
 import { HomeModel } from '@pages/home/entities/home.entity'
 
@@ -9,8 +9,8 @@ const homeMock: HomeModel = {
   description: 'description',
   hero: null,
   button: buttonMock,
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   locale: homeLocaleMock
 }
 

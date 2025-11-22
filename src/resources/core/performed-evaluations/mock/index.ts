@@ -2,7 +2,7 @@ import pdiCoachingMock from '@core/pdi-coachings/mock'
 import pdiCompetenceMock from '@core/pdi-competences/mock'
 import pdiQualityMock from '@core/pdi-qualities/mock'
 import evaluationMock from '@evaluations/mock'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { PerformedEvaluationModel } from '@performed-evaluations/entities/performed-evaluation.entity'
 import performedFeedbackMock from '@performed-feedbacks/mock'
 import performedGoalMock from '@performed-goals/mock'
@@ -17,8 +17,8 @@ const performedEvaluationMock: PerformedEvaluationModel = {
   grade: 2.11,
   midFinished: false,
   endFinished: false,
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   questions: [performedQuestionMock],
   skills: [performedSkillMock],
   goals: [performedGoalMock],

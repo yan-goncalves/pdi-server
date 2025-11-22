@@ -1,5 +1,5 @@
 import { LOCALES } from '@constants/locales'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { FeedbackLocaleModel } from '@feedbacks-i18n/entities/feedback-i18n.entity'
 import feedbackMock from '@feedbacks/mock'
 
@@ -8,8 +8,8 @@ const feedbackLocaleMock: FeedbackLocaleModel = {
   feedback: feedbackMock,
   locale: LOCALES.BR,
   inquire: 'change me',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 })
 }
 
 export default feedbackLocaleMock

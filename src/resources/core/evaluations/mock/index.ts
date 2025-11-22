@@ -1,6 +1,6 @@
 import { EVALUATION_PERIOD } from '@constants/evaluations'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 const evaluationMock: EvaluationModel = {
   id: 1,
@@ -14,8 +14,8 @@ const evaluationMock: EvaluationModel = {
     start: new Date(),
     deadline: new Date()
   },
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 })
 }
 
 export default evaluationMock

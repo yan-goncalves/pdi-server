@@ -1,12 +1,12 @@
 import textFieldLocaleMock from '@components/text-field-i18n/mock'
 import { TextFieldModel } from '@components/text-field/entities/text-field.entity'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 const textFieldMock: TextFieldModel = {
   id: 1,
   labelPlaceholder: 'Label placeholder',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   locale: textFieldLocaleMock
 }
 
