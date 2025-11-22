@@ -129,6 +129,14 @@ export class PerformedEvaluationsService {
       await this.repo.save(performed)
     }
 
+    if (input?.calibration) {
+      this.repo.merge(performed, {
+        calibrationValue: input.calibration.calibrationValue,
+        calibrationJustification: input.calibration.calibrationJustification
+      })
+      await this.repo.save(performed)
+    }
+
     return performed
   }
 

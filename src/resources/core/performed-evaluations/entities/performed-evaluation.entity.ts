@@ -50,6 +50,14 @@ export class PerformedEvaluationModel {
   @Column({ name: 'end_finished', default: false })
   endFinished: boolean
 
+  @Field(() => Float, { nullable: true })
+  @Column({ nullable: true, type: 'float', name: 'calibration_value' })
+  calibrationValue?: number
+
+  @Field({ nullable: true })
+  @Column({ nullable: true, name: 'calibration_justification' })
+  calibrationJustification?: string
+
   @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
