@@ -90,7 +90,7 @@ export class PerformedSkillsService {
       await this.repo.save(performedSkill)
 
       if (this.isValidRating(ratingUser)) {
-        const ratingUserFound = ratingUser >= 0 ? await this.ratingsService.get(ratingUser) : null
+        const ratingUserFound = await this.ratingsService.get(ratingUser);
 
         await this.repo.update(
           { id: performedSkill.id },
@@ -102,8 +102,7 @@ export class PerformedSkillsService {
       }
 
       if (this.isValidRating(ratingManager)) {
-        const ratingManagerFound =
-          ratingManager >= 0 ? await this.ratingsService.get(ratingManager) : null
+        const ratingManagerFound = await this.ratingsService.get(ratingManager);
 
         await this.repo.update(
           { id: performedSkill.id },
