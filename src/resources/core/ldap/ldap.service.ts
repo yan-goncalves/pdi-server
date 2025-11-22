@@ -2,8 +2,7 @@ import { LDAPUser } from '@ldap/dto/user.dto'
 import { UserModelLDAP } from '@ldap/model/user.ldap.interface'
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Client, DN } from 'ldapts'
-import { Entry } from 'ldapts/messages'
+import { Client, DN, Entry } from 'ldapts'
 
 @Injectable()
 export class LdapService {

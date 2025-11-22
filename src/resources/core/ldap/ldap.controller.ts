@@ -2,7 +2,7 @@ import { LDAPUser } from '@ldap/dto/user.dto'
 import { LdapService } from '@ldap/ldap.service'
 import { UserModelLDAP } from '@ldap/model/user.ldap.interface'
 import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common'
-import { Entry } from 'ldapts/messages'
+import { Entry } from 'ldapts'
 
 @Controller('ldap')
 export class LdapController {
