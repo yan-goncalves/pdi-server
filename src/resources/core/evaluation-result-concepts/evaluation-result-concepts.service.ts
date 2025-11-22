@@ -12,10 +12,10 @@ export class EvaluationResultConceptsService {
   constructor(
     @InjectRepository(EvaluationResultConceptModel) private readonly repo: Repository<EvaluationResultConceptModel>,
     @Inject(EvaluationResultConceptsI18nService) private readonly i18nService: EvaluationResultConceptsI18nService
-  ) {}
+  ) { }
 
   async get(id: number): Promise<EvaluationResultConceptModel> {
-    try {  
+    try {
       return await this.repo.findOneBy({ id })
     } catch {
       throw new NotFoundException(`EvaluationResultConcept with id '${id} not found`)
@@ -34,15 +34,15 @@ export class EvaluationResultConceptsService {
     const evaluationResultConcept = await this.repo.save(this.repo.create({ ...input }))
     const evaluationResultConceptLocale = await this.i18nService.create(evaluationResultConcept, { description })
 
-    return { 
-      ...evaluationResultConcept, 
-      description: evaluationResultConceptLocale.description 
+    return {
+      ...evaluationResultConcept,
+      description: evaluationResultConceptLocale.description
     }
   }
 
   async update(
     id: number,
-    { description, locale = LOCALES.BR }: UpdateEvaluationResultConceptInput
+    { description, locale = LOCALES.BR, ...input }: UpdateEvaluationResultConceptInput
   ): Promise<EvaluationResultConceptModel> {
     const evaluationResultConcept = await this.get(id)
     const evaluationResultConceptLocaleFound = await this.i18nService.getBy({ evaluationResultConcept: { id }, locale })
@@ -57,9 +57,12 @@ export class EvaluationResultConceptsService {
       ? await this.i18nService.create(evaluationResultConcept, { description, locale })
       : await this.i18nService.update(evaluationResultConcept, { description, locale })
 
-    return { 
-      ...evaluationResultConcept, 
-      description: evaluationResultConceptLocale.description 
+    this.repo.merge(evaluationResultConcept, { ...input })
+    await this.repo.save(evaluationResultConcept)
+
+    return {
+      ...evaluationResultConcept,
+      description: evaluationResultConceptLocale.description
     }
   }
 }
