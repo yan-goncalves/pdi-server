@@ -36,15 +36,6 @@ type UsersInfoModel {
   updatedAt: DateTime!
 }
 
-type DepartmentModel {
-  id: Int!
-  key: String!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  users: [UserModel!]
-}
-
 type UserModel {
   id: Int!
   info: UsersInfoModel
@@ -61,6 +52,15 @@ type UserModel {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+}
+
+type DepartmentModel {
+  id: Int!
+  key: String!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [UserModel!]
 }
 
 type JWT {
@@ -261,6 +261,8 @@ type PerformedEvaluationModel {
   grade: Float
   midFinished: Boolean!
   endFinished: Boolean!
+  calibrationValue: Float
+  calibrationJustification: String
   createdAt: DateTime!
   updatedAt: DateTime!
   questions: [PerformedQuestionModel!]!
@@ -340,9 +342,9 @@ type Query {
   performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
   performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
-  goal(id: Int!, loadRelations: Boolean = false): GoalModel!
+  goal(id: Int!, loadRelations: Boolean! = false): GoalModel!
   goals: [GoalModel!]!
-  previousYearGoals(idUser: Int!): [GoalModel!]!
+  previousYearGoals(idUser: Int!, year: Int): [GoalModel!]!
   evaluationGoals(input: ListGoalInput!): [GoalModel!]!
   kpi(id: Int!): KpiModel!
   kpis: [KpiModel!]!
@@ -587,6 +589,12 @@ input UpdateFeedbackInput {
 input UpdatePerformedEvaluationInput {
   midFinished: Boolean
   endFinished: Boolean
+  calibration: CalibrationInput
+}
+
+input CalibrationInput {
+  calibrationValue: Float!
+  calibrationJustification: String!
 }
 
 input SignInInput {
