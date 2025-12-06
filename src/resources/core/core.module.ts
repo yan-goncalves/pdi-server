@@ -1,5 +1,7 @@
 import { AuthModule } from '@auth/auth.module'
+import { CalibrationsModule } from '@calibrations/calibrations.module'
 import { DepartmentsModule } from '@departments/departments.module'
+import { EvaluationApprovalsModule } from '@evaluation-approvals/evaluation-approvals.module'
 import { EvaluationsModule } from '@evaluations/evaluations.module'
 import { FeedbacksModule } from '@feedbacks/feedbacks.module'
 import { GoalsModule } from '@goals/goals.module'
@@ -40,6 +42,8 @@ import { ReportsModule } from './reports/reports.module'
     SkillsModule,
     FeedbacksModule,
     EvaluationsModule,
+    EvaluationApprovalsModule,
+    CalibrationsModule,
     GoalsModule,
     KpisModule,
     PdiCoachingsModule,

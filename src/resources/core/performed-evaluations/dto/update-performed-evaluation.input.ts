@@ -1,19 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { Type } from 'class-transformer'
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
-
-@InputType()
-class CalibrationInput {
-  @Field()
-  @IsNotEmpty()
-  @IsInt()
-  calibrationValue: number
-
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  calibrationJustification: string
-}
+import { IsBoolean, IsOptional } from 'class-validator'
 
 @InputType()
 export class UpdatePerformedEvaluationInput {
@@ -29,6 +15,6 @@ export class UpdatePerformedEvaluationInput {
 
   @Field({ nullable: true })
   @IsOptional()
-  @ValidateNested()
-  calibration?: CalibrationInput
+  @IsBoolean()
+  isCalibrated?: boolean
 }

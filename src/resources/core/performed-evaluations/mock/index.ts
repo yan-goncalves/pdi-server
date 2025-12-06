@@ -17,6 +17,7 @@ const performedEvaluationMock: PerformedEvaluationModel = {
   grade: 2.11,
   midFinished: false,
   endFinished: false,
+  isCalibrated: false,
   createdAt: faker.date.past({ years: 1 }),
   updatedAt: faker.date.recent({ days: 1 }),
   questions: [performedQuestionMock],

@@ -1,0 +1,26 @@
+RESTORE DATABASE $(TYPEORM_DATABASE)
+FROM DISK = '/var/opt/mssql/backups/PDI_HOMOLOG.bak'
+WITH MOVE 'PDI' TO '/var/opt/mssql/data/$(TYPEORM_DATABASE).mdf',
+     MOVE 'PDI_Log' TO '/var/opt/mssql/data/$(TYPEORM_DATABASE)_Log.ldf';
+GO
+
+USE $(TYPEORM_DATABASE);
+GO
+
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'$(TYPEORM_USERNAME)')
+BEGIN
+    DROP USER $(TYPEORM_USERNAME);
+END
+GO
+
+CREATE LOGIN $(TYPEORM_USERNAME) WITH PASSWORD = '$(TYPEORM_PASSWORD)', CHECK_POLICY = OFF;
+GO
+
+CREATE USER $(TYPEORM_USERNAME) FOR LOGIN $(TYPEORM_USERNAME);
+GO
+
+EXEC sp_addrolemember 'db_owner', '$(TYPEORM_USERNAME)';
+GO
+
+:r '/var/opt/mssql/scripts/procedure.sql'
+GO

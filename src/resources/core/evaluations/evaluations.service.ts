@@ -64,7 +64,8 @@ export class EvaluationsService {
           period
         })
       )
-    } catch {
+    } catch (error) {
+      console.log(error)
       throw new ConflictException('Evaluation already exists')
     }
   }

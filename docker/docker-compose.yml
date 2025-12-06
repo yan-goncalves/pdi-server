@@ -1,0 +1,39 @@
+services:
+  db-pdi:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db-pdi
+    restart: always
+    tty: true
+    ports:
+      - '1433:1433'
+    env_file:
+      - '../.env.local'
+    environment:
+      - ACCEPT_EULA='Y'
+      - MSSQL_SA_PASSWORD=${TYPEORM_SA_PASSWORD}
+    volumes:
+      - './backups:/var/opt/mssql/backups'
+    networks:
+      - mssql_network
+
+  sql-cmd:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: sql-cmd
+    stdin_open: true
+    depends_on:
+      - db-pdi
+    env_file:
+      - '../.env.local'
+    environment:
+      - TYPEORM_BACKUP='/var/opt/mssql/backups/PDI_HOMOLOG.bak'
+    volumes:
+      - './backups/PDI_HOMOLOG.bak:/var/opt/mssql/backups/PDI_HOMOLOG.bak'
+      - './scripts/db-pdi.sql:/var/opt/mssql/scripts/db-pdi.sql'
+      - './scripts/procedure.sql:/var/opt/mssql/scripts/procedure.sql'
+    command: /bin/bash -c "until bash -c 'echo > /dev/tcp/db-pdi/1433'; do echo 'Waiting for db-pdi...'; sleep 2; done; /opt/mssql-tools/bin/sqlcmd -S db-pdi -U sa -P '$TYPEORM_SA_PASSWORD' -d tempdb -i /var/opt/mssql/scripts/db-pdi.sql; wait;"
+    networks:
+      - mssql_network
+
+networks:
+  mssql_network:
+    driver: bridge

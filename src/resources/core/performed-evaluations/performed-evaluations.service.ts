@@ -1,10 +1,13 @@
+import { EVALUATION_APPROVAL_PERIOD } from '@constants/evaluation-approval'
+import { EvaluationApprovalsService } from '@evaluation-approvals/evaluation-approvals.service'
 import { EvaluationsService } from '@evaluations/evaluations.service'
 import {
   ConflictException,
   Inject,
   Injectable,
   MethodNotAllowedException,
-  NotFoundException
+  NotFoundException,
+  forwardRef
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CreatePerformedEvaluationInput } from '@performed-evaluations/dto/create-performed-evaluation.input'
@@ -20,12 +23,17 @@ export class PerformedEvaluationsService {
     @InjectRepository(PerformedEvaluationModel)
     private readonly repo: Repository<PerformedEvaluationModel>,
     @Inject(EvaluationsService) private readonly evaluationsService: EvaluationsService,
-    @Inject(UsersService) private readonly usersService: UsersService
+    @Inject(UsersService) private readonly usersService: UsersService,
+    @Inject(forwardRef(() => EvaluationApprovalsService))
+    private readonly evaluationApprovalsService: EvaluationApprovalsService
   ) {}
 
-  async get(id: number): Promise<PerformedEvaluationModel> {
+  async  get(id: number, { loadRelations = false }: { loadRelations?: boolean } = {}): Promise<PerformedEvaluationModel> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      return await this.repo.findOneOrFail({
+        where: { id },
+        relations: !loadRelations ? undefined : ['user', 'evaluation']
+      })
     } catch (error) {
       throw new NotFoundException('PerformedEvaluation not found')
     }
@@ -77,7 +85,9 @@ export class PerformedEvaluationsService {
 
           pdiQuality: {
             performed: false
-          }
+          },
+
+          approvals: true
         }
       })
     } catch (error) {
@@ -122,18 +132,39 @@ export class PerformedEvaluationsService {
     if (typeof input?.midFinished === 'boolean') {
       this.repo.merge(performed, { midFinished: input.midFinished })
       await this.repo.save(performed)
+
+      // Create approval when finishing MID evaluation
+      if (input.midFinished === true) {
+        try {
+          await this.evaluationApprovalsService.create(
+            performed.id,
+            EVALUATION_APPROVAL_PERIOD.MID
+          )
+        } catch (error) {
+          // Approval might already exist, ignore error
+        }
+      }
     }
 
     if (typeof input?.endFinished === 'boolean') {
       this.repo.merge(performed, { endFinished: input.endFinished })
       await this.repo.save(performed)
+
+      // Create approval when finishing END evaluation
+      if (input.endFinished === true) {
+        try {
+          await this.evaluationApprovalsService.create(
+            performed.id,
+            EVALUATION_APPROVAL_PERIOD.END
+          )
+        } catch (error) {
+          // Approval might already exist, ignore error
+        }
+      }
     }
 
-    if (input?.calibration) {
-      this.repo.merge(performed, {
-        calibrationValue: input.calibration.calibrationValue,
-        calibrationJustification: input.calibration.calibrationJustification
-      })
+    if (typeof input?.isCalibrated === 'boolean') {
+      this.repo.merge(performed, { isCalibrated: input.isCalibrated })
       await this.repo.save(performed)
     }
 

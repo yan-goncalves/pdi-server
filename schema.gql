@@ -68,6 +68,56 @@ type JWT {
   user: UserModel!
 }
 
+type CalibrationModel {
+  id: Int!
+  performedEvaluation: PerformedEvaluationModel!
+  originalGrade: Float!
+  calibrationValue: Float!
+  finalGrade: Float!
+  comment: String!
+  manager: UserModel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiCoachingModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: String!
+  action: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiCompetenceCategoryModel {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type PdiCompetenceModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: PdiCompetenceCategoryModel!
+  name: String!
+  action: String!
+  deadline: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PdiQualityModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  category: String!
+  description: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
 type FeedbackModel {
   id: Int!
   inquire: String!
@@ -129,6 +179,16 @@ type EvaluationModel {
   feedbacks: [FeedbackModel!]
 }
 
+type PerformedFeedbackModel {
+  id: Int!
+  performed: PerformedEvaluationModel!
+  feedback: FeedbackModel!
+  midReply: String
+  endReply: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type KpiModel {
   id: Int!
   goal: GoalModel!
@@ -150,52 +210,6 @@ type GoalModel {
   updatedAt: DateTime!
   deletedAt: DateTime
   kpis: [KpiModel!]
-}
-
-type MediaModel {
-  id: Int!
-  filename: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PdiCompetenceCategoryModel {
-  id: Int!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type PdiCompetenceModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  category: PdiCompetenceCategoryModel!
-  name: String!
-  action: String!
-  deadline: DateTime!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type PdiQualityModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  category: String!
-  description: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-type PerformedFeedbackModel {
-  id: Int!
-  performed: PerformedEvaluationModel!
-  feedback: FeedbackModel!
-  midReply: String
-  endReply: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type RatingModel {
@@ -261,24 +275,34 @@ type PerformedEvaluationModel {
   grade: Float
   midFinished: Boolean!
   endFinished: Boolean!
-  calibrationValue: Float
-  calibrationJustification: String
+  isCalibrated: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  questions: [PerformedQuestionModel!]!
+  questions: [PerformedQuestionModel!]
   skills: [PerformedSkillModel!]!
   goals: [PerformedGoalModel!]!
   feedbacks: [PerformedFeedbackModel!]!
   pdiCoaching: [PdiCoachingModel!]!
   pdiCompetence: [PdiCompetenceModel!]!
   pdiQuality: [PdiQualityModel!]!
+  approvals: [EvaluationApprovalModel!]
+  calibration: CalibrationModel
 }
 
-type PdiCoachingModel {
+type EvaluationApprovalModel {
   id: Int!
-  performed: PerformedEvaluationModel!
-  category: String!
-  action: String!
+  performedEvaluation: PerformedEvaluationModel!
+  period: String!
+  status: String!
+  hrUser: UserModel
+  comment: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type MediaModel {
+  id: Int!
+  filename: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -342,6 +366,10 @@ type Query {
   performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
   performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
+  evaluationApproval(id: Int!): EvaluationApprovalModel!
+  evaluationApprovals(input: ListEvaluationApprovalsInput): [EvaluationApprovalModel!]!
+  rejectedEvaluationsForManager: [EvaluationApprovalModel!]!
+  calibration(idPerformedEvaluation: Int!): CalibrationModel
   goal(id: Int!, loadRelations: Boolean! = false): GoalModel!
   goals: [GoalModel!]!
   previousYearGoals(idUser: Int!, year: Int): [GoalModel!]!
@@ -390,6 +418,11 @@ input CreatePerformedEvaluationInput {
   idUser: Int!
 }
 
+input ListEvaluationApprovalsInput {
+  status: String
+  period: String
+}
+
 input ListGoalInput {
   idEvaluation: Int!
   idUser: Int!
@@ -429,6 +462,11 @@ type Mutation {
   createPerformedEvaluation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   updatePerformedEvaluation(id: Int!, input: UpdatePerformedEvaluationInput!): PerformedEvaluationModel!
   removePerformedEvaluation(id: Int!): PerformedEvaluationModel!
+  approveEvaluation(input: ApproveEvaluationInput!): EvaluationApprovalModel!
+  rejectEvaluation(input: RejectEvaluationInput!): EvaluationApprovalModel!
+  createCalibration(input: CreateCalibrationInput!): CalibrationModel!
+  updateCalibration(input: UpdateCalibrationInput!): CalibrationModel!
+  deleteCalibration(idPerformedEvaluation: Int!): Boolean!
   signin(input: SignInInput!): JWT!
   createGoal(input: CreateGoalInput!): GoalModel!
   updateGoal(id: Int!, input: GoalInput!): GoalModel!
@@ -589,12 +627,31 @@ input UpdateFeedbackInput {
 input UpdatePerformedEvaluationInput {
   midFinished: Boolean
   endFinished: Boolean
-  calibration: CalibrationInput
+  isCalibrated: Boolean
 }
 
-input CalibrationInput {
+input ApproveEvaluationInput {
+  idPerformedEvaluation: Int!
+  period: String!
+  comment: String!
+}
+
+input RejectEvaluationInput {
+  idPerformedEvaluation: Int!
+  period: String!
+  comment: String!
+}
+
+input CreateCalibrationInput {
+  idPerformedEvaluation: Int!
   calibrationValue: Float!
-  calibrationJustification: String!
+  comment: String!
+}
+
+input UpdateCalibrationInput {
+  idPerformedEvaluation: Int!
+  calibrationValue: Float!
+  comment: String!
 }
 
 input SignInInput {
