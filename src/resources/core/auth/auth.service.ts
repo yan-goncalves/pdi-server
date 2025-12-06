@@ -1,6 +1,6 @@
 import { SignInInput } from '@auth/dto/signin.auth.input'
 import { LdapService } from '@core/ldap/ldap.service'
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { JWT, JwtPayload } from '@strategies/jwt.strategy'
 import { UsersService } from '@users/users.service'
@@ -14,19 +14,19 @@ export class AuthService {
   ) {}
 
   async signin({ identifier, password }: SignInInput): Promise<JWT> {
-    // if (process.env.NODE_ENV === 'production' && identifier !== 'admin') {
-    //   await this.ldapService.auth({ username: identifier, password }).catch(() => {
-    //     throw new BadRequestException('Username/email or password incorrect')
-    //   })
-    // }
+    if (process.env.NODE_ENV === 'production' && identifier !== 'admin') {
+      await this.ldapService.auth({ username: identifier, password }).catch(() => {
+        throw new BadRequestException('Username/email or password incorrect')
+      })
+    }
 
-    // if (
-    //   (identifier === 'admin' || process.env.NODE_ENV !== 'production') &&
-    //   !(await this.userService.validate(identifier, password))
-    // ) {
-    //   throw new BadRequestException('Username/email or password incorrect')
-    // }
     const user = await this.userService.get({ username: identifier }, { loadRelations: true })
+    if (
+      (identifier === 'admin' || process.env.NODE_ENV !== 'production') &&
+      !(await this.userService.validate(identifier, password))
+    ) {
+      throw new BadRequestException('Username/email or password incorrect')
+    }
 
     try {
       const payload: JwtPayload = {
