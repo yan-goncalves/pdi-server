@@ -1,3 +1,4 @@
+import { UsersModule } from '@core/users/users.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PdiCoachingModel } from '@pdi-coachings/entities/pdi-coaching.entity'
@@ -6,7 +7,7 @@ import { PdiCoachingsService } from '@pdi-coachings/pdi-coachings.service'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PdiCoachingModel]), PerformedEvaluationsModule],
+  imports: [TypeOrmModule.forFeature([PdiCoachingModel]), PerformedEvaluationsModule, UsersModule],
   providers: [PdiCoachingsResolver, PdiCoachingsService],
   exports: [PdiCoachingsService]
 })

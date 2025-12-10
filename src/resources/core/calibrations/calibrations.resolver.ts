@@ -41,9 +41,10 @@ export class CalibrationsResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Boolean)
   async deleteCalibration(
-    @Args('idPerformedEvaluation', { type: () => Int }) idPerformedEvaluation: number
+    @Args('idPerformedEvaluation', { type: () => Int }) idPerformedEvaluation: number,
+    @CurrentUser() user: UserModel
   ): Promise<boolean> {
-    return await this.service.delete(idPerformedEvaluation)
+    return await this.service.delete(idPerformedEvaluation, user)
   }
 }
 

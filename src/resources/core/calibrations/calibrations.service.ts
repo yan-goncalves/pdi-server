@@ -56,8 +56,13 @@ export class CalibrationsService {
     )
 
     // Verify manager is the direct manager of the user
-    if (user.manager?.id !== manager.id) {
-      throw new ForbiddenException('You are not the manager of this user')
+    // OR is sabrinavelasques OR has DIRECTOR role
+    const isDirectManager = user.manager?.id === manager.id
+    const isSabrina = manager.username === 'sabrinavelasques'
+    const isDirector = manager.role === 'DIRECTOR'
+
+    if (!isDirectManager && !isSabrina && !isDirector) {
+      throw new ForbiddenException('You are not authorized to calibrate this evaluation')
     }
 
     // Check if calibration already exists
@@ -99,12 +104,18 @@ export class CalibrationsService {
     manager: UserModel
   ): Promise<CalibrationModel> {
     const performedEvaluation = await this.performedEvaluationsService.get(
-      input.idPerformedEvaluation
+      input.idPerformedEvaluation,
+      { loadRelations: true }
     )
 
     // Verify manager is the direct manager of the user
-    if (performedEvaluation.user.manager?.id !== manager.id) {
-      throw new ForbiddenException('You are not the manager of this user')
+    // OR is sabrinavelasques OR has DIRECTOR role
+    const isDirectManager = performedEvaluation.user.manager?.id === manager.id
+    const isSabrina = manager.username === 'sabrinavelasques'
+    const isDirector = manager.role === 'DIRECTOR'
+
+    if (!isDirectManager && !isSabrina && !isDirector) {
+      throw new ForbiddenException('You are not authorized to calibrate this evaluation')
     }
 
     const calibration = await this.get(input.idPerformedEvaluation)
@@ -146,10 +157,25 @@ export class CalibrationsService {
     return savedCalibration
   }
 
-  async delete(idPerformedEvaluation: number): Promise<boolean> {
+  async delete(idPerformedEvaluation: number, manager: UserModel): Promise<boolean> {
     const calibration = await this.get(idPerformedEvaluation)
     if (!calibration) {
       throw new NotFoundException('Calibration not found')
+    }
+
+    const performedEvaluation = await this.performedEvaluationsService.get(
+      idPerformedEvaluation,
+      { loadRelations: true }
+    )
+
+    // Verify manager is the direct manager of the user
+    // OR is sabrinavelasques OR has DIRECTOR role
+    const isDirectManager = performedEvaluation.user.manager?.id === manager.id
+    const isSabrina = manager.username === 'sabrinavelasques'
+    const isDirector = manager.role === 'DIRECTOR'
+
+    if (!isDirectManager && !isSabrina && !isDirector) {
+      throw new ForbiddenException('You are not authorized to delete this calibration')
     }
 
     await this.repo.remove(calibration)
