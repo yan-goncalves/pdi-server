@@ -22,22 +22,22 @@ export class CreateCalibrationsTable1732392000000 implements MigrationInterface 
           {
             name: 'original_grade',
             type: 'decimal',
-            precision: 3,
-            scale: 1,
+            precision: 4,
+            scale: 2,
             isNullable: false
           },
           {
             name: 'calibration_value',
             type: 'decimal',
-            precision: 3,
-            scale: 1,
+            precision: 4,
+            scale: 2,
             isNullable: false
           },
           {
             name: 'final_grade',
             type: 'decimal',
-            precision: 3,
-            scale: 1,
+            precision: 4,
+            scale: 2,
             isNullable: false
           },
           {

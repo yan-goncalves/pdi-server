@@ -26,15 +26,15 @@ export class CalibrationModel {
   performedEvaluation: PerformedEvaluationModel
 
   @Field(() => Float)
-  @Column({ name: 'original_grade', type: 'decimal', precision: 3, scale: 1 })
+  @Column({ name: 'original_grade', type: 'decimal', precision: 4, scale: 2 })
   originalGrade: number
 
   @Field(() => Float)
-  @Column({ name: 'calibration_value', type: 'decimal', precision: 3, scale: 1 })
+  @Column({ name: 'calibration_value', type: 'decimal', precision: 4, scale: 2 })
   calibrationValue: number
 
   @Field(() => Float)
-  @Column({ name: 'final_grade', type: 'decimal', precision: 3, scale: 1 })
+  @Column({ name: 'final_grade', type: 'decimal', precision: 4, scale: 2 })
   finalGrade: number
 
   @Field(() => String)
