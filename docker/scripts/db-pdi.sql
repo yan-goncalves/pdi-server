@@ -22,5 +22,5 @@ GO
 EXEC sp_addrolemember 'db_owner', '$(TYPEORM_USERNAME)';
 GO
 
-:r '/var/opt/mssql/scripts/procedure.sql'
+:r /var/opt/mssql/scripts/procedure.sql
 GO
