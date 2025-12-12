@@ -82,38 +82,33 @@ export class EvaluationApprovalsService {
   }
 
   async list(input?: ListEvaluationApprovalsInput): Promise<EvaluationApprovalModel[]> {
-    const where: FindOptionsWhere<EvaluationApprovalModel> = {}
+    // Para a listagem, carregamos apenas os dados essenciais
+    // Os dados completos serão carregados apenas quando necessário (método get)
+    // Usando QueryBuilder para garantir que apenas avaliações com usuários válidos sejam retornadas
+    const queryBuilder = this.repo
+      .createQueryBuilder('approval')
+      .leftJoinAndSelect('approval.performedEvaluation', 'performed')
+      .innerJoinAndSelect('performed.user', 'user')
+      .leftJoinAndSelect('user.info', 'userInfo')
+      .leftJoinAndSelect('user.manager', 'manager')
+      .leftJoinAndSelect('manager.info', 'managerInfo')
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('performed.evaluation', 'evaluation')
+      .leftJoinAndSelect('approval.hrUser', 'hrUser')
+      .leftJoinAndSelect('hrUser.info', 'hrUserInfo')
+      .leftJoinAndSelect('hrUser.department', 'hrUserDepartment')
+      .where('user.id IS NOT NULL')
+      .andWhere('user.deletedAt IS NULL')
 
     if (input?.status) {
-      where.status = input.status
+      queryBuilder.andWhere('approval.status = :status', { status: input.status })
     }
 
     if (input?.period) {
-      where.period = input.period
+      queryBuilder.andWhere('approval.period = :period', { period: input.period })
     }
 
-    // Para a listagem, carregamos apenas os dados essenciais
-    // Os dados completos serão carregados apenas quando necessário (método get)
-    return await this.repo.find({
-      where,
-      relations: {
-        performedEvaluation: {
-          user: {
-            info: true,
-            manager: {
-              info: true
-            }
-          },
-          evaluation: true
-        },
-        hrUser: {
-          info: true
-        }
-      },
-      order: {
-        createdAt: 'DESC'
-      }
-    })
+    return await queryBuilder.orderBy('approval.createdAt', 'DESC').getMany()
   }
 
   async getRejectedByManager(idManager: number): Promise<EvaluationApprovalModel[]> {
@@ -122,16 +117,18 @@ export class EvaluationApprovalsService {
     const teamIds = team.map((user) => user.id)
 
     // Para notificações, carregamos apenas dados essenciais
+    // Usando innerJoin para garantir que apenas avaliações com usuários válidos sejam retornadas
     const rejectedApprovals = await this.repo
       .createQueryBuilder('approval')
       .leftJoinAndSelect('approval.performedEvaluation', 'performed')
-      .leftJoinAndSelect('performed.user', 'user')
+      .innerJoinAndSelect('performed.user', 'user')
       .leftJoinAndSelect('user.info', 'userInfo')
       .leftJoinAndSelect('performed.evaluation', 'evaluation')
       .leftJoinAndSelect('approval.hrUser', 'hrUser')
       .leftJoinAndSelect('hrUser.info', 'hrUserInfo')
       .where('approval.status = :status', { status: EVALUATION_APPROVAL_STATUS.REJECTED })
       .andWhere('user.id IN (:...teamIds)', { teamIds })
+      .andWhere('user.deletedAt IS NULL')
       .orderBy('approval.createdAt', 'DESC')
       .getMany()
 
