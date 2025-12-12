@@ -3,7 +3,7 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 import { Observable } from 'rxjs'
 
 // Possible HR department keys
-const HR_DEPARTMENT_KEYS = ['rh', 'recursos_humanos', 'human_resources']
+const HR_DEPARTMENT_KEYS = ['rh', 'hr', 'recursos_humanos', 'human_resources']
 
 @Injectable()
 export class HRDepartmentGuard implements CanActivate {
