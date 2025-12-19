@@ -107,10 +107,14 @@ export class CalibrationsService {
       input.idPerformedEvaluation,
       { loadRelations: true }
     )
+    const user = await this.usersService.get(
+      { id: performedEvaluation.user.id },
+      { loadRelations: true }
+    )
 
     // Verify manager is the direct manager of the user
     // OR is sabrinavelasques OR has DIRECTOR role
-    const isDirectManager = performedEvaluation.user.manager?.id === manager.id
+    const isDirectManager = user.manager?.id === manager.id
     const isSabrina = manager.username === 'sabrinavelasques'
     const isDirector = manager.role === 'DIRECTOR'
 
@@ -167,11 +171,14 @@ export class CalibrationsService {
       idPerformedEvaluation,
       { loadRelations: true }
     )
-    const performedUser = await this.usersService.get({ id: performedEvaluation.user.id }, { loadRelations: true })
+    const user = await this.usersService.get(
+      { id: performedEvaluation.user.id },
+      { loadRelations: true }
+    )
 
     // Verify manager is the direct manager of the user
     // OR is sabrinavelasques OR has DIRECTOR role
-    const isDirectManager = performedUser.manager?.id === manager.id
+    const isDirectManager = user.manager?.id === manager.id
     const isSabrina = manager.username === 'sabrinavelasques'
     const isDirector = manager.role === 'DIRECTOR'
 
