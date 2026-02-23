@@ -96,6 +96,9 @@ export class CalibrationsService {
       isCalibrated: true
     })
 
+    // Reset approval to PENDING when calibration is created
+    await this.resetApprovalToPending(input.idPerformedEvaluation)
+
     return savedCalibration
   }
 
@@ -145,20 +148,36 @@ export class CalibrationsService {
     const savedCalibration = await this.repo.save(calibration)
 
     // Reset approval to PENDING when calibration is edited
-    try {
-      const approval = await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
-        input.idPerformedEvaluation,
-        EVALUATION_APPROVAL_PERIOD.END
-      )
-
-      if (approval && approval.status === EVALUATION_APPROVAL_STATUS.APPROVED) {
-        await this.evaluationApprovalsService.resetToPending(approval.id)
-      }
-    } catch (error) {
-      // Approval might not exist yet, ignore error
-    }
+    await this.resetApprovalToPending(input.idPerformedEvaluation)
 
     return savedCalibration
+  }
+
+  private async resetApprovalToPending(idPerformedEvaluation: number): Promise<void> {
+    // Check for END period approval (default for calibrations)
+    const approvalEnd = await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+      idPerformedEvaluation,
+      EVALUATION_APPROVAL_PERIOD.END
+    )
+
+    if (approvalEnd) {
+      // Reset to pending if it's not already pending (handles both APPROVED and REJECTED)
+      if (approvalEnd.status !== EVALUATION_APPROVAL_STATUS.PENDING) {
+        await this.evaluationApprovalsService.resetToPending(approvalEnd.id)
+      }
+      // If approval exists and is already pending, leave it as is
+      return
+    }
+
+    // Check for MID period approval as fallback
+    const approvalMid = await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+      idPerformedEvaluation,
+      EVALUATION_APPROVAL_PERIOD.MID
+    )
+
+    if (approvalMid && approvalMid.status !== EVALUATION_APPROVAL_STATUS.PENDING) {
+      await this.evaluationApprovalsService.resetToPending(approvalMid.id)
+    }
   }
 
   async delete(idPerformedEvaluation: number, manager: UserModel): Promise<boolean> {
@@ -192,6 +211,9 @@ export class CalibrationsService {
     await this.performedEvaluationsService.update(idPerformedEvaluation, {
       isCalibrated: false
     })
+
+    // Reset approval to PENDING when calibration is deleted
+    await this.resetApprovalToPending(idPerformedEvaluation)
 
     return true
   }

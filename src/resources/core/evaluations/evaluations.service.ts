@@ -109,8 +109,8 @@ export class EvaluationsService {
     }
 
     if (input?.mid || input?.end) {
-      const field = !input?.mid ? 'endDate' : 'midDate'
-      const oppositeField = field === 'endDate' ? 'midDate' : 'endDate'
+      const field = !input?.mid ? 'end' : 'mid'
+      const oppositeField = field === 'end' ? 'midDate' : 'endDate'
 
       const dates = [
         input[field].start,
