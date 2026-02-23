@@ -3,10 +3,10 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 import { Observable } from 'rxjs'
 
 // Possible HR department keys
-const HR_DEPARTMENT_KEYS = ['rh', 'hr', 'recursos_humanos', 'human_resources']
+const APPROVAL_EVALUATION_USERS = ['marcomarelli', 'sabrinavelasques']
 
 @Injectable()
-export class HRDepartmentGuard implements CanActivate {
+export class EvaluationApprovalGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const ctx = GqlExecutionContext.create(context)
     const user = ctx.getContext().req.user
@@ -15,8 +15,7 @@ export class HRDepartmentGuard implements CanActivate {
       return false
     }
 
-    const departmentKey = user.department.key?.toLowerCase()
-    return HR_DEPARTMENT_KEYS.includes(departmentKey)
+    const username = user.username?.toLowerCase()
+    return APPROVAL_EVALUATION_USERS.includes(username)
   }
 }
-

@@ -4,7 +4,7 @@ import { ListEvaluationApprovalsInput } from '@evaluation-approvals/dto/list-eva
 import { RejectEvaluationInput } from '@evaluation-approvals/dto/reject-evaluation.input'
 import { EvaluationApprovalModel } from '@evaluation-approvals/entities/evaluation-approval.entity'
 import { EvaluationApprovalsService } from '@evaluation-approvals/evaluation-approvals.service'
-import { HRDepartmentGuard } from '@guards/hr-department.guard'
+import { EvaluationApprovalGuard } from '@guards/evaluation-approval.guard'
 import { JwtAuthGuard } from '@guards/jwt.auth.guard'
 import { Inject, UseGuards } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
@@ -16,13 +16,13 @@ export class EvaluationApprovalsResolver {
     @Inject(EvaluationApprovalsService) private readonly service: EvaluationApprovalsService
   ) {}
 
-  @UseGuards(JwtAuthGuard, HRDepartmentGuard)
+  @UseGuards(JwtAuthGuard, EvaluationApprovalGuard)
   @Query(() => EvaluationApprovalModel, { name: 'evaluationApproval' })
   async get(@Args('id', { type: () => Int }) id: number): Promise<EvaluationApprovalModel> {
     return await this.service.get(id)
   }
 
-  @UseGuards(JwtAuthGuard, HRDepartmentGuard)
+  @UseGuards(JwtAuthGuard, EvaluationApprovalGuard)
   @Query(() => [EvaluationApprovalModel], { name: 'evaluationApprovals' })
   async list(
     @Args('input', { nullable: true }) input?: ListEvaluationApprovalsInput
@@ -38,7 +38,7 @@ export class EvaluationApprovalsResolver {
     return await this.service.getRejectedByManager(user.id)
   }
 
-  @UseGuards(JwtAuthGuard, HRDepartmentGuard)
+  @UseGuards(JwtAuthGuard, EvaluationApprovalGuard)
   @Mutation(() => EvaluationApprovalModel)
   async approveEvaluation(
     @Args('input') input: ApproveEvaluationInput,
@@ -47,7 +47,7 @@ export class EvaluationApprovalsResolver {
     return await this.service.approve(input, user)
   }
 
-  @UseGuards(JwtAuthGuard, HRDepartmentGuard)
+  @UseGuards(JwtAuthGuard, EvaluationApprovalGuard)
   @Mutation(() => EvaluationApprovalModel)
   async rejectEvaluation(
     @Args('input') input: RejectEvaluationInput,
