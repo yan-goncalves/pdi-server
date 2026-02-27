@@ -244,7 +244,9 @@ export class EvaluationApprovalsService {
     const approval = await this.get(id)
 
     this.repo.merge(approval, {
-      status: EVALUATION_APPROVAL_STATUS.PENDING
+      status: EVALUATION_APPROVAL_STATUS.PENDING,
+      comment: null,
+      hrUser: null
     })
 
     return await this.repo.save(approval)

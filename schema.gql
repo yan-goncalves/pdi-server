@@ -366,6 +366,7 @@ type Query {
   performedEvaluationGrade(id: Int!): PerformedEvaluationModel!
   performedEvaluationRelation(input: CreatePerformedEvaluationInput!): PerformedEvaluationModel!
   performedEvaluations: [PerformedEvaluationModel!]!
+  performedEvaluationApprovals(id: Int!): PerformedEvaluationModel!
   evaluationApproval(id: Int!): EvaluationApprovalModel!
   evaluationApprovals(input: ListEvaluationApprovalsInput): [EvaluationApprovalModel!]!
   rejectedEvaluationsForManager: [EvaluationApprovalModel!]!

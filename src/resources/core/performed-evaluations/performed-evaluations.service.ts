@@ -87,8 +87,21 @@ export class PerformedEvaluationsService {
             performed: false
           },
 
-          approvals: true
+          approvals: {
+            performedEvaluation: false
+          }
         }
+      })
+    } catch (error) {
+      throw new NotFoundException('PerformedEvaluation not found')
+    }
+  }
+
+  async getWithRelations(id: number, relations: string[]): Promise<PerformedEvaluationModel> {
+    try {
+      return await this.repo.findOneOrFail({
+        where: { id },
+        relations
       })
     } catch (error) {
       throw new NotFoundException('PerformedEvaluation not found')
