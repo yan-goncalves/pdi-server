@@ -1,3 +1,7 @@
+import { EVALUATION_APPROVAL_PERIOD } from '@constants/evaluation-approval'
+import { CalibrationsService } from '@core/calibrations/calibrations.service'
+import { EvaluationApprovalsService } from '@core/evaluation-approvals/evaluation-approvals.service'
+import { UserModel } from '@core/users/entities/user.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
@@ -15,7 +19,11 @@ export class PerformedSkillsService {
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
     @Inject(SkillsService) private readonly skillsService: SkillsService,
-    @Inject(RatingsService) private readonly ratingsService: RatingsService
+    @Inject(RatingsService) private readonly ratingsService: RatingsService,
+    @Inject(EvaluationApprovalsService)
+    private readonly evaluationApprovalsService: EvaluationApprovalsService,
+    @Inject(CalibrationsService)
+    private readonly calibrationsService: CalibrationsService
   ) {}
 
   async get(id: number, relations?: string[]): Promise<PerformedSkillModel> {
@@ -82,15 +90,27 @@ export class PerformedSkillsService {
 
   async update(
     id: number,
-    { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput
+    { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput,
+    user?: UserModel
   ): Promise<PerformedSkillModel> {
     try {
       const performedSkill = await this.get(id, ['performed'])
       this.repo.merge(performedSkill, { ...input })
       await this.repo.save(performedSkill)
 
+      if (user && (this.isValidRating(ratingManager) || input?.endFeedbackManager)) {
+        const evaluationApproval =
+          await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+            performedSkill.performed.id,
+            EVALUATION_APPROVAL_PERIOD.END
+          )
+        if (evaluationApproval?.id) {
+          await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
+        }
+      }
+
       if (this.isValidRating(ratingUser)) {
-        const ratingUserFound = await this.ratingsService.get(ratingUser);
+        const ratingUserFound = await this.ratingsService.get(ratingUser)
 
         await this.repo.update(
           { id: performedSkill.id },
@@ -102,7 +122,7 @@ export class PerformedSkillsService {
       }
 
       if (this.isValidRating(ratingManager)) {
-        const ratingManagerFound = await this.ratingsService.get(ratingManager);
+        const ratingManagerFound = await this.ratingsService.get(ratingManager)
 
         await this.repo.update(
           { id: performedSkill.id },
@@ -111,6 +131,11 @@ export class PerformedSkillsService {
             ratingManager: ratingManagerFound
           }
         )
+
+        const calibration = await this.calibrationsService.get(performedSkill.performed.id)
+        if (calibration?.id && user?.id) {
+          await this.calibrationsService.delete(performedSkill.performed.id, user)
+        }
       }
 
       this.repo.query(`EXEC CalcGrade @PERFORMED = ${performedSkill.performed.id}`)

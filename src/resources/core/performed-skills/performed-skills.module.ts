@@ -1,3 +1,5 @@
+import { CalibrationsModule } from '@core/calibrations/calibrations.module'
+import { EvaluationApprovalsModule } from '@core/evaluation-approvals/evaluation-approvals.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
@@ -12,7 +14,9 @@ import { SkillsModule } from '@skills/skills.module'
     TypeOrmModule.forFeature([PerformedSkillModel]),
     PerformedEvaluationsModule,
     SkillsModule,
-    RatingsModule
+    RatingsModule,
+    EvaluationApprovalsModule,
+    CalibrationsModule
   ],
   providers: [PerformedSkillsResolver, PerformedSkillsService],
   exports: [PerformedSkillsService]
