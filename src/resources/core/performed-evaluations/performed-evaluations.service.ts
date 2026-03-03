@@ -28,7 +28,10 @@ export class PerformedEvaluationsService {
     private readonly evaluationApprovalsService: EvaluationApprovalsService
   ) {}
 
-  async  get(id: number, { loadRelations = false }: { loadRelations?: boolean } = {}): Promise<PerformedEvaluationModel> {
+  async get(
+    id: number,
+    { loadRelations = false }: { loadRelations?: boolean } = {}
+  ): Promise<PerformedEvaluationModel> {
     try {
       return await this.repo.findOneOrFail({
         where: { id },
@@ -148,14 +151,7 @@ export class PerformedEvaluationsService {
 
       // Create approval when finishing MID evaluation
       if (input.midFinished === true) {
-        try {
-          await this.evaluationApprovalsService.create(
-            performed.id,
-            EVALUATION_APPROVAL_PERIOD.MID
-          )
-        } catch (error) {
-          // Approval might already exist, ignore error
-        }
+        await this.evaluationApprovalsService.create(performed.id, EVALUATION_APPROVAL_PERIOD.MID)
       }
     }
 
@@ -165,14 +161,7 @@ export class PerformedEvaluationsService {
 
       // Create approval when finishing END evaluation
       if (input.endFinished === true) {
-        try {
-          await this.evaluationApprovalsService.create(
-            performed.id,
-            EVALUATION_APPROVAL_PERIOD.END
-          )
-        } catch (error) {
-          // Approval might already exist, ignore error
-        }
+        await this.evaluationApprovalsService.create(performed.id, EVALUATION_APPROVAL_PERIOD.END)
       }
     }
 
