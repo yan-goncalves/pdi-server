@@ -131,7 +131,7 @@ export class CalibrationsService {
     }
 
     // Calculate new final grade
-    const originalGrade = calibration.originalGrade
+    const originalGrade = performedEvaluation.grade || 0
     const finalGrade = Math.max(0.0, Math.min(3.0, originalGrade + input.calibrationValue))
 
     // Validate final grade is within bounds
