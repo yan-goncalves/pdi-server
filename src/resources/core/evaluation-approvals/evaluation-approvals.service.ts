@@ -140,9 +140,7 @@ export class EvaluationApprovalsService {
     period: EVALUATION_APPROVAL_PERIOD
   ): Promise<EvaluationApprovalModel> {
     try {
-      const performedEvaluation = await this.performedEvaluationsService.get(
-        idPerformedEvaluation
-      )
+      const performedEvaluation = await this.performedEvaluationsService.get(idPerformedEvaluation)
 
       // Check if approval already exists for this period
       const existingApproval = await this.getBy({
@@ -150,26 +148,24 @@ export class EvaluationApprovalsService {
         period
       })
 
-      if (existingApproval) {
-        throw new ConflictException('Approval already exists for this period')
+      if (!existingApproval?.id) {
+        return await this.repo.save(
+          this.repo.create({
+            performedEvaluation,
+            period,
+            status: EVALUATION_APPROVAL_STATUS.PENDING
+          })
+        )
       }
-
-      return await this.repo.save(
-        this.repo.create({
-          performedEvaluation,
-          period,
-          status: EVALUATION_APPROVAL_STATUS.PENDING
-        })
-      )
     } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error
-      }
       throw new ConflictException('Could not create approval')
     }
   }
 
-  async approve(input: ApproveEvaluationInput, hrUser: UserModel): Promise<EvaluationApprovalModel> {
+  async approve(
+    input: ApproveEvaluationInput,
+    hrUser: UserModel
+  ): Promise<EvaluationApprovalModel> {
     const performedEvaluation = await this.performedEvaluationsService.get(
       input.idPerformedEvaluation
     )
@@ -252,4 +248,3 @@ export class EvaluationApprovalsService {
     return await this.repo.save(approval)
   }
 }
-
