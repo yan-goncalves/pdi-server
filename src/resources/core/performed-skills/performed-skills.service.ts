@@ -65,7 +65,7 @@ export class PerformedSkillsService {
       const performed = await this.performedService.get(idPerformed)
       const skill = await this.skillsService.get(idSkill)
 
-      return await this.repo.save(
+      const created = await this.repo.save(
         this.repo.create({
           performed,
           skill,
@@ -74,6 +74,17 @@ export class PerformedSkillsService {
           ...input
         })
       )
+
+      const evaluationApproval =
+        await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+          performed.id,
+          EVALUATION_APPROVAL_PERIOD.END
+        )
+      if (evaluationApproval?.id) {
+        await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
+      }
+
+      return created
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException('PerformedSkill already exists')

@@ -239,6 +239,10 @@ export class EvaluationApprovalsService {
   async resetToPending(id: number): Promise<EvaluationApprovalModel> {
     const approval = await this.get(id)
 
+    if (approval.status !== EVALUATION_APPROVAL_STATUS.PENDING) {
+      return
+    }
+
     this.repo.merge(approval, {
       status: EVALUATION_APPROVAL_STATUS.PENDING,
       comment: null,
