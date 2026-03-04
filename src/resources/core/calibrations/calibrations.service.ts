@@ -1,4 +1,7 @@
-import { EVALUATION_APPROVAL_PERIOD, EVALUATION_APPROVAL_STATUS } from '@constants/evaluation-approval'
+import {
+  EVALUATION_APPROVAL_PERIOD,
+  EVALUATION_APPROVAL_STATUS
+} from '@constants/evaluation-approval'
 import { EvaluationApprovalsService } from '@evaluation-approvals/evaluation-approvals.service'
 import {
   ConflictException,
@@ -28,7 +31,7 @@ export class CalibrationsService {
     private readonly evaluationApprovalsService: EvaluationApprovalsService,
     @Inject(UsersService)
     private readonly usersService: UsersService
-  ) { }
+  ) {}
 
   async get(idPerformedEvaluation: number): Promise<CalibrationModel | null> {
     return await this.repo.findOne({
@@ -42,10 +45,7 @@ export class CalibrationsService {
     })
   }
 
-  async create(
-    input: CreateCalibrationInput,
-    manager: UserModel
-  ): Promise<CalibrationModel> {
+  async create(input: CreateCalibrationInput, manager: UserModel): Promise<CalibrationModel> {
     const performedEvaluation = await this.performedEvaluationsService.get(
       input.idPerformedEvaluation,
       { loadRelations: true }
@@ -102,10 +102,7 @@ export class CalibrationsService {
     return savedCalibration
   }
 
-  async update(
-    input: UpdateCalibrationInput,
-    manager: UserModel
-  ): Promise<CalibrationModel> {
+  async update(input: UpdateCalibrationInput, manager: UserModel): Promise<CalibrationModel> {
     const performedEvaluation = await this.performedEvaluationsService.get(
       input.idPerformedEvaluation,
       { loadRelations: true }
@@ -131,7 +128,7 @@ export class CalibrationsService {
     }
 
     // Calculate new final grade
-    const originalGrade = performedEvaluation.grade || 0
+    const originalGrade = calibration.originalGrade
     const finalGrade = Math.max(0.0, Math.min(3.0, originalGrade + input.calibrationValue))
 
     // Validate final grade is within bounds
@@ -186,10 +183,9 @@ export class CalibrationsService {
       throw new NotFoundException('Calibration not found')
     }
 
-    const performedEvaluation = await this.performedEvaluationsService.get(
-      idPerformedEvaluation,
-      { loadRelations: true }
-    )
+    const performedEvaluation = await this.performedEvaluationsService.get(idPerformedEvaluation, {
+      loadRelations: true
+    })
     const user = await this.usersService.get(
       { id: performedEvaluation.user.id },
       { loadRelations: true }
@@ -218,4 +214,3 @@ export class CalibrationsService {
     return true
   }
 }
-

@@ -1,4 +1,3 @@
-import { CalibrationsModule } from '@core/calibrations/calibrations.module'
 import { EvaluationApprovalsModule } from '@core/evaluation-approvals/evaluation-approvals.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -15,8 +14,7 @@ import { SkillsModule } from '@skills/skills.module'
     PerformedEvaluationsModule,
     SkillsModule,
     RatingsModule,
-    EvaluationApprovalsModule,
-    CalibrationsModule
+    EvaluationApprovalsModule
   ],
   providers: [PerformedSkillsResolver, PerformedSkillsService],
   exports: [PerformedSkillsService]

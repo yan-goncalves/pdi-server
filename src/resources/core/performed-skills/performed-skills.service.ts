@@ -21,9 +21,7 @@ export class PerformedSkillsService {
     @Inject(SkillsService) private readonly skillsService: SkillsService,
     @Inject(RatingsService) private readonly ratingsService: RatingsService,
     @Inject(EvaluationApprovalsService)
-    private readonly evaluationApprovalsService: EvaluationApprovalsService,
-    @Inject(CalibrationsService)
-    private readonly calibrationsService: CalibrationsService
+    private readonly evaluationApprovalsService: EvaluationApprovalsService
   ) {}
 
   async get(id: number, relations?: string[]): Promise<PerformedSkillModel> {
@@ -90,24 +88,12 @@ export class PerformedSkillsService {
 
   async update(
     id: number,
-    { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput,
-    user?: UserModel
+    { ratingUser, ratingManager, ...input }: UpdatePerformedSkillInput
   ): Promise<PerformedSkillModel> {
     try {
       const performedSkill = await this.get(id, ['performed'])
       this.repo.merge(performedSkill, { ...input })
       await this.repo.save(performedSkill)
-
-      if (user && (this.isValidRating(ratingManager) || input?.endFeedbackManager)) {
-        const evaluationApproval =
-          await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
-            performedSkill.performed.id,
-            EVALUATION_APPROVAL_PERIOD.END
-          )
-        if (evaluationApproval?.id) {
-          await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
-        }
-      }
 
       if (this.isValidRating(ratingUser)) {
         const ratingUserFound = await this.ratingsService.get(ratingUser)
@@ -132,9 +118,13 @@ export class PerformedSkillsService {
           }
         )
 
-        const calibration = await this.calibrationsService.get(performedSkill.performed.id)
-        if (calibration?.id && user?.id) {
-          await this.calibrationsService.delete(performedSkill.performed.id, user)
+        const evaluationApproval =
+          await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+            performedSkill.performed.id,
+            EVALUATION_APPROVAL_PERIOD.END
+          )
+        if (evaluationApproval?.id) {
+          await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
         }
       }
 

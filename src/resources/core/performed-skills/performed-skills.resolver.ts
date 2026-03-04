@@ -1,4 +1,3 @@
-import { UserModel } from '@core/users/entities/user.entity'
 import { JwtAuthGuard } from '@guards/jwt.auth.guard'
 import { Inject, UseGuards } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
@@ -33,9 +32,8 @@ export class PerformedSkillsResolver {
   @UseGuards(JwtAuthGuard)
   async updatePerformedSkill(
     @Args('id', { type: () => Int }) id: number,
-    @Args('input') input: UpdatePerformedSkillInput,
-    @CurrentUser() user: UserModel
+    @Args('input') input: UpdatePerformedSkillInput
   ): Promise<PerformedSkillModel> {
-    return await this.service.update(id, input, user)
+    return await this.service.update(id, input)
   }
 }
