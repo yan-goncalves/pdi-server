@@ -239,7 +239,7 @@ export class EvaluationApprovalsService {
   async resetToPending(id: number): Promise<EvaluationApprovalModel> {
     const approval = await this.get(id)
 
-    if (approval.status !== EVALUATION_APPROVAL_STATUS.PENDING) {
+    if (approval.status === EVALUATION_APPROVAL_STATUS.PENDING) {
       return
     }
 
