@@ -54,10 +54,12 @@ export class CalibrationsService {
       { id: performedEvaluation.user.id },
       { loadRelations: true }
     )
+    const team = await this.usersService.team(manager.id)
+    const populatedTeam = await this.usersService.getMembersRecursively(user, team)
 
     // Verify manager is the direct manager of the user
     // OR is sabrinavelasques OR has DIRECTOR role
-    const isDirectManager = user.manager?.id === manager.id
+    const isDirectManager = populatedTeam.some((member) => member.id === user.id)
     const isSabrina = manager.username === 'sabrinavelasques'
     const isDirector = manager.role === 'DIRECTOR'
 
