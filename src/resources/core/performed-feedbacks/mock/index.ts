@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import feedbackMock from '@feedbacks/mock'
 import performedEvaluationMock from '@performed-evaluations/mock'
 import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
@@ -9,8 +9,8 @@ const performedFeedbackMock: PerformedFeedbackModel = {
   feedback: feedbackMock,
   midReply: 'mid reply',
   endReply: 'end reply',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1)
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 })
 }
 
 export default performedFeedbackMock

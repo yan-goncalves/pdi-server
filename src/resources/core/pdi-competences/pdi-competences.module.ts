@@ -1,3 +1,4 @@
+import { UsersModule } from '@core/users/users.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PdiCompetencesCategoriesModule } from '@pdi-competences-categories/pdi-competences-categories.module'
@@ -10,7 +11,8 @@ import { PerformedEvaluationsModule } from '@performed-evaluations/performed-eva
   imports: [
     TypeOrmModule.forFeature([PdiCompetenceModel]),
     PerformedEvaluationsModule,
-    PdiCompetencesCategoriesModule
+    PdiCompetencesCategoriesModule,
+    UsersModule
   ],
   providers: [PdiCompetencesResolver, PdiCompetencesService],
   exports: [PdiCompetencesService]

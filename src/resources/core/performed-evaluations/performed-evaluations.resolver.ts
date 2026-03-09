@@ -33,6 +33,11 @@ export class PerformedEvaluationsResolver {
     return await this.service.list()
   }
 
+  @Query(() => PerformedEvaluationModel, { name: 'performedEvaluationApprovals' })
+  async listApprovals(@Args('id', { type: () => Int }) id: number): Promise<PerformedEvaluationModel> {
+    return await this.service.getWithRelations(id, ['approvals'])
+  }
+
   @Mutation(() => PerformedEvaluationModel)
   async createPerformedEvaluation(
     @Args('input') input: CreatePerformedEvaluationInput

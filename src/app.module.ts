@@ -21,7 +21,8 @@ import { PagesModule } from '@pages/pages.module'
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         autoSchemaFile: 'schema.gql',
-        playground: configService.get<string>('NODE_ENV') !== 'production'
+        playground: true,
+        graphiql: true
       })
     }),
     ScheduleModule.forRoot(),

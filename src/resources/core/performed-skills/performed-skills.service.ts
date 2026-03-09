@@ -1,3 +1,7 @@
+import { EVALUATION_APPROVAL_PERIOD } from '@constants/evaluation-approval'
+import { CalibrationsService } from '@core/calibrations/calibrations.service'
+import { EvaluationApprovalsService } from '@core/evaluation-approvals/evaluation-approvals.service'
+import { UserModel } from '@core/users/entities/user.entity'
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PerformedEvaluationsService } from '@performed-evaluations/performed-evaluations.service'
@@ -15,7 +19,9 @@ export class PerformedSkillsService {
     @Inject(PerformedEvaluationsService)
     private readonly performedService: PerformedEvaluationsService,
     @Inject(SkillsService) private readonly skillsService: SkillsService,
-    @Inject(RatingsService) private readonly ratingsService: RatingsService
+    @Inject(RatingsService) private readonly ratingsService: RatingsService,
+    @Inject(EvaluationApprovalsService)
+    private readonly evaluationApprovalsService: EvaluationApprovalsService
   ) {}
 
   async get(id: number, relations?: string[]): Promise<PerformedSkillModel> {
@@ -59,7 +65,7 @@ export class PerformedSkillsService {
       const performed = await this.performedService.get(idPerformed)
       const skill = await this.skillsService.get(idSkill)
 
-      return await this.repo.save(
+      const created = await this.repo.save(
         this.repo.create({
           performed,
           skill,
@@ -68,6 +74,17 @@ export class PerformedSkillsService {
           ...input
         })
       )
+
+      const evaluationApproval =
+        await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+          performed.id,
+          EVALUATION_APPROVAL_PERIOD.END
+        )
+      if (evaluationApproval?.id) {
+        await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
+      }
+
+      return created
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException('PerformedSkill already exists')
@@ -90,7 +107,7 @@ export class PerformedSkillsService {
       await this.repo.save(performedSkill)
 
       if (this.isValidRating(ratingUser)) {
-        const ratingUserFound = ratingUser >= 0 ? await this.ratingsService.get(ratingUser) : null
+        const ratingUserFound = await this.ratingsService.get(ratingUser)
 
         await this.repo.update(
           { id: performedSkill.id },
@@ -102,8 +119,7 @@ export class PerformedSkillsService {
       }
 
       if (this.isValidRating(ratingManager)) {
-        const ratingManagerFound =
-          ratingManager >= 0 ? await this.ratingsService.get(ratingManager) : null
+        const ratingManagerFound = await this.ratingsService.get(ratingManager)
 
         await this.repo.update(
           { id: performedSkill.id },
@@ -112,6 +128,15 @@ export class PerformedSkillsService {
             ratingManager: ratingManagerFound
           }
         )
+
+        const evaluationApproval =
+          await this.evaluationApprovalsService.getByPerformedEvaluationAndPeriod(
+            performedSkill.performed.id,
+            EVALUATION_APPROVAL_PERIOD.END
+          )
+        if (evaluationApproval?.id) {
+          await this.evaluationApprovalsService.resetToPending(evaluationApproval.id)
+        }
       }
 
       this.repo.query(`EXEC CalcGrade @PERFORMED = ${performedSkill.performed.id}`)

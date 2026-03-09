@@ -1,12 +1,12 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import questionLocaleMock from '@questions-i18n/mock'
 import { QuestionModel } from '@questions/entities/question.entity'
 
 const questionMock: QuestionModel = {
   id: 1,
   ask: 'Você aceitaria a hipótese de trabalhar em outra localidade no Brasil?',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   locale: questionLocaleMock
 }
 

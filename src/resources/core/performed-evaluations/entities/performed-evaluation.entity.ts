@@ -1,6 +1,8 @@
+import { CalibrationModel } from '@calibrations/entities/calibration.entity'
 import { PdiCoachingModel } from '@core/pdi-coachings/entities/pdi-coaching.entity'
 import { PdiCompetenceModel } from '@core/pdi-competences/entities/pdi-competence.entity'
 import { PdiQualityModel } from '@core/pdi-qualities/entities/pdi-quality.entity'
+import { EvaluationApprovalModel } from '@evaluation-approvals/entities/evaluation-approval.entity'
 import { EvaluationModel } from '@evaluations/entities/evaluation.entity'
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql'
 import { PerformedFeedbackModel } from '@performed-feedbacks/entities/performed-feedback.entity'
@@ -16,6 +18,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -50,6 +53,10 @@ export class PerformedEvaluationModel {
   @Column({ name: 'end_finished', default: false })
   endFinished: boolean
 
+  @Field(() => Boolean, { defaultValue: false })
+  @Column({ name: 'is_calibrated', default: false })
+  isCalibrated: boolean
+
   @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
@@ -58,9 +65,9 @@ export class PerformedEvaluationModel {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  @Field(() => [PerformedQuestionModel])
+  @Field(() => [PerformedQuestionModel], { nullable: true })
   @OneToMany(() => PerformedQuestionModel, (question) => question.performed)
-  questions: PerformedQuestionModel[]
+  questions?: PerformedQuestionModel[]
 
   @Field(() => [PerformedSkillModel])
   @OneToMany(() => PerformedSkillModel, (skill) => skill.performed)
@@ -85,4 +92,12 @@ export class PerformedEvaluationModel {
   @Field(() => [PdiQualityModel])
   @OneToMany(() => PdiQualityModel, (quality) => quality.performed)
   pdiQuality: PdiQualityModel[]
+
+  @Field(() => [EvaluationApprovalModel], { nullable: true })
+  @OneToMany(() => EvaluationApprovalModel, (approval) => approval.performedEvaluation)
+  approvals?: EvaluationApprovalModel[]
+
+  @Field(() => CalibrationModel, { nullable: true })
+  @OneToOne(() => CalibrationModel, (calibration) => calibration.performedEvaluation)
+  calibration?: CalibrationModel
 }

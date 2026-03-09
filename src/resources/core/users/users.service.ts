@@ -272,4 +272,20 @@ export class UsersService {
     await this.repo.update(user.id, { picture: null })
     return Promise.resolve(true)
   }
+
+  async getMembersRecursively(member: UserModel, team: UserModel[] = []): Promise<UserModel[]> {
+    if (!team.some(({ id }) => id === member.id)) {
+      team.push(member)
+    }
+
+    if (member.role !== ROLES.USER) {
+      const teamMembers = await this.team(member.id)
+
+      for (const dataMember of teamMembers) {
+        await this.getMembersRecursively(dataMember, team)
+      }
+    }
+
+    return team
+  }
 }

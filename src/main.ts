@@ -3,6 +3,7 @@ import { AppDataSource } from '@data-source'
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestApplication, NestFactory } from '@nestjs/core'
+import { json, urlencoded } from 'express'
 import 'reflect-metadata'
 
 async function bootstrap(): Promise<void> {
@@ -10,6 +11,9 @@ async function bootstrap(): Promise<void> {
   const logger = new Logger()
   const app = await NestFactory.create<NestApplication>(AppModule)
   const configService = app.get(ConfigService)
+
+  app.use(json({ limit: '8mb' }))
+  app.use(urlencoded({ extended: true, limit: '8mb' }))
 
   app.enableCors()
   app.useStaticAssets(configService.get<string>('MULTER_DEST'), {

@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import performedEvaluationMock from '@performed-evaluations/mock'
 import { PerformedSkillModel } from '@performed-skills/entities/performed-skill.entity'
 import ratingMock from '@ratings/mock'
@@ -14,8 +14,8 @@ const performedSkillMock: PerformedSkillModel = {
   endFeedbackUser: 'end feedback user',
   midFeedbackManager: 'mid feedback manager',
   endFeedbackManager: 'end feedback manager',
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   calcGrade() {
     return
   }

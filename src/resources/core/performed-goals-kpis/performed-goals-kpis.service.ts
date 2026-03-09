@@ -79,7 +79,7 @@ export class PerformedGoalsKpisService {
       await this.repo.save(performedGoalKpi)
 
       if (typeof ratingManager === 'number') {
-        const ratingFound = ratingManager >= 0 ? await this.ratingsService.get(ratingManager) : null
+        const ratingFound = await this.ratingsService.get(ratingManager);
 
         await this.repo.update(
           { id: performedGoalKpi.id },

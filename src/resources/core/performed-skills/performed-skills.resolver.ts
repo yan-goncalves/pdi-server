@@ -1,9 +1,11 @@
-import { Inject } from '@nestjs/common'
+import { JwtAuthGuard } from '@guards/jwt.auth.guard'
+import { Inject, UseGuards } from '@nestjs/common'
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreatePerformedSkillInput } from '@performed-skills/dto/create-performed-skill.input'
 import { UpdatePerformedSkillInput } from '@performed-skills/dto/update-performed-skill.input'
 import { PerformedSkillModel } from '@performed-skills/entities/performed-skill.entity'
 import { PerformedSkillsService } from '@performed-skills/performed-skills.service'
+import { CurrentUser } from 'deploy/decorators/current-user.decorator'
 
 @Resolver(() => PerformedSkillModel)
 export class PerformedSkillsResolver {
@@ -27,6 +29,7 @@ export class PerformedSkillsResolver {
   }
 
   @Mutation(() => PerformedSkillModel)
+  @UseGuards(JwtAuthGuard)
   async updatePerformedSkill(
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdatePerformedSkillInput

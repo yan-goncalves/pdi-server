@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import questionMock from '@questions/mock'
 import sectionLocaleMock from '@sections-i18n/mock'
 import { SectionModel } from '@sections/entities/section.entity'
@@ -15,8 +15,8 @@ const sectionMock: SectionModel = {
   },
   questions: [questionMock],
   skills: [skillMock],
-  createdAt: faker.date.past(1),
-  updatedAt: faker.date.recent(1),
+  createdAt: faker.date.past({ years: 1 }),
+  updatedAt: faker.date.recent({ days: 1 }),
   locale: sectionLocaleMock
 }
 

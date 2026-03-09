@@ -1,3 +1,4 @@
+import { UsersModule } from '@core/users/users.module'
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PdiQualityModel } from '@pdi-qualities/entities/pdi-quality.entity'
@@ -6,7 +7,7 @@ import { PdiQualitiesService } from '@pdi-qualities/pdi-qualities.service'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PdiQualityModel]), PerformedEvaluationsModule],
+  imports: [TypeOrmModule.forFeature([PdiQualityModel]), PerformedEvaluationsModule, UsersModule],
   providers: [PdiQualitiesResolver, PdiQualitiesService],
   exports: [PdiQualitiesService]
 })

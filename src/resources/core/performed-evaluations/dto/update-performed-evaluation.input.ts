@@ -12,4 +12,9 @@ export class UpdatePerformedEvaluationInput {
   @IsOptional()
   @IsBoolean()
   endFinished?: boolean
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  isCalibrated?: boolean
 }

@@ -45,6 +45,8 @@
       "@feedbacks-i18n/*": ["src/resources/core/feedbacks-i18n/*"],
       "@evaluations/*": ["src/resources/core/evaluations/*"],
       "@evaluations-i18n/*": ["src/resources/core/evaluations-i18n/*"],
+      "@evaluation-approvals/*": ["src/resources/core/evaluation-approvals/*"],
+      "@calibrations/*": ["src/resources/core/calibrations/*"],
       "@goals/*": ["src/resources/core/goals/*"],
       "@kpis/*": ["src/resources/core/kpis/*"],
       "@evaluations-goals/*": ["src/resources/core/evaluations-goals/*"],
