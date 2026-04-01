@@ -237,9 +237,9 @@ export class EvaluationApprovalsService {
   }
 
   async resetToPending(id: number): Promise<EvaluationApprovalModel> {
-    const approval = await this.get(id)
+    const approval = await this.repo.findOneBy({ id })
 
-    if (approval.status === EVALUATION_APPROVAL_STATUS.PENDING) {
+    if (!approval || approval.status === EVALUATION_APPROVAL_STATUS.PENDING) {
       return
     }
 
