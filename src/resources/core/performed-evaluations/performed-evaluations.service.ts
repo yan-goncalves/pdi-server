@@ -60,6 +60,7 @@ export class PerformedEvaluationsService {
     try {
       return await this.repo.findOneOrFail({
         where: options,
+        relationLoadStrategy: 'query',
         relations: {
           questions: {
             performed: false
@@ -91,6 +92,10 @@ export class PerformedEvaluationsService {
           },
 
           approvals: {
+            performedEvaluation: false
+          },
+
+          calibration: {
             performedEvaluation: false
           }
         }
