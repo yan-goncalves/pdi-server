@@ -14,6 +14,7 @@ import { randomUUID } from 'crypto'
 import * as ExcelModule from 'exceljs'
 import { createReadStream, existsSync, mkdirSync } from 'fs'
 import { ReportDto } from './dto/report.dto'
+import { CalibrationsService } from '@core/calibrations/calibrations.service'
 
 @Injectable()
 export class ReportsService {
@@ -24,7 +25,8 @@ export class ReportsService {
     private readonly evaluationsService: EvaluationsService,
     private readonly questionsI18nService: QuestionsI18nService,
     private readonly skillsI18nService: SkillsI18nService,
-    private readonly feedbacksI18nService: FeedbacksI18nService
+    private readonly feedbacksI18nService: FeedbacksI18nService,
+    private readonly calibrationsService: CalibrationsService
   ) {}
 
   async download(uuid: string): Promise<StreamableFile> {
@@ -118,6 +120,8 @@ export class ReportsService {
 
     const pdiCount = pdiStrengthCount + pdiWeaknessCount + pdiCoachingCount + pdiCompetenceCount + 1
 
+    const calibration = await this.calibrationsService.get(performed.id)
+
     const startRowCount = 6
     const contentJustifyStyle: Partial<ExcelModule.Style> = {
       fill: {
@@ -144,7 +148,10 @@ export class ReportsService {
       }
     }
 
-    const sheet = workbook.addWorksheet(user.username, { views: [{ showGridLines: false }] })
+    const sheet = workbook.addWorksheet(user.username, {
+      views: [{ showGridLines: false }],
+      properties: { defaultRowHeight: 35 }
+    })
     sheet.getColumn(1).width = 2
     sheet.getColumn(2).width = 25
     sheet.getColumn(3).width = 50
@@ -252,7 +259,7 @@ export class ReportsService {
     evaluationGoals.forEach((goal) => {
       const performedGoal = performed.goals.find((g) => g.goal.id === goal.id)
 
-      if (goal?.kpis.length > 1) {
+      if (goal?.kpis.length > 0) {
         sheet.mergeCells(startGoalRowCount, 3, startGoalRowCount + goal.kpis.length - 1, 3)
       }
       sheet.getCell(startGoalRowCount, 3).value = goal.name
@@ -281,12 +288,13 @@ export class ReportsService {
           sheet.getCell(startGoalRowCount, 7).value = performedKpi?.ratingManager?.value ?? ''
           sheet.getCell(startGoalRowCount, 7).style = contentCenterStyle
 
-          if (goal?.kpis.length > 1) {
-            startGoalRowCount++
-          }
+          startGoalRowCount++
         })
       }
-      startGoalRowCount++
+
+      if (goal?.kpis?.length === 0) {
+        startGoalRowCount++
+      }
     })
 
     if (!evaluationGoals.length) {
@@ -441,6 +449,30 @@ export class ReportsService {
     }
     const notRatedTitle = locale === LOCALES.BR ? 'Sem nota atribuída' : 'Not rated'
     finalRatingCell.value = performed.grade || notRatedTitle
+
+    /**
+     * @CALIBRAÇÃO
+     */
+    const calibrationRow = finalRatingRow + 1
+    const calibrationCellTitle = sheet.getCell(calibrationRow, 2)
+    calibrationCellTitle.style = { font: { bold: true } }
+    calibrationCellTitle.value = locale === LOCALES.BR ? 'CALIBRAÇÃO' : 'CALIBRATION'
+    const calibrationCommentCell = sheet.getCell(calibrationRow, 3)
+    calibrationCommentCell.value = calibration?.comment || ''
+    sheet.mergeCells(calibrationRow, 4, calibrationRow, 7)
+    const calibrationCell = sheet.getCell(calibrationRow, 4)
+    calibrationCell.style = {
+      font: {
+        bold: true,
+        ...(calibration?.calibrationValue && {
+          color: {
+            argb: calibration?.calibrationValue > 0 ? 'FF000000' : 'FFFF0000'
+          }
+        })
+      },
+      alignment: { horizontal: 'center', vertical: 'middle' }
+    }
+    calibrationCell.value = calibration?.calibrationValue || ''
 
     /**
      * @SET_BORDER
