@@ -8,6 +8,7 @@ import { Module } from '@nestjs/common'
 import { PerformedEvaluationsModule } from '@performed-evaluations/performed-evaluations.module'
 import { ReportsController } from './reports.controller'
 import { ReportsService } from './reports.service'
+import { CalibrationsModule } from '@core/calibrations/calibrations.module'
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ReportsService } from './reports.service'
     EvaluationsModule,
     QuestionsI18nModule,
     SkillsI18nModule,
-    FeedbacksI18nModule
+    FeedbacksI18nModule,
+    CalibrationsModule
   ],
   controllers: [ReportsController],
   providers: [ReportsService],
